@@ -6,7 +6,7 @@
 
 WinMim is an experimental Windows customization toolkit that aims to recreate the appearance **and behavior** of historical Windows desktops.
 
-[Status](#project-status) · [Build](#building-from-source) · [Contributing](CONTRIBUTING.md) · [Roadmap](docs/DEVELOPMENT.md) · [Upstream research](docs/OPEN-SOURCE-LANDSCAPE.md) · [License](LICENSE)
+[Status](#project-status) · [Screenshots](#screenshots) · [Build](#building-from-source) · [Contributing](CONTRIBUTING.md) · [Roadmap](docs/DEVELOPMENT.md) · [Upstream research](docs/OPEN-SOURCE-LANDSCAPE.md) · [License](LICENSE)
 
 ## Project status
 
@@ -22,6 +22,24 @@ The current integration target is **Windows 10 IoT Enterprise LTSC 2021, x64, bu
 | Windows 98, Me, 2000, XP, 8, 8.1, 10, 11 | Catalog entries and future targets. Selecting them does not apply a theme. |
 
 Long term, WinMim will support multiple target appearances on Windows 10 and Windows 11. This is a roadmap, not a compatibility claim. Windows 11 integration is not validated yet.
+
+## Screenshots
+
+Actual captures of the developer preview, taken on October 30, 2026. The application uses system controls and window decorations. These images show the current implementation, including its remaining visual differences.
+
+**Without a WinMim theme — the control panel in a normal, non-maximized window.**
+
+![WinMim control panel without a theme, in a non-maximized window](assets/screenshots/no-theme.png)
+
+**Windows 95 appearance — experimental profile, with the Start menu open.**
+
+![Windows 95 appearance applied to Windows 10 LTSC, with WinMim and the classic Start menu open](assets/screenshots/windows-95.png)
+
+**Windows 7 appearance — private lab integration, with the Start menu open.**
+
+![Windows 7 appearance applied to Windows 10 LTSC, with WinMim and the Windows 7-style Start menu open](assets/screenshots/windows-7.png)
+
+Windows 95 and Windows 7 are the two desktop integrations currently demonstrated. The other target appearances are catalog entries or incomplete presets; they do not yet have a complete theme to demonstrate. The Windows 7 desktop in the last image was applied through the separate lab coordinator; selecting the Windows 7 catalog row alone does not apply it.
 
 ## Features
 
@@ -113,12 +131,13 @@ src/WinMim.Native/    Original shell integration modules
 vendor/windhawk-mods/ Pinned upstream module sources and source manifests
 content/classic95/   Licensed homage artwork and provenance
 assets/branding/     Project icon in PNG and multi-resolution ICO formats
+assets/screenshots/  Curated captures of the current application and desktops
 tools/               Dependency preparation, builds, verification and packaging
 tests/               Core, tool and lab test programs
 docs/                Architecture, implementation notes and research
 ```
 
-Historical implementation notes are currently mostly in Russian. Raw lab captures, credentials, private resource packs and local session notes are excluded from Git.
+Historical implementation notes are currently mostly in Russian. Raw diagnostic captures, credentials, private resource packs and local session notes are excluded from Git. The curated screenshots above are included under `assets/screenshots/`.
 
 ## Contributing
 
