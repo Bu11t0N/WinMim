@@ -1,4 +1,12 @@
-# Изменения
+# Changelog
+
+## 2026-10-29 — native UI, Classic95 and repository preparation
+
+Added system-native Windows Forms controls, the future appearance catalog, a journaled Windows 7 sound adapter and an experimental Windows 95 profile. Integrated the maintainer-supplied multi-resolution icon. Added English project/build/contribution documentation and upstream research.
+
+Local validation: 51 Core tests, 8 Python tests, 53 native DLLs and a resource-independent package stage/rollback smoke check. Recovered the main VM to Seven and verified a normal reboot; Windows 95 cold boot remains unresolved. See docs/VM-RECOVERY-20261029.md.
+
+Earlier implementation notes below are retained in their original language.
 
 ## 24 октября 2026 — классическое поведение Seven
 

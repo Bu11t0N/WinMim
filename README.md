@@ -99,6 +99,8 @@ Use the application's recovery page or matching profile restore action. Stop the
 
 Keep a VM snapshot in addition to WinMim's journals. A journal cannot recover an unbootable guest, remove every effect of an external installer, or undo changes outside its recorded scope. The Windows 95 cold-boot path is an open issue following a black-screen incident; successful same-session apply/restore tests do not resolve it.
 
+The lab was recovered to its Seven snapshot, updated and successfully rebooted. See the [recovery report](docs/VM-RECOVERY-20261029.md) for observations and unresolved questions.
+
 Remaining gaps include complete historical icons and cursors, Explorer content and commands, tray details, system dialogs, modern app surfaces, logon screens and consistent behavior across Windows updates. See [development priorities](docs/DEVELOPMENT.md) and the [Windows 7 gap list](docs/WIN7-VISUAL-GAPS.md).
 
 ## Repository layout
