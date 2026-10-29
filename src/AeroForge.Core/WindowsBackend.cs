@@ -51,7 +51,21 @@ public sealed class WindowsBackend(string hostRoot, bool allowDesktopSettings = 
         if (change.Kind == ChangeKind.File)
         {
             string path = SafePath.Under(HostRoot, change.Target);
-            if (!state.Exists) { File.Delete(path); RemoveEmptyParents(Path.GetDirectoryName(path)); return; }
+            if (!state.Exists)
+            {
+                try { File.Delete(path); }
+                catch (Exception error) when (error is IOException or UnauthorizedAccessException && IsModulePayload(change.Target))
+                {
+                    // Windows can rename a mapped DLL even while its image section
+                    // prevents deletion. Remove it from the active module path now;
+                    // delete the unchanged retired copy once the loader releases it.
+                    string retired=SafePath.Under(HostRoot,"Data/Engine/Retired/"+Hashing.File(path)+"."+Guid.NewGuid().ToString("N")+".dll");
+                    Directory.CreateDirectory(Path.GetDirectoryName(retired)!);
+                    retired=SafePath.Under(HostRoot,Path.GetRelativePath(HostRoot,retired));
+                    File.Move(path,retired);
+                }
+                RemoveEmptyParents(Path.GetDirectoryName(path));return;
+            }
             Directory.CreateDirectory(Path.GetDirectoryName(path)!);
             // Resolve again after creation so a newly inserted reparse point fails closed.
             path = SafePath.Under(HostRoot, change.Target);
@@ -78,6 +92,25 @@ public sealed class WindowsBackend(string hostRoot, bool allowDesktopSettings = 
         };
         using var key = Registry.CurrentUser.CreateSubKey(change.Target[5..], true);
         key.SetValue(change.ValueName, value, kind);
+    }
+    private static bool IsModulePayload(string target)=>System.Text.RegularExpressions.Regex.IsMatch(target.Replace('\\','/'),@"^Data/Engine/Mods/(32|64)/[^/]+\.dll$",System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+    public void CleanupRetiredModules()
+    {
+        string directory=SafePath.Under(HostRoot,"Data/Engine/Retired");
+        if(!Directory.Exists(directory))return;
+        foreach(string item in Directory.EnumerateFiles(directory,"*.dll"))
+        {
+            string name=Path.GetFileName(item);
+            if(!System.Text.RegularExpressions.Regex.IsMatch(name,@"^[0-9a-f]{64}\.[0-9a-f]{32}\.dll$"))continue;
+            try
+            {
+                string path=SafePath.Under(HostRoot,"Data/Engine/Retired/"+name);
+                if(Hashing.File(path)!=name[..64])continue; // Preserve later edits.
+                File.Delete(path);
+            }
+            catch(Exception error)when(error is IOException or UnauthorizedAccessException or InvalidDataException){ }
+        }
+        RemoveEmptyParents(directory);
     }
     private void RemoveEmptyParents(string? directory)
     {

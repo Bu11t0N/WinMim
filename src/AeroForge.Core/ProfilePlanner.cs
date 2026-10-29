@@ -83,8 +83,9 @@ public sealed class ProfilePlanner(ContentStore store, Catalog catalog)
         var settings = new Dictionary<string, string>(module.DefaultSettings);
         if (profile.Settings.TryGetValue(module.Id, out var overrides))
             foreach (var pair in overrides) settings[pair.Key] = pair.Value;
-        // Controllers must remain available for shutdown and recovery.
-        var excludes=module.Excludes.Concat(new[]{"WinMim.exe","AeroForge.exe","AeroForge.Cli.exe","AeroForge.VmSmoke.exe"}).Distinct(StringComparer.OrdinalIgnoreCase);
+        // Controllers and guest integration must remain available for recovery.
+        var excludes=module.Excludes.Concat(new[]{"WinMim.exe","AeroForge.exe","AeroForge.Cli.exe","AeroForge.VmSmoke.exe",
+            "vmtoolsd.exe","vm3dservice.exe","VGAuthService.exe","vmwaretray.exe","vmwareuser.exe"}).Distinct(StringComparer.OrdinalIgnoreCase);
         var includes=module.Includes;
         var lines = new List<string> { "[Mod]", "LibraryFileName=" + (dll ?? "missing.dll"),
             "Disabled=" + (enabled ? "0" : "1"), "LoggingEnabled=0", "DebugLoggingEnabled=0",

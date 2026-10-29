@@ -269,6 +269,37 @@ Test("INI line injection is rejected", () =>
     var module = new Module { Id = "test", DefaultSettings = new() { ["key"] = "value\r\n[Mod]\r\nDisabled=0" } };
     Throws(() => ProfilePlanner.Ini(module, false, new Profile()));
 });
+Test("rollback retires a mapped native DLL and preserves later edits during cleanup", () =>
+{
+    string root=NewState();var backend=new WindowsBackend(root);
+    var manager=new TransactionManager(backend,NewState());
+    var change=new Change{Kind=ChangeKind.File,Target="Data/Engine/Mods/64/mapped-fixture.dll",Content=File.ReadAllBytes(Path.Combine(Environment.SystemDirectory,"version.dll"))};
+    var receipt=manager.Apply(PlanOf(change));
+    nint loaded=System.Runtime.InteropServices.NativeLibrary.Load(SafePath.Under(root,change.Target));
+    string retired="",foreign="";
+    try
+    {
+        Assert(manager.Rollback(receipt.FilePath).Status=="RolledBack");
+        Assert(!backend.Read(change).Exists);
+        retired=Directory.GetFiles(Path.Combine(root,"Data/Engine/Retired"),"*.dll").Single();
+        backend.CleanupRetiredModules();Assert(File.Exists(retired));
+        foreign=Path.Combine(Path.GetDirectoryName(retired)!,Path.GetFileName(retired)[..65]+Guid.NewGuid().ToString("N")+".dll");
+        File.WriteAllBytes(foreign,[1,2,3]);
+    }
+    finally{System.Runtime.InteropServices.NativeLibrary.Free(loaded);}
+    backend.CleanupRetiredModules();
+    Assert(!File.Exists(retired)&&File.Exists(foreign));
+});
+Test("wildcard theme modules cannot target guest recovery services", () =>
+{
+    var module=new Module{Id="classic-theme-transparency-fix",Includes=["*"],Excludes=["foreign.exe","VMTOOLSD.EXE"]};
+    string ini=ProfilePlanner.Ini(module,true,new Profile());
+    string[] excluded=ini.Split("\r\n").Single(line=>line.StartsWith("Exclude=")).Substring(8).Split('|');
+    foreach(string name in new[]{"vmtoolsd.exe","vm3dservice.exe","VGAuthService.exe","vmwaretray.exe","vmwareuser.exe","WinMim.exe","foreign.exe"})
+        Assert(excluded.Contains(name,StringComparer.OrdinalIgnoreCase),name);
+    Assert(excluded.Count(name=>name.Equals("vmtoolsd.exe",StringComparison.OrdinalIgnoreCase))==1);
+    Assert(ini.Contains("Include=*\r\n")&&!excluded.Contains("explorer.exe"));
+});
 Test("autostart can be explicitly disabled without affecting other values", () =>
 {
     var catalog = new Catalog { Profiles = [new Profile { Id = "test" }] };

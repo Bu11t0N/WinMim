@@ -8,7 +8,7 @@ namespace AeroForge.App;
 
 public partial class App : Application
 {
-    protected override void OnStartup(StartupEventArgs e)
+    protected override async void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
         System.Windows.Forms.Application.EnableVisualStyles();
@@ -18,6 +18,7 @@ public partial class App : Application
         {
             if(e.Args.FirstOrDefault()=="--resume-shell")
             {
+                ShutdownMode=ShutdownMode.OnExplicitShutdown;
                 if(Environment.MachineName!="AEROFORGE-LAB"){Shutdown(2);return;}
                 string root=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),"AeroForge");
                 try
@@ -25,7 +26,7 @@ public partial class App : Application
                     DesktopController.EnsureLab();
                     var catalog=new ContentStore(AeroForge.App.MainWindow.FindContent()).Load();
                     var runtime=new ShellHost(Path.Combine(root,"Host"),catalog);
-                    if(Classic95Setup.IsActive)new Classic95Setup(AeroForge.App.MainWindow.FindContent()).ResumeAsync().GetAwaiter().GetResult();
+                    if(Classic95Setup.IsActive)await new Classic95Setup(AeroForge.App.MainWindow.FindContent()).ResumeAsync();
                     runtime.Start();
                     File.Delete(Path.Combine(root,"resume-error.txt"));
                     JsonFile.Write(Path.Combine(root,"resume-status.json"),new{requestedAt=DateTimeOffset.UtcNow,state="StartRequested",executable=runtime.Executable});

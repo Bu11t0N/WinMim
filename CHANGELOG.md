@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-10-29 — Classic95 reliability fixes
+
+Fixed blocking dispatcher waits during startup, reuse of the asynchronous session helper, palette validation ordering, guest integration process exclusions and rollback of DLLs still mapped after engine shutdown. Added regression tests including a real mapped-image rollback and integrity-checked deferred cleanup. See docs/CLASSIC95-BUGFIXES-20261029.md.
+
 ## 2026-10-29 — native UI, Classic95 and repository preparation
 
 Added system-native Windows Forms controls, the future appearance catalog, a journaled Windows 7 sound adapter and an experimental Windows 95 profile. Integrated the maintainer-supplied multi-resolution icon. Added English project/build/contribution documentation and upstream research.

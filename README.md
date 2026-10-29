@@ -16,7 +16,7 @@ The current integration target is **Windows 10 IoT Enterprise LTSC 2021, x64, bu
 
 | Target appearance | Current implementation |
 | --- | --- |
-| Windows 95 | Experimental native classic rendering, palette and metrics, Open-Shell menu, desktop icons and Explorer/taskbar modules. Apply/restore cycles tested; cold-boot recovery remains under investigation. |
+| Windows 95 | Experimental native classic rendering, palette and metrics, Open-Shell menu, desktop icons and Explorer/taskbar modules. Apply/restore and controlled resume/restore after reboot tested; normal startup still requires elevation. |
 | Windows 7 | Experimental desktop coordinator, Explorer behavior, taskbar properties, icons and optional components in the private lab. Some required visual resources are external and are not in this repository. |
 | Windows Vista | Module preset; complete desktop conversion is pending. |
 | Windows 98, Me, 2000, XP, 8, 8.1, 10, 11 | Catalog entries and future targets. Selecting them does not apply a theme. |
@@ -91,13 +91,13 @@ python tools/verify_native.py
 .\tools\smoke.ps1 -ScratchDirectory C:\Temp\WinMim-New-Smoke-Directory
 ```
 
-Choose a new, nonexistent scratch directory. The smoke check stages and rolls back files there without starting the engine or applying a system theme. The current local baseline is **51 Core tests, 8 Python tests and 53 verified native DLLs**. Compilation and automated tests do not establish visual fidelity or compatibility after reboot.
+Choose a new, nonexistent scratch directory. The smoke check stages and rolls back files there without starting the engine or applying a system theme. The current local baseline is **53 Core tests, 8 Python tests and 53 verified native DLLs**. Compilation and automated tests do not establish visual fidelity or compatibility after reboot.
 
 ## Recovery and limitations
 
 Use the application's recovery page or matching profile restore action. Stop the engine before rolling back its files. Restore changes in reverse order. If a value was changed by another program after WinMim applied it, rollback preserves that change and reports a conflict.
 
-Keep a VM snapshot in addition to WinMim's journals. A journal cannot recover an unbootable guest, remove every effect of an external installer, or undo changes outside its recorded scope. The Windows 95 cold-boot path is an open issue following a black-screen incident; successful same-session apply/restore tests do not resolve it.
+Keep a VM snapshot in addition to WinMim's journals. A journal cannot recover an unbootable guest, remove every effect of an external installer, or undo changes outside its recorded scope. Windows 95 passed a controlled reboot/resume/restore test after the [reliability fixes](docs/CLASSIC95-BUGFIXES-20261029.md). This does not establish unattended startup or fully explain the original black-screen incident.
 
 The lab was recovered to its Seven snapshot, updated and successfully rebooted. See the [recovery report](docs/VM-RECOVERY-20261029.md) for observations and unresolved questions.
 

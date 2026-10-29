@@ -82,6 +82,7 @@ public sealed class ShellHost(string hostRoot, Catalog catalog)
         if (!info.KnownBase) throw new InvalidOperationException("Эта сборка рассчитана на Windows 10 x64 19041–19045. Для других версий сначала нужны испытания.");
         if (info.IsAdministrator) throw new InvalidOperationException("Запустите AeroForge без прав администратора: этот движок настроен для пользовательской сессии.");
         if (IsRunning()) return;
+        new WindowsBackend(root).CleanupRetiredModules();
         if (Process.GetProcessesByName("windhawk").Length > 0)
             throw new InvalidOperationException("Уже запущен другой Windhawk. Остановите его вручную перед запуском профиля AeroForge.");
         var profile = JsonFile.Read<ActiveProfile>(SafePath.Under(root, "active-profile.json"));
@@ -118,13 +119,14 @@ public sealed class ShellHost(string hostRoot, Catalog catalog)
     }
     public async Task StopAsync()
     {
-        if (!IsRunning()) return;
+        if (!IsRunning()) { new WindowsBackend(root).CleanupRetiredModules();return; }
         var start = new ProcessStartInfo(Executable) { WorkingDirectory = root, UseShellExecute = false, CreateNoWindow = true };
         start.ArgumentList.Add("-exit");
         using var p = Process.Start(start);
         if (p != null) await p.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(15));
         for (int i = 0; i < 60 && IsRunning(); i++) await Task.Delay(250);
         if (IsRunning()) throw new IOException("Движок ещё работает. Завершите его через значок Windhawk и повторите операцию.");
+        new WindowsBackend(root).CleanupRetiredModules();
     }
     private sealed class ActiveProfile
     { public string Profile { get; set; } = ""; public string[] Modules { get; set; } = []; public string? DisplayProvider { get; set; } }

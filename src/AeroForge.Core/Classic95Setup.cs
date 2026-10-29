@@ -68,12 +68,13 @@ public sealed class Classic95Setup
     public async Task ResumeAsync()
     {
         Guard();if(!IsActive)return;
-        string dacl=new ClassicSession(ClassicSession.ActiveSession).Inspect().Value!;
-        if(!dacl.Contains("(D;;LC;;;IU)",StringComparison.Ordinal))await new ClassicSession(ClassicSession.ActiveSession).ElevatedAsync(false);
         var receipt=desktopTransactions.History().First(r=>r.Status=="Applied");
         var saved=receipt.Entries.Single(e=>e.Change.Kind==ChangeKind.File&&e.Change.Target=="classic-appearance.json");
         var backend=new WindowsBackend(root);if(backend.Read(saved.Change).Fingerprint!=saved.ExpectedAfter)throw new IOException("Сохранённая палитра Classic изменена.");
-        ClassicAppearance.Write(ClassicAppearance.Parse(File.ReadAllText(SafePath.Under(root,"classic-appearance.json"))));
+        var appearance=ClassicAppearance.Parse(File.ReadAllText(SafePath.Under(root,"classic-appearance.json")));
+        string dacl=new ClassicSession(ClassicSession.ActiveSession).Inspect().Value!;
+        if(!dacl.Contains("(D;;LC;;;IU)",StringComparison.Ordinal))await switchSession(false);
+        ClassicAppearance.Write(appearance);
     }
     private static string ShellPath=>Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles),"Open-Shell","StartMenu.exe");
     private static async Task StopMenuAsync()
