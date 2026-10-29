@@ -55,6 +55,11 @@ internal sealed class ReceiptMetadata
     public string? Error { get; set; }
     public Receipt Receipt()=>new(){SchemaVersion=SchemaVersion,Id=Id,Created=Created,ProfileId=ProfileId,ProfileName=ProfileName,Status=Status,Error=Error};
 }
+internal sealed class ReceiptErrorDetails
+{
+    public List<ReceiptEntryError> Entries { get; set; }=[];
+}
+internal sealed class ReceiptEntryError { public string? Error { get; set; } }
 
 /// <summary>Write-ahead journal: snapshot is flushed before every mutation, including a failing operation.</summary>
 public sealed class TransactionManager(IChangeBackend backend, string journalRoot)
@@ -79,6 +84,12 @@ public sealed class TransactionManager(IChangeBackend backend, string journalRoo
             r.FilePath = file; result.Add(r);
         }
         return result.OrderByDescending(r => r.Created).ThenByDescending(r => r.Id).ToArray();
+    }
+    public string[] ReadErrors(string receiptPath)
+    {
+        string safe=SafePath.Under(JournalRoot,Path.GetFileName(receiptPath));
+        if(!Path.GetFullPath(receiptPath).Equals(safe,StringComparison.OrdinalIgnoreCase))throw new InvalidDataException("Receipt is outside the journal directory");
+        return JsonFile.Read<ReceiptErrorDetails>(safe).Entries.Where(e=>e.Error!=null).Select(e=>e.Error!).ToArray();
     }
     public Receipt Apply(Plan plan, IProgress<string>? progress = null, CancellationToken cancellationToken = default, bool allowProfileUpdate = false)
     {

@@ -28,7 +28,7 @@ Long term, WinMim will support multiple target appearances on Windows 10 and Win
 - A Windows Forms control panel using system controls, colors and fonts, with a Russian interface.
 - Profile planning, module configuration, JSON import/export and separate engine start/stop controls.
 - Journaled changes with backups written before mutation, failure recovery and conflict-aware rollback.
-- A pinned Windhawk runtime and module collection: 37 catalog modules and 53 compiled x86/x64 module DLLs in the prepared build.
+- A pinned Windhawk runtime and module collection: 39 catalog modules and 56 compiled x86/x64 module DLLs in the prepared build.
 - A Windows 7 lab coordinator for Open-Shell, visual styles, Aero Glass, desktop resources and classic shell behavior.
 - A Windows 95 lab profile with native classic drawing, compact menus, a teal desktop and 3D taskbar controls.
 - Standalone Mines, notes, memory/clock gadgets, a local media player and window switcher.
@@ -91,7 +91,7 @@ python tools/verify_native.py
 .\tools\smoke.ps1 -ScratchDirectory C:\Temp\WinMim-New-Smoke-Directory
 ```
 
-Choose a new, nonexistent scratch directory. The smoke check stages and rolls back files there without starting the engine or applying a system theme. The current local baseline is **53 Core tests, 8 Python tests and 53 verified native DLLs**. Compilation and automated tests do not establish visual fidelity or compatibility after reboot.
+Choose a new, nonexistent scratch directory. The smoke check stages and rolls back files there without starting the engine or applying a system theme. The current local baseline is **56 Core tests, 9 Python tests and 56 verified native DLLs**. Compilation and automated tests do not establish visual fidelity or compatibility after reboot.
 
 ## Recovery and limitations
 
@@ -99,7 +99,7 @@ Use the application's recovery page or matching profile restore action. Stop the
 
 Keep a VM snapshot in addition to WinMim's journals. A journal cannot recover an unbootable guest, remove every effect of an external installer, or undo changes outside its recorded scope. Windows 95 passed a controlled reboot/resume/restore test after the [reliability fixes](docs/CLASSIC95-BUGFIXES-20261029.md). This does not establish unattended startup or fully explain the original black-screen incident.
 
-The lab was recovered to its Seven snapshot, updated and successfully rebooted. See the [recovery report](docs/VM-RECOVERY-20261029.md) for observations and unresolved questions.
+The lab was recovered to its Seven snapshot, updated and successfully rebooted. See the [recovery report](docs/VM-RECOVERY-20261029.md) and subsequent [UI, resource and performance fixes](docs/CLASSIC95-RELIABILITY-20261030.md) for observations and limits.
 
 Remaining gaps include complete historical icons and cursors, Explorer content and commands, tray details, system dialogs, modern app surfaces, logon screens and consistent behavior across Windows updates. See [development priorities](docs/DEVELOPMENT.md) and the [Windows 7 gap list](docs/WIN7-VISUAL-GAPS.md).
 

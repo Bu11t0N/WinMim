@@ -912,6 +912,31 @@
     },
     {
       "type": "library",
+      "name": "taskbar-thumbnails",
+      "version": "1.2",
+      "author": "m417z",
+      "licenses": [
+        {
+          "license": {
+            "name": "GNU General Public License v3.0"
+          }
+        }
+      ],
+      "externalReferences": [
+        {
+          "type": "vcs",
+          "url": "https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/taskbar-thumbnails.wh.cpp"
+        }
+      ],
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "f46265753cbe0a9ed46f17ee6a36e737e5e1084e809c9c1c30097ce7d026b3db"
+        }
+      ]
+    },
+    {
+      "type": "library",
       "name": "winmim-shell-behavior",
       "version": "0.1.0",
       "author": "WinMim contributors",
@@ -932,6 +957,31 @@
         {
           "alg": "SHA-256",
           "content": "38f6e129bcae0976e8a3d69a5fe23058d3c01e4372fd9b4d82b87cb08db68b1c"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "winmim-classic-frames",
+      "version": "0.1.0",
+      "author": "WinMim contributors",
+      "licenses": [
+        {
+          "license": {
+            "name": "GPL-3.0"
+          }
+        }
+      ],
+      "externalReferences": [
+        {
+          "type": "vcs",
+          "url": "src/WinMim.Native/winmim-classic-frames.wh.cpp"
+        }
+      ],
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "3a50e2ce7754a2da6d4bc7c0d58b75724d099ba59cf7985e97b99d3bf1313038"
         }
       ]
     }

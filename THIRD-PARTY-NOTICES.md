@@ -57,7 +57,9 @@ The optional legacy Microsoft display.dll provider is verified and supplied sepa
 | Remove Command Bar | Waldemar | 1.0.1 | MIT (Windhawk mods contribution policy) | [source](https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/remove-command-bar.wh.cpp) |
 | Enable SyslistView32 | anixx | 2.0.0 | MIT (Windhawk mods contribution policy) | [source](https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/syslistview32-enabler.wh.cpp) |
 | Classic Taskbar 3D buttons Lite | Anixx | 1.4 | MIT (Windhawk mods contribution policy) | [source](https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/classic-taskbar-buttons-lite.wh.cpp) |
+| Disable Taskbar Thumbnails | m417z | 1.2 | GNU General Public License v3.0 | [source](https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/taskbar-thumbnails.wh.cpp) |
 | WinMim: классические переходы оболочки | WinMim contributors | 0.1.0 | GPL-3.0 | [source](src/WinMim.Native/winmim-shell-behavior.wh.cpp) |
+| WinMim: классические рамки окон | WinMim contributors | 0.1.0 | GPL-3.0 | [source](src/WinMim.Native/winmim-classic-frames.wh.cpp) |
 
 ## Optional installers
 
@@ -76,7 +78,7 @@ The optional private W7Aero-Redstone theme, 56 resource-only icon libraries, gam
 
 ## Classic95 artwork
 
-Five original homage icons by ke2083 are included under GPL-3.0, pinned at d1cb96c9841c9ce321d7c95c0ee266e0d483c702. See content/classic95/LICENSE, UPSTREAM-README.md and sources.json. They are not extracted Microsoft Windows 95 binaries. The Start button in the Classic95 profile uses the existing system icon and the native Open-Shell classic renderer.
+Five original homage icons by ke2083 are included under GPL-3.0, pinned at d1cb96c9841c9ce321d7c95c0ee266e0d483c702. See content/classic95/LICENSE, UPSTREAM-README.md and sources.json. They are not extracted Microsoft Windows 95 binaries. An optional pack of 13 original Microsoft icons, including the Start flag, can be imported from a verified user-supplied Windows 95 shell32.dll using tools/import_classic95_icons.py. Those resources are not bundled or relicensed. See content/classic95/original-reference.json and docs/CLASSIC95-RELIABILITY-20261030.md. The Start button uses the native Open-Shell classic renderer.
 
 ## Original tools and artwork
 

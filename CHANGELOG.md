@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-10-30 — Classic95 UI, original icons and journal memory
+
+Moved interactive classic apply/restore off the UI thread. Added process-local classic rendering and disabled modern taskbar hover previews for the Classic95 preset. Added a verified importer for private original Windows 95 icons; Microsoft resource binaries are not distributed. Recovery lists now avoid loading binary backups, with about 83% lower managed allocations in the documented synthetic comparison. Real UI cycle tests complement the earlier console/reboot checks. See docs/CLASSIC95-RELIABILITY-20261030.md.
+
 ## 2026-10-29 — Classic95 reliability fixes
 
 Fixed blocking dispatcher waits during startup, reuse of the asynchronous session helper, palette validation ordering, guest integration process exclusions and rollback of DLLs still mapped after engine shutdown. Added regression tests including a real mapped-image rollback and integrity-checked deferred cleanup. See docs/CLASSIC95-BUGFIXES-20261029.md.

@@ -269,6 +269,28 @@ Test("INI line injection is rejected", () =>
     var module = new Module { Id = "test", DefaultSettings = new() { ["key"] = "value\r\n[Mod]\r\nDisabled=0" } };
     Throws(() => ProfilePlanner.Ini(module, false, new Profile()));
 });
+Test("classic frame styling reaches the UI but excludes recovery and critical processes",()=>
+{
+    string ini=ProfilePlanner.Ini(new Module{Id="winmim-classic-frames",Includes=["*"]},true,new Profile());
+    var excluded=ini.Split("\r\n").Single(s=>s.StartsWith("Exclude=")).Substring(8).Split('|');
+    Assert(!excluded.Contains("WinMim.exe")&&!excluded.Contains("WinMim.UiProbe.exe"));
+    foreach(string name in new[]{"AeroForge.Cli.exe","AeroForge.VmSmoke.exe","dwm.exe","winlogon.exe","consent.exe","vmtoolsd.exe"})Assert(excluded.Contains(name),name);
+});
+Test("unverified original icon packs cannot produce a desktop plan",()=>
+{
+    string content=Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,"../../../../../content"));
+    string icons=NewState();Directory.CreateDirectory(icons);byte[] fake=new byte[22];fake[2]=1;fake[4]=1;
+    File.WriteAllBytes(Path.Combine(icons,"computer.ico"),fake);
+    Throws(()=>Classic95Profile.Build(content,NewState(),ClassicAppearance.Read(),icons));
+});
+Test("journal error details skip binary backups and reject outside paths",()=>
+{
+    string state=NewState();Directory.CreateDirectory(state);string file=Path.Combine(state,"fixture.json");
+    File.WriteAllText(file,"{\"Entries\":[{\"Before\":{\"Bytes\":\"deliberately invalid base64\"},\"Error\":\"locked module\"},{\"Error\":null}]}");
+    var manager=new TransactionManager(new MemoryBackend(),state);
+    Assert(manager.ReadErrors(file).SequenceEqual(new[]{"locked module"}));
+    Throws(()=>manager.ReadErrors(Path.Combine(state,"..","fixture.json")));
+});
 Test("rollback retires a mapped native DLL and preserves later edits during cleanup", () =>
 {
     string root=NewState();var backend=new WindowsBackend(root);

@@ -5,6 +5,8 @@ namespace AeroForge.Core;
 [SupportedOSPlatform("windows")]
 public static class Classic95Profile
 {
+    public const string PrivateIcons=@"C:\AeroForgeLab\PrivateAssets\Windows95Icons";
+    public static bool HasOriginalIcons=>Directory.Exists(PrivateIcons);
     public const string ColorsKey=@"HKCU\Control Panel\Colors",MetricsKey=@"HKCU\Control Panel\Desktop\WindowMetrics";
     private static readonly string[] MetricNames=["CaptionFont","SmCaptionFont","MenuFont","StatusFont","MessageFont","IconFont","BorderWidth","PaddedBorderWidth","ScrollWidth","ScrollHeight","CaptionWidth","CaptionHeight","SmCaptionWidth","SmCaptionHeight","MenuWidth","MenuHeight"];
     private static readonly string[] ShellNames=["MenuCaption","SkinOptionsC1","MenuItems1","RecentPrograms","PinnedPrograms","PinnedItemsPath","SmallIconSize","SkinC1","SkinVariationC1","SearchBox","TaskbarTexture","MenuStyle","EnableStartButton","MouseClick","WinKey","CustomTaskbar","TaskbarLook","TaskbarOpacity","TaskbarColor","TaskbarTextColor","StartButtonText","StartButtonIcon","StartButtonIconSize","StartButtonType","StartButtonPath","StartButtonSize","SkipMetro","StartScreenShortcut","RecentMetroApps","GlassOverride","EnableGlass"];
@@ -14,7 +16,7 @@ public static class Classic95Profile
         ||change.Target==DesktopRegistryPolicy.Shell && ShellNames.Contains(change.ValueName)
         ||change.Target==DesktopRegistryPolicy.Advanced && new[]{"TaskbarGlomLevel","MMTaskbarGlomLevel","TaskbarSmallIcons","ListviewShadow","ShowTaskViewButton","TaskbarSizeMove","DisablePreviewDesktop"}.Contains(change.ValueName)
         ||change.Target==DesktopRegistryPolicy.Computer && change.ValueName=="LocalizedString");
-    public static Plan Build(string content,string root,ClassicAppearanceState original)
+    public static Plan Build(string content,string root,ClassicAppearanceState original,string? privateIcons=null)
     {
         var desired=ClassicAppearance.Desired(original);
         var plan=new Plan{ProfileId="desktop-windows95",ProfileName="Windows 95 — экспериментальный профиль",Exclusive=true};
@@ -39,25 +41,40 @@ public static class Classic95Profile
             "HelpItem.Command=help","HelpItem.Label=Справка","HelpItem.Icon=imageres.dll,99",
             "RunItem.Command=run","RunItem.Label=Выполнить…","RunItem.Icon=shell32.dll,328",
             "ShutdownItem.Command=shutdown_box","ShutdownItem.Label=Завершение работы…","ShutdownItem.Icon=shell32.dll,329"];
+        string iconDirectory=privateIcons??PrivateIcons;
+        bool originals=Directory.Exists(iconDirectory);
+        var manifest=JsonFile.Read<AssetManifest>(SafePath.Under(content,originals?"classic95/original-reference.json":"classic95/sources.json"));
+        var icons=originals?manifest.Icons:new Dictionary<string,string>{{"computer","mycomputer_1_G3M_icon.ico"},{"documents","mydocuments_vlJ_icon.ico"},{"network","network_1_jsM_icon.ico"},{"recycle-empty","bin1_1_9fQ_icon.ico"},{"recycle-full","bin2_1_3l0_icon.ico"}};
+        foreach(string role in new[]{"computer","documents","network","recycle-empty","recycle-full"})
+            if(!icons.TryGetValue(role,out string? name)||!manifest.Files.Any(f=>f.Name==name))throw new InvalidDataException("Неполный набор значков Windows 95: "+role);
+        if(originals)
+        {
+            var menuIcons=new Dictionary<string,string>{{"ProgramsMenu","programs"},{"DocumentsMenu","documents"},{"SettingsMenu","settings"},{"FindMenu","search"},{"HelpItem","help"},{"RunItem","run"},{"ShutdownItem","shutdown"}};
+            menu=menu.Select(line=>{int at=line.IndexOf(".Icon=",StringComparison.Ordinal);return at>0&&menuIcons.TryGetValue(line[..at],out string? role)?line[..(at+6)]+SafePath.Under(root,"Assets/"+icons[role])+",0":line;}).ToArray();
+            menu=menu.Concat(new[]{"PrintersItem.Icon="+SafePath.Under(root,"Assets/"+icons["printers"])+",0","ControlPanelItem.Icon="+SafePath.Under(root,"Assets/"+icons["settings"])+",0"}).ToArray();
+            plan.Changes.Single(c=>c.Kind==ChangeKind.Registry&&c.Target==DesktopRegistryPolicy.Shell&&c.ValueName=="StartButtonIcon").Value=SafePath.Under(root,"Assets/"+icons["start"])+",0";
+            foreach(string clsid in new[]{"{26EE0668-A00A-44D7-9371-BEB064C98683}","{21EC2020-3AEA-1069-A2DD-08002B30309D}","{5399E694-6CE5-4D6C-8FCE-1D8870FDCBA0}"})
+                foreach(string prefix in new[]{@"HKCU\Software\Classes\CLSID\",@"HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\CLSID\"})Set(prefix+clsid+@"\DefaultIcon","",SafePath.Under(root,"Assets/"+icons["settings"])+",0");
+        }
         Set(DesktopRegistryPolicy.Shell,"MenuItems1",System.Text.Json.JsonSerializer.Serialize(menu),"MultiString");
         foreach(var (name,value) in new[]{("EnableStartButton",1),("CustomTaskbar",1),("TaskbarOpacity",100),("TaskbarColor",0xC0C0C0),("TaskbarTextColor",0),("StartButtonSize",0),("StartButtonIconSize",16),("SkipMetro",1),("StartScreenShortcut",0),("RecentMetroApps",0),("GlassOverride",1),("EnableGlass",0)})Set(DesktopRegistryPolicy.Shell,name,value.ToString(CultureInfo.InvariantCulture),"DWord");
         foreach(var (name,value) in new[]{("TaskbarGlomLevel",2),("MMTaskbarGlomLevel",2),("TaskbarSmallIcons",1),("ListviewShadow",0),("ShowTaskViewButton",0),("TaskbarSizeMove",0),("DisablePreviewDesktop",1)})Set(DesktopRegistryPolicy.Advanced,name,value.ToString(CultureInfo.InvariantCulture),"DWord");
         Set(DesktopRegistryPolicy.Computer,"LocalizedString","Мой компьютер");
-        var manifest=JsonFile.Read<AssetManifest>(SafePath.Under(content,"classic95/sources.json"));
         foreach(var asset in manifest.Files)
         {
             if(!asset.Name.EndsWith(".ico",StringComparison.OrdinalIgnoreCase))continue;
-            string file=SafePath.Under(content,"classic95/"+asset.Name);byte[] bytes=File.ReadAllBytes(file);
+            string file=originals?SafePath.Under(iconDirectory,asset.Name):SafePath.Under(content,"classic95/"+asset.Name);byte[] bytes=File.ReadAllBytes(file);
             if(Hashing.Bytes(bytes)!=asset.Sha256)throw new InvalidDataException("Ресурс Windows 95 изменён: "+asset.Name);
+            if(bytes.Length<22||bytes[0]!=0||bytes[1]!=0||bytes[2]!=1||bytes[3]!=0)throw new InvalidDataException("Неверный ICO: "+asset.Name);
             plan.Changes.Add(new(){Kind=ChangeKind.File,Target="Assets/"+asset.Name,Content=bytes,Description="Классический ресурс: "+asset.Name});
         }
-        foreach(var (clsid,file,name) in new[]{("{20D04FE0-3AEA-1069-A2D8-08002B30309D}","mycomputer_1_G3M_icon.ico",""),("{59031A47-3F72-44A7-89C5-5595FE6B30EE}","mydocuments_vlJ_icon.ico",""),("{F02C1A0D-BE21-4350-88B0-7367FC96EF3C}","network_1_jsM_icon.ico",""),("{645FF040-5081-101B-9F08-00AA002F954E}","bin1_1_9fQ_icon.ico","empty"),("{645FF040-5081-101B-9F08-00AA002F954E}","bin2_1_3l0_icon.ico","full")})
+        foreach(var (clsid,file,name) in new[]{("{20D04FE0-3AEA-1069-A2D8-08002B30309D}",icons["computer"],""),("{59031A47-3F72-44A7-89C5-5595FE6B30EE}",icons["documents"],""),("{F02C1A0D-BE21-4350-88B0-7367FC96EF3C}",icons["network"],""),("{645FF040-5081-101B-9F08-00AA002F954E}",icons["recycle-empty"],"empty"),("{645FF040-5081-101B-9F08-00AA002F954E}",icons["recycle-full"],"full")})
             foreach(var prefix in new[]{@"HKCU\Software\Classes\CLSID\",@"HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\CLSID\"})Set(prefix+clsid+@"\DefaultIcon",name,SafePath.Under(root,"Assets/"+file)+",0");
         plan.Changes.Add(new(){Kind=ChangeKind.Wallpaper,Target="Windows.Wallpaper",ValueKind="Wallpaper",Value="",Description="Однотонный бирюзовый рабочий стол"});
         plan.Changes.Add(new(){Kind=ChangeKind.ClassicAppearance,Target="Windows.ClassicAppearance",ValueKind="ClassicAppearance",Value=ClassicAppearance.Serialize(desired),Description="Палитра, системные шрифты и метрики Windows 95"});
         plan.Changes.Add(new(){Kind=ChangeKind.File,Target="classic-appearance.json",Content=System.Text.Encoding.UTF8.GetBytes(ClassicAppearance.Serialize(desired)),Description="Состояние Classic для возобновления"});
         return plan;
     }
-    private sealed class AssetManifest{public Asset[] Files{get;set;}=[];}
+    private sealed class AssetManifest{public Asset[] Files{get;set;}=[];public Dictionary<string,string> Icons{get;set;}=[];}
     private sealed class Asset{public string Name{get;set;}="";public string Sha256{get;set;}="";}
 }

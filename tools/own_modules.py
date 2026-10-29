@@ -34,6 +34,13 @@ def register(catalog):
                     target=profile.setdefault('settings',{}).setdefault(name,{})
                     for key,value in settings.items():target.setdefault(key,value)
 
-    classic95=['winmim-shell-behavior','classic-taskbar-buttons-lite','aerexplorer','classic-theme-explorer-lite','classic-theme-transparency-fix','syslistview32-enabler','remove-command-bar','disable-navigation-bar','classic-uwp-fix','eradicate-immersive-menus','legacy-file-copy','old-this-pc-commands','msg-box-font-fix']
+    frame_source=ROOT/'src/WinMim.Native/winmim-classic-frames.wh.cpp'
+    frame={'id':'winmim-classic-frames','name':'WinMim: классические рамки окон','description':'Штатные классические рамки вместо Aero в пользовательском сеансе стенда.','category':'Оформление','author':'WinMim contributors','version':'0.1.0','license':'GPL-3.0','sourceUrl':'src/WinMim.Native/winmim-classic-frames.wh.cpp','sourcePath':'src/WinMim.Native/winmim-classic-frames.wh.cpp','sourceSha256':sha(frame_source),'includes':['*'],'excludes':['dwm.exe','winlogon.exe','consent.exe','LogonUI.exe'],'architecture':['x86','x86-64'],'defaultSettings':{},'criticalProcess':False,'requiresResources':False,'conflicts':[],'status':'source','binaries':[],'compilerOptions':'-ldwmapi -luxtheme'}
+    previous_frame=next((m for m in catalog['modules'] if m['id']==frame['id']),None)
+    if previous_frame and previous_frame['sourceSha256']==frame['sourceSha256']:frame.update(status=previous_frame['status'],binaries=previous_frame['binaries'])
+    catalog['modules']=[m for m in catalog['modules'] if m['id']!=frame['id']]+[frame]
+    classic95=['winmim-shell-behavior','winmim-classic-frames','classic-taskbar-buttons-lite','aerexplorer','classic-theme-explorer-lite','classic-theme-transparency-fix','syslistview32-enabler','remove-command-bar','disable-navigation-bar','classic-uwp-fix','eradicate-immersive-menus','legacy-file-copy','old-this-pc-commands','msg-box-font-fix']
+    if any(m['id']=='taskbar-thumbnails' for m in catalog['modules']):classic95.append('taskbar-thumbnails')
     if all(any(m['id']==id for m in catalog['modules']) for id in classic95):
         catalog['profiles']=[p for p in catalog['profiles'] if p['id']!='windows95']+[{'id':'windows95','name':'Windows 95 (стенд)','accent':'#008080','description':'Классическая отрисовка, системные метрики и исправления Explorer. Требуется отдельно включённый ClassicSession.','modules':classic95,'settings':{'aerexplorer':{'noribbon':'1','hidetitle':'0','detailspane':'0'},'classic-theme-transparency-fix':{'removeDialogTransparency':'1'}}}]
+        catalog['profiles'][-1]['settings']['taskbar-thumbnails']={'mode':'listOnClick','noTooltips':'0'}

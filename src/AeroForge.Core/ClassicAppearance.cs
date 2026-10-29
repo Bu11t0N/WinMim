@@ -35,6 +35,7 @@ public static class ClassicAppearance
         return Serialize(state with {Metrics=Encode(metrics)});
     }
     public static string Serialize(ClassicAppearanceState state)=>JsonSerializer.Serialize(state);
+    public static void NotifyThemeChanged()=>PostMessage(new IntPtr(0xffff),0x031A,IntPtr.Zero,IntPtr.Zero);
     public static ClassicAppearanceState Parse(string json)=>JsonSerializer.Deserialize<ClassicAppearanceState>(json)??throw new InvalidDataException("Нет состояния Classic");
     public static void Write(ClassicAppearanceState value)
     {
@@ -59,6 +60,7 @@ public static class ClassicAppearance
     [StructLayout(LayoutKind.Sequential,CharSet=System.Runtime.InteropServices.CharSet.Unicode)]private struct LogFont{public int Height,Width,Escapement,Orientation,Weight;public byte Italic,Underline,StrikeOut,CharSet,OutPrecision,ClipPrecision,Quality,Pitch;[MarshalAs(UnmanagedType.ByValTStr,SizeConst=32)]public string Face;}
     [StructLayout(LayoutKind.Sequential,CharSet=System.Runtime.InteropServices.CharSet.Unicode)]private struct Ncm{public uint Size;public int Border,ScrollWidth,ScrollHeight,CaptionWidth,CaptionHeight;public LogFont CaptionFont;public int SmallCaptionWidth,SmallCaptionHeight;public LogFont SmallCaptionFont;public int MenuWidth,MenuHeight;public LogFont MenuFont,StatusFont,MessageFont;public int PaddedBorder;}
     [DllImport("user32.dll")]private static extern int GetSysColor(int index);
+    [DllImport("user32.dll",EntryPoint="PostMessageW")]private static extern bool PostMessage(IntPtr window,uint message,IntPtr wParam,IntPtr lParam);
     [DllImport("user32.dll",SetLastError=true)]private static extern bool SetSysColors(int count,int[] indices,int[] colors);
     [DllImport("user32.dll",EntryPoint="SystemParametersInfoW",SetLastError=true)]private static extern bool Metrics(uint action,uint size,ref Ncm metrics,uint flags);
     [DllImport("user32.dll",EntryPoint="SystemParametersInfoW",SetLastError=true)]private static extern bool Font(uint action,uint size,ref LogFont font,uint flags);

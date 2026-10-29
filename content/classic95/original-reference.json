@@ -1,0 +1,87 @@
+{
+  "source": "Microsoft Windows 95 Russian retail, shell32.dll 4.0.0.950",
+  "sourceBinarySha256": "71842f312e30249e2b8e15daec8b933d048ae75084b6c6986bbded17e37ac647",
+  "license": "Microsoft resources; private user-supplied assets, not redistributed",
+  "files": [
+    {
+      "name": "computer.ico",
+      "resourceId": 16,
+      "sha256": "95d883fcef1af4c39b9a3c5729c3dfd352399be888572ca745d3dbfee965eefe"
+    },
+    {
+      "name": "documents.ico",
+      "resourceId": 21,
+      "sha256": "55a12b4d3932659e6f93489f1821593e03b4d4b8244301207404ad0d579a9871"
+    },
+    {
+      "name": "network.ico",
+      "resourceId": 18,
+      "sha256": "2331c05fd5e49ce919292bfa3d141fc8d4b651058bc4c12d9003e6b45c7aeebb"
+    },
+    {
+      "name": "recycle-empty.ico",
+      "resourceId": 32,
+      "sha256": "b607347b9ba93680d8b6e78235934ea8c1ce876efecfd53ded6983caf96ef2b1"
+    },
+    {
+      "name": "recycle-full.ico",
+      "resourceId": 33,
+      "sha256": "894ac63e7145c60b75048ab18311037bf30d9c2663d2c0a40b7e3bf0328c56a1"
+    },
+    {
+      "name": "programs.ico",
+      "resourceId": 20,
+      "sha256": "4c077bf84697d4d47b31c19fd8c6313db5a5b95529660da5483dd0130a04a722"
+    },
+    {
+      "name": "settings.ico",
+      "resourceId": 22,
+      "sha256": "1644b53f4bc3266957bc56c596598ca2eee9dccde2d6474acc06cc869d693d4b"
+    },
+    {
+      "name": "search.ico",
+      "resourceId": 23,
+      "sha256": "96ae8e65b8250bfad83b4fad5434080c5afa19c4f0a7da27cdc4a23750bd6ac4"
+    },
+    {
+      "name": "help.ico",
+      "resourceId": 24,
+      "sha256": "085a708bc8d58de87c49a9f857bf700f6caf2d1a4fd84ae9f1158ce6026af28a"
+    },
+    {
+      "name": "run.ico",
+      "resourceId": 25,
+      "sha256": "81004f142761fbadc08127b743da157cd405439776dea2054425d6b87e80c631"
+    },
+    {
+      "name": "shutdown.ico",
+      "resourceId": 26,
+      "sha256": "fa9acb568ae7eec991438aa95a9b4fc79854d5eb1ac70dd63b8e95d5079f7637"
+    },
+    {
+      "name": "start.ico",
+      "resourceId": 40,
+      "sha256": "07c5557a7c2f7f853b34287bb75304ecc01c51e8919138bc8e9ae6896bfa876e"
+    },
+    {
+      "name": "printers.ico",
+      "resourceId": 17,
+      "sha256": "8231f50c2cf559aa6febaf82a81066a13b1156c502de4183b5674d940476f802"
+    }
+  ],
+  "icons": {
+    "computer": "computer.ico",
+    "documents": "documents.ico",
+    "network": "network.ico",
+    "recycle-empty": "recycle-empty.ico",
+    "recycle-full": "recycle-full.ico",
+    "programs": "programs.ico",
+    "settings": "settings.ico",
+    "search": "search.ico",
+    "help": "help.ico",
+    "run": "run.ico",
+    "shutdown": "shutdown.ico",
+    "start": "start.ico",
+    "printers": "printers.ico"
+  }
+}

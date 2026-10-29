@@ -77,13 +77,14 @@ public sealed class NativeMainForm : F.Form
         top.Controls.Add(Label("Во что превратить Windows"));
         top.Controls.Add(Label("Цель WinMim — воспроизвести оболочку, программы и системные диалоги выбранной версии. Windows 95 доступна для испытаний в ВМ. Остальные варианты пока служат выбором направления."));
         top.Controls.Add(Label("Рабочий профиль Windows 7 для подготовленной ВМ вынесен на отдельную вкладку «Windows 7 (стенд)»."));
+        top.Controls.Add(Label(Classic95Profile.HasOriginalIcons?"Windows 95: подключены оригинальные значки из образа системы. Остальные поверхности ещё проходят доработку.":"Windows 95: набор значков пока временный и отличается от оригинальных ресурсов Microsoft."));
         var bottom=Flow(true);bottom.Dock=F.DockStyle.Bottom;bottom.Controls.Add(targetDetail);
         var action=Button("Выбрать оформление");bottom.Controls.Add(action);
         page.Controls.Add(targets);page.Controls.Add(bottom);page.Controls.Add(top);
         var apply95=Button("Применить Windows 95");var restore95=Button("Вернуть предыдущее оформление");bottom.Controls.Add(apply95);bottom.Controls.Add(restore95);
         apply95.Enabled=false;restore95.Enabled=Environment.MachineName=="AEROFORGE-LAB"&&Classic95Setup.IsActive;
-        apply95.Click+=async(_,_)=>{await Run(async(token,p)=>{await new Classic95Setup(MainWindow.FindContent()).ApplyAsync(p,token);status.Text="Windows 95 применена. Для обновления уже открытых окон перезапустите их.";});restore95.Enabled=Environment.MachineName=="AEROFORGE-LAB"&&Classic95Setup.IsActive;};
-        restore95.Click+=async(_,_)=>{await Run(async(_,p)=>{await new Classic95Setup(MainWindow.FindContent()).RestoreAsync(p);status.Text="Предыдущее оформление возвращено.";});restore95.Enabled=Environment.MachineName=="AEROFORGE-LAB"&&Classic95Setup.IsActive;};
+        apply95.Click+=async(_,_)=>{await Run(async(token,p)=>{await Task.Run(()=>new Classic95Setup(MainWindow.FindContent()).ApplyAsync(p,token));status.Text="Windows 95 применена. Для обновления уже открытых окон перезапустите их.";});restore95.Enabled=Environment.MachineName=="AEROFORGE-LAB"&&Classic95Setup.IsActive;};
+        restore95.Click+=async(_,_)=>{await Run(async(_,p)=>{await Task.Run(()=>new Classic95Setup(MainWindow.FindContent()).RestoreAsync(p));status.Text="Предыдущее оформление возвращено.";});restore95.Enabled=Environment.MachineName=="AEROFORGE-LAB"&&Classic95Setup.IsActive;};
         foreach(var target in AppearanceCatalog.Targets)Row(targets,target,target.Name,target.Family,target.Available?"Экспериментальный профиль":"Заглушка — не применяется");
         void SelectTarget()
         {if(targets.SelectedItems.Count==0)return;var choice=AppearanceCatalog.Select(((AppearanceTarget)targets.SelectedItems[0].Tag!).Id);targetDetail.Text=choice.Target.Name+": "+choice.Status+". Выбор не меняет систему.";apply95.Enabled=choice.Target.Id=="windows-95"&&Environment.MachineName=="AEROFORGE-LAB";status.Text=targetDetail.Text;}
@@ -162,10 +163,10 @@ public sealed class NativeMainForm : F.Form
         var undo=Button("Откатить выбранный журнал");undo.Click+=async(_,_)=>{if(history.SelectedItems.Count==0||history.SelectedItems[0].Tag is not Receipt receipt)return;await Run(async(_,progress)=>{host.EnsureStopped();var result=await Task.Run(()=>transactions.Rollback(receipt.FilePath,progress));status.Text="Откат: "+result.Status;});};actions.Controls.Add(undo);
         var desktopUndo=Button("Вернуть оформление");desktopUndo.Click+=async(_,_)=>await Run(async(_,progress)=>{await host.StopAsync();var result=await Task.Run(()=>desktop.Restore(progress));status.Text="Возврат оформления: "+result.Status+". Внешние компоненты остаются установленными.";});actions.Controls.Add(desktopUndo);
         var machineUndo=Button("Вернуть системные настройки Seven");machineUndo.Click+=async(_,_)=>await Run(async(_,_)=>{await new MachineSeven().RestoreElevatedAsync();status.Text="Системные настройки Seven возвращены.";});actions.Controls.Add(machineUndo);
-        history.SelectedIndexChanged+=(_,_)=>{if(history.SelectedItems.Count>0 && history.SelectedItems[0].Tag is Receipt r)detail.Text=r.FilePath+Environment.NewLine+r.Error+Environment.NewLine+string.Join(Environment.NewLine,r.Entries.Where(e=>e.Error!=null).Select(e=>e.Error));};
+        history.SelectedIndexChanged+=(_,_)=>Try(()=>{if(history.SelectedItems.Count>0 && history.SelectedItems[0].Tag is Receipt r)detail.Text=r.FilePath+Environment.NewLine+r.Error+Environment.NewLine+string.Join(Environment.NewLine,transactions.ReadErrors(r.FilePath));});
         page.Controls.Add(history);page.Controls.Add(detail);page.Controls.Add(actions);
     }
-    private void RefreshHistory()=>Try(()=>{history.Items.Clear();foreach(var receipt in transactions.History())Row(history,receipt,receipt.Created.ToLocalTime().ToString("g"),receipt.ProfileName,receipt.Status,receipt.Id);});
+    private void RefreshHistory()=>Try(()=>{history.BeginUpdate();try{history.Items.Clear();foreach(var receipt in transactions.History(false))Row(history,receipt,receipt.Created.ToLocalTime().ToString("g"),receipt.ProfileName,receipt.Status,receipt.Id);}finally{history.EndUpdate();}});
     private void ComponentPage()
     {
         var page=Page("Компоненты");var stack=Flow(true);stack.Dock=F.DockStyle.Fill;stack.AutoScroll=true;stack.WrapContents=false;stack.AutoSize=false;page.Controls.Add(stack);

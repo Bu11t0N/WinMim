@@ -63,6 +63,7 @@ public sealed class Classic95Setup
         foreach(var receipt in shellTransactions.History(false).TakeWhile(r=>r.ProfileId=="windows95"))
             if(receipt.Status!="RolledBack"){var result=shellTransactions.Rollback(receipt.FilePath,progress);if(result.Status!="RolledBack")throw new IOException("Модули изменены после применения; их изменения сохранены.");}
         await switchSession(true);
+        ClassicAppearance.NotifyThemeChanged();
         host.Start();await DesktopController.RestartExplorerAsync();StartMenu();DesktopIconOverrides.Refresh();
     }
     public async Task ResumeAsync()

@@ -16,6 +16,7 @@ WH_SOURCE_SHA='7dcce5a390081b8eb241a4661f306e8b3e56b85f26def5aac4b36385783d855f'
 CONTENT=ROOT/'content'
 
 DESCRIPTIONS={
+'taskbar-thumbnails':('Панель задач','Отключение современных миниатюр при наведении на классическую панель задач.'),
 'classic-taskbar-buttons-lite':('Панель задач','Объёмные кнопки классической панели задач.'),
 'classic-theme-explorer-lite':('Оформление','Исправления классической панели задач Windows 10 и рамок Проводника.'),
 'syslistview32-enabler':('Проводник','Классический список SysListView32 вместо современного представления.'),

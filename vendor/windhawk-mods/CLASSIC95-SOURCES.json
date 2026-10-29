@@ -30,6 +30,11 @@
       "file": "classic-taskbar-buttons-lite.wh.cpp",
       "sha256": "1d06e083a58437fbd8bc99f64f7385d65020ab401696f4df791c8aedc8e6ac91",
       "url": "https://raw.githubusercontent.com/ramensoftware/windhawk-mods/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/classic-taskbar-buttons-lite.wh.cpp"
+    },
+    {
+      "file": "taskbar-thumbnails.wh.cpp",
+      "sha256": "f46265753cbe0a9ed46f17ee6a36e737e5e1084e809c9c1c30097ce7d026b3db",
+      "url": "https://raw.githubusercontent.com/ramensoftware/windhawk-mods/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/taskbar-thumbnails.wh.cpp"
     }
   ]
 }

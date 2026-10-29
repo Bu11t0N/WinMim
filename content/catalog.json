@@ -1343,6 +1343,42 @@
       "compilerOptions": "-lcomctl32"
     },
     {
+      "id": "taskbar-thumbnails",
+      "name": "Disable Taskbar Thumbnails",
+      "description": "Отключение современных миниатюр при наведении на классическую панель задач.",
+      "category": "Панель задач",
+      "author": "m417z",
+      "version": "1.2",
+      "license": "GNU General Public License v3.0",
+      "sourceUrl": "https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/taskbar-thumbnails.wh.cpp",
+      "sourceSha256": "f46265753cbe0a9ed46f17ee6a36e737e5e1084e809c9c1c30097ce7d026b3db",
+      "includes": [
+        "explorer.exe"
+      ],
+      "excludes": [],
+      "architecture": [
+        "x86-64"
+      ],
+      "defaultSettings": {
+        "mode": "disabled",
+        "noVirtualDesktopSwitcherHover": "0",
+        "noTooltips": "0",
+        "oldTaskbarOnWin11": "0"
+      },
+      "criticalProcess": false,
+      "requiresResources": false,
+      "conflicts": [],
+      "status": "built",
+      "binaries": [
+        {
+          "path": "modules/64/aeroforge-taskbar-thumbnails_1.2.dll",
+          "target": "Data/Engine/Mods/64/aeroforge-taskbar-thumbnails_1.2.dll",
+          "sha256": "9262cceaaeca48201041fa2d5cc6d209367291a0ca8b70ed5f9cc9123e6c75a2"
+        }
+      ],
+      "compilerOptions": "-lversion"
+    },
+    {
       "id": "winmim-shell-behavior",
       "name": "WinMim: классические переходы оболочки",
       "description": "Свойства панели задач и классические страницы вместо выбранных переходов в Параметры.",
@@ -1378,6 +1414,49 @@
         }
       ],
       "compilerOptions": "-lshell32"
+    },
+    {
+      "id": "winmim-classic-frames",
+      "name": "WinMim: классические рамки окон",
+      "description": "Штатные классические рамки вместо Aero в пользовательском сеансе стенда.",
+      "category": "Оформление",
+      "author": "WinMim contributors",
+      "version": "0.1.0",
+      "license": "GPL-3.0",
+      "sourceUrl": "src/WinMim.Native/winmim-classic-frames.wh.cpp",
+      "sourcePath": "src/WinMim.Native/winmim-classic-frames.wh.cpp",
+      "sourceSha256": "3a50e2ce7754a2da6d4bc7c0d58b75724d099ba59cf7985e97b99d3bf1313038",
+      "includes": [
+        "*"
+      ],
+      "excludes": [
+        "dwm.exe",
+        "winlogon.exe",
+        "consent.exe",
+        "LogonUI.exe"
+      ],
+      "architecture": [
+        "x86",
+        "x86-64"
+      ],
+      "defaultSettings": {},
+      "criticalProcess": false,
+      "requiresResources": false,
+      "conflicts": [],
+      "status": "built",
+      "binaries": [
+        {
+          "path": "modules/32/aeroforge-winmim-classic-frames_0.1.0-3a50e2ce77.dll",
+          "target": "Data/Engine/Mods/32/aeroforge-winmim-classic-frames_0.1.0-3a50e2ce77.dll",
+          "sha256": "18ee7a22b6327df2ee8961094efad3931bbba36230170389661c43547f8c0f7b"
+        },
+        {
+          "path": "modules/64/aeroforge-winmim-classic-frames_0.1.0-3a50e2ce77.dll",
+          "target": "Data/Engine/Mods/64/aeroforge-winmim-classic-frames_0.1.0-3a50e2ce77.dll",
+          "sha256": "03f5b3232bb4dde7bd5c9175df074dc2f0fd34fb1eb1d919fca36ba2d108ddc3"
+        }
+      ],
+      "compilerOptions": "-ldwmapi -luxtheme"
     }
   ],
   "profiles": [
@@ -1491,6 +1570,7 @@
       "description": "Классическая отрисовка, системные метрики и исправления Explorer. Требуется отдельно включённый ClassicSession.",
       "modules": [
         "winmim-shell-behavior",
+        "winmim-classic-frames",
         "classic-taskbar-buttons-lite",
         "aerexplorer",
         "classic-theme-explorer-lite",
@@ -1502,7 +1582,8 @@
         "eradicate-immersive-menus",
         "legacy-file-copy",
         "old-this-pc-commands",
-        "msg-box-font-fix"
+        "msg-box-font-fix",
+        "taskbar-thumbnails"
       ],
       "settings": {
         "aerexplorer": {
@@ -1512,6 +1593,10 @@
         },
         "classic-theme-transparency-fix": {
           "removeDialogTransparency": "1"
+        },
+        "taskbar-thumbnails": {
+          "mode": "listOnClick",
+          "noTooltips": "0"
         }
       }
     }

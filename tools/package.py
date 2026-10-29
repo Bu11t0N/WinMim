@@ -15,6 +15,7 @@ def archive(destination,files):
 
 def package():
     catalog=json.loads((ROOT/'content/catalog.json').read_text(encoding='utf-8'))
+    managed_content={f['path'] for f in catalog['runtimeFiles']+[b for m in catalog['modules'] for b in m['binaries']]}
     assert all(m['status']=='built' for m in catalog['modules'])
     for f in catalog['runtimeFiles']+[b for m in catalog['modules'] for b in m['binaries']]:
         assert sha(ROOT/'content'/f['path'])==f['sha256'],f['path']
@@ -33,7 +34,7 @@ def package():
     notices+=['','## Optional installers','','These installers are downloaded directly from upstream on a user action; they are not bundled in this release.']
     for d in catalog['dependencies']:notices.append(f'- {d["name"]} {d["version"]}: {d["license"]}. {d["sourceUrl"]}')
     notices+=['','## Optional lab visual style','','Aero10 Seven by vaporvance is a separate CC BY-NC-SA 4.0 package; Microsoft assets retain their rights. The theme, wallpaper and start-button images are not bundled or relicensed as GPL. The explicit tools/fetch_desktop_packages.py --with-aero10 option obtains the external upstream package for personal lab use. See https://github.com/vaporvance/aero10 and docs/SEVEN-DESKTOP-LAB.md.',
-        '', '## Private reference resources and extras', '', 'The optional private W7Aero-Redstone theme, 56 resource-only icon libraries, games, Desktop Gadgets, Media Center, Windows 7 WAV sounds and DVD Appx/license are supplied separately for the private lab. None is bundled or relicensed. The original WinMim coordinator validates pinned files and retains native uninstallers. See docs/SEVEN-PROGRESS-20261024.md.', '', '## Classic95 artwork', '', 'Five original homage icons by ke2083 are included under GPL-3.0, pinned at d1cb96c9841c9ce321d7c95c0ee266e0d483c702. See content/classic95/LICENSE, UPSTREAM-README.md and sources.json. They are not extracted Microsoft Windows 95 binaries. The Start button in the Classic95 profile uses the existing system icon and the native Open-Shell classic renderer.', '', '## Original tools and artwork','','The system-native Windows Forms interface, remaining WPF utilities, transaction engine, Mines game, gadgets, media player, Alt+Tab implementation and generated taskbar texture are original WinMim code. No Revert8Plus visual resource packs or proprietary StartIsBack binaries are included.']
+        '', '## Private reference resources and extras', '', 'The optional private W7Aero-Redstone theme, 56 resource-only icon libraries, games, Desktop Gadgets, Media Center, Windows 7 WAV sounds and DVD Appx/license are supplied separately for the private lab. None is bundled or relicensed. The original WinMim coordinator validates pinned files and retains native uninstallers. See docs/SEVEN-PROGRESS-20261024.md.', '', '## Classic95 artwork', '', 'Five original homage icons by ke2083 are included under GPL-3.0, pinned at d1cb96c9841c9ce321d7c95c0ee266e0d483c702. See content/classic95/LICENSE, UPSTREAM-README.md and sources.json. They are not extracted Microsoft Windows 95 binaries. An optional pack of 13 original Microsoft icons, including the Start flag, can be imported from a verified user-supplied Windows 95 shell32.dll using tools/import_classic95_icons.py. Those resources are not bundled or relicensed. See content/classic95/original-reference.json and docs/CLASSIC95-RELIABILITY-20261030.md. The Start button uses the native Open-Shell classic renderer.', '', '## Original tools and artwork','','The system-native Windows Forms interface, remaining WPF utilities, transaction engine, Mines game, gadgets, media player, Alt+Tab implementation and generated taskbar texture are original WinMim code. No Revert8Plus visual resource packs or proprietary StartIsBack binaries are included.']
     (ROOT/'THIRD-PARTY-NOTICES.md').write_text('\n'.join(notices)+'\n',encoding='utf-8')
     mit='''MIT License
 
@@ -68,19 +69,23 @@ SOFTWARE.
     portable=[]
     # Take content from the current verified source, not a potentially stale publish directory.
     for p in app.iterdir():
-        if p.is_file():portable.append((p,'WinMim/'+p.name))
+        if p.is_file() and p.suffix.lower()!='.pdb':portable.append((p,'WinMim/'+p.name))
     for p in (app/'tools').rglob('*'):
         if p.is_file():portable.append((p,'WinMim/tools/'+p.relative_to(app/'tools').as_posix()))
     for name in ['Capture-R8PReference.ps1','compare_reference.py','inspect_r8p.py','reference-scopes.json']:
         portable.append((ROOT/'tools'/name,'WinMim/tools/'+name))
     for p in cli.iterdir():
-        if p.is_file():portable.append((p,'WinMim/cli/'+p.name))
+        if p.is_file() and p.suffix.lower()!='.pdb':portable.append((p,'WinMim/cli/'+p.name))
     for p in (ROOT/'content').rglob('*'):
-        if p.is_file():portable.append((p,'WinMim/content/'+p.relative_to(ROOT/'content').as_posix()))
+        rel=p.relative_to(ROOT/'content').as_posix()
+        if rel.startswith(('modules/','runtime/')) and rel not in managed_content:continue
+        if p.is_file():portable.append((p,'WinMim/content/'+rel))
     for name in ['README.md','LICENSE','THIRD-PARTY-NOTICES.md','sbom.cdx.json']:
         portable.append((ROOT/name,'WinMim/'+name))
     for p in (ROOT/'docs').rglob('*'):
-        if p.is_file():portable.append((p,'WinMim/docs/'+p.relative_to(ROOT/'docs').as_posix()))
+        rel=p.relative_to(ROOT/'docs').as_posix()
+        if rel=='NEXT-SESSION.md' or rel.startswith('evidence/'):continue
+        if p.is_file():portable.append((p,'WinMim/docs/'+rel))
     # The exact engine source is included to accompany its binary distribution.
     for p in (ROOT/'vendor').rglob('*'):
         if p.is_file():portable.append((p,'WinMim/vendor/'+p.relative_to(ROOT/'vendor').as_posix()))
@@ -89,6 +94,7 @@ SOFTWARE.
         if not p.is_file():continue
         rel=p.relative_to(ROOT)
         if any(x in ['.git','.cache','bin','obj','build','work','__pycache__'] for x in rel.parts):continue
+        if rel.as_posix().startswith(('content/modules/','content/runtime/','docs/evidence/')) or rel.as_posix()=='docs/NEXT-SESSION.md':continue
         sources.append((p,'WinMim/'+rel.as_posix()))
     packages=[archive(OUT/'WinMim-0.1.0-portable.zip',portable),archive(OUT/'WinMim-0.1.0-source.zip',sources)]
     (OUT/'WinMim-0.1.0-checksums.json').write_text(json.dumps(packages,indent=2),encoding='utf-8')
