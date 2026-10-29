@@ -139,6 +139,8 @@ docs/                Architecture, implementation notes and research
 
 Historical implementation notes are currently mostly in Russian. Raw diagnostic captures, credentials, private resource packs and local session notes are excluded from Git. The curated screenshots above are included under `assets/screenshots/`.
 
+For the current decisions, completed work and next steps, see the [project handoff](docs/PROJECT-STATE.md) and the [Windows 7 appearance research](docs/SEVEN-APPEARANCE-RESEARCH-20261030.md), both in Russian.
+
 ## Contributing
 
 Read [CONTRIBUTING.md](CONTRIBUTING.md). Useful contributions include reproducible VM bug reports, build-specific compatibility results, historical behavior comparisons, original artwork and isolated adapters with a tested restore path.

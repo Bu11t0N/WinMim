@@ -6,11 +6,12 @@ Recreate the appearance and behavior of selected Windows generations, including 
 
 ## Immediate work
 
-1. Resolve the black-screen/cold-boot incident and verify recovery, logon, engine startup and shutdown before expanding the Windows 95 profile.
-2. Use one coherent controller/catalog version in the lab. Remove stale launch paths and report an actionable error when the staged engine differs from the controller's manifest.
-3. Complete the Windows 7 gap list: Explorer, icons, tray, system dialogs and classic destinations. Compare matching surfaces against a Windows 7 reference VM.
-4. Evaluate RetroBar as an optional classic taskbar backend for Windows 95/98/Me/2000/XP/Vista. Validate tray behavior, Explorer coexistence, Open-Shell integration, DPI and multi-monitor recovery first.
-5. Define a redistributable resource pack with per-file provenance instead of depending on private reference assets.
+1. Correct the Windows 7 taskbar texture and Start-menu color using the [appearance research and comparison plan](SEVEN-APPEARANCE-RESEARCH-20261030.md). Compare one layer at a time before changing backends.
+2. Preserve the tested Classic95 recovery baseline. UI apply/restore and controlled reboot/resume have passed; ordinary startup still needs the privilege phase, and the original black-screen cause is not fully established.
+3. Keep one coherent controller/catalog version in the lab and retire stale launch paths. Use the [current project handoff](PROJECT-STATE.md) rather than outdated historical counts.
+4. Complete the Windows 7 gap list: Explorer, icons, tray, system dialogs and classic destinations. Compare matching surfaces against a Windows 7 reference VM.
+5. Evaluate RetroBar as an optional classic taskbar backend for Windows 95/98/Me/2000/XP/Vista. Validate tray behavior, Explorer coexistence, Open-Shell integration, DPI and multi-monitor recovery first.
+6. Define a redistributable resource pack with per-file provenance instead of depending on private reference assets.
 
 ## Next milestones
 
