@@ -1,0 +1,37 @@
+[
+  {
+    "id": "settings-to-control-panel",
+    "gitBlobSha": "c09d21c0b8cfa10321a553228b2b774c29d08c0c",
+    "sourceUrl": "https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/settings-to-control-panel.wh.cpp"
+  },
+  {
+    "id": "classic-taskbar-properties",
+    "gitBlobSha": "1c86468bdfdcd6b0678b861e78a394e7fdc7b028",
+    "sourceUrl": "https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/classic-taskbar-properties.wh.cpp"
+  },
+  {
+    "id": "win7-network-flyout-recreation",
+    "gitBlobSha": "8d16b3bb615f55aca58db269c3fcbd48f3267c8c",
+    "sourceUrl": "https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/win7-network-flyout-recreation.wh.cpp"
+  },
+  {
+    "id": "win7-open-with-dialog",
+    "gitBlobSha": "18b56f7053485b0db0605cd89fcb9268bfc5b32a",
+    "sourceUrl": "https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/win7-open-with-dialog.wh.cpp"
+  },
+  {
+    "id": "win7-legacy-applet-restorer",
+    "gitBlobSha": "e2d5584d37e751dcf1f264ff0a3b2f20af1d660f",
+    "sourceUrl": "https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/win7-legacy-applet-restorer.wh.cpp"
+  },
+  {
+    "id": "win7-action-center-recreation",
+    "gitBlobSha": "b4bae5457f5a3b8096d30ad9ceeabd9ac06d3132",
+    "sourceUrl": "https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/win7-action-center-recreation.wh.cpp"
+  },
+  {
+    "id": "win7-display-control-panel-restorer",
+    "gitBlobSha": "cec02ba75bf7a811af6bf12771b856b5b1cc5408",
+    "sourceUrl": "https://raw.githubusercontent.com/ramensoftware/windhawk-mods/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/win7-display-control-panel-restorer.wh.cpp"
+  }
+]

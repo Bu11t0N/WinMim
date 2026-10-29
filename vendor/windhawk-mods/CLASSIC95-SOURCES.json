@@ -1,0 +1,35 @@
+{
+  "commit": "3f11069419fad9103a56cf78b28d293fee6c20cf",
+  "files": [
+    {
+      "file": "classic-theme-explorer-lite.wh.cpp",
+      "sha256": "3a298bede982a3a7f6e54f4c0d6dc027877e66813d502b4ade839334699d7d74",
+      "url": "https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/classic-theme-explorer-lite.wh.cpp"
+    },
+    {
+      "file": "classic-theme-transparency-fix.wh.cpp",
+      "sha256": "23bdeaf5831cf3fa814b9001539ffe83391587711f84bf30bfc741d65b6540e7",
+      "url": "https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/classic-theme-transparency-fix.wh.cpp"
+    },
+    {
+      "file": "disable-navigation-bar.wh.cpp",
+      "sha256": "8fc1184b8d42f4f69d68a38a034953acca40aeabb9659d79071f92fe68360a33",
+      "url": "https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/disable-navigation-bar.wh.cpp"
+    },
+    {
+      "file": "remove-command-bar.wh.cpp",
+      "sha256": "2223c7b7b62cdb71ce46f0aa4912406ee5f1745d938cb423c8e8809a4f4dc66b",
+      "url": "https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/remove-command-bar.wh.cpp"
+    },
+    {
+      "file": "syslistview32-enabler.wh.cpp",
+      "sha256": "f3f563308c83cfda2f07506e574d1d985a0bb53ebc6fa7a51882ea3e7f543a86",
+      "url": "https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/syslistview32-enabler.wh.cpp"
+    },
+    {
+      "file": "classic-taskbar-buttons-lite.wh.cpp",
+      "sha256": "1d06e083a58437fbd8bc99f64f7385d65020ab401696f4df791c8aedc8e6ac91",
+      "url": "https://raw.githubusercontent.com/ramensoftware/windhawk-mods/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/classic-taskbar-buttons-lite.wh.cpp"
+    }
+  ]
+}

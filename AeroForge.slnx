@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="src/AeroForge.Core/AeroForge.Core.csproj" />
+  <Project Path="src/AeroForge.App/AeroForge.App.csproj" />
+  <Project Path="src/AeroForge.Cli/AeroForge.Cli.csproj" />
+  <Project Path="tests/AeroForge.Tests/AeroForge.Tests.csproj" />
+  <Project Path="tests/AeroForge.VmSmoke/AeroForge.VmSmoke.csproj" />
+</Solution>

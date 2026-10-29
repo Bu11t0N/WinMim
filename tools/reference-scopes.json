@@ -1,0 +1,17 @@
+[
+  "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\DWM",
+  "HKEY_LOCAL_MACHINE\\Software\\Policies\\Microsoft\\Windows\\Explorer",
+  "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\GameUX",
+  "HKEY_LOCAL_MACHINE\\SOFTWARE\\Classes\\StartIsBack.ImmersiveApplication",
+  "HKEY_LOCAL_MACHINE\\Software\\Policies\\Microsoft\\Windows\\Windows Feeds",
+  "HKEY_LOCAL_MACHINE\\SOFTWARE\\Policies\\Microsoft\\Windows\\Windows Search",
+  "HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows NT\\CurrentVersion\\MTCUVC",
+  "HKEY_LOCAL_MACHINE\\Software\\Policies\\Microsoft\\Windows\\Personalization",
+  "HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\ImmersiveShell",
+  "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\NonEnum",
+  "HKEY_CURRENT_USER\\Software\\Classes\\Wow6432Node\\CLSID\\{2559a1f1-21d7-11d4-bdaf-00c04f60b9f0}",
+  "HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\Control Panel\\Settings\\Network",
+  "HKEY_LOCAL_MACHINE\\SOFTWARE\\Classes\\Wow6432Node\\CLSID\\{2559a1f1-21d7-11d4-bdaf-00c04f60b9f0}",
+  "HKEY_LOCAL_MACHINE\\Software\\Microsoft\\PolicyManager\\default\\NewsAndInterests\\AllowNewsAndInterests",
+  "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FolderDescriptions\\{CAC52C1A-B53D-4edc-92D7-6B2E8AC19434}"
+]

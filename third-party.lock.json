@@ -1,0 +1,98 @@
+{
+  "windhawk": {
+    "version": "1.7.3",
+    "url": "https://github.com/ramensoftware/windhawk/releases/download/v1.7.3/windhawk_setup_offline.exe",
+    "sha256": "4d93016570f982326eebdfc9068e924ff21f6448534ea32672bb4c1d52a8193b",
+    "sourceArchiveSha256": "7dcce5a390081b8eb241a4661f306e8b3e56b85f26def5aac4b36385783d855f"
+  },
+  "mods": {
+    "commit": "3f11069419fad9103a56cf78b28d293fee6c20cf",
+    "files": {
+      "aerexplorer": "7108ba15fbd57cd45876ccb2b712b7892738b07d3ed97306d810a9335b97f783",
+      "aero-flyout-fix": "b9cfa4c707aec6e8bdcbb8d4435c8c6f477f31dedf808059df7f3b4d782e9e6b",
+      "aero-tray": "6022fd6f23256f2d25d585252964e6f189e4693ee20d56102e03c05cc6cb229e",
+      "basic-themer": "f09ecf5eed7e2dae5a997a73939a804442a7e7dc4edecccf79f94fbbaa13e5c9",
+      "classic-explorer-statusbar": "bb55b7cd16c5d993722fef67e1c49668d83abc8747a3aea797a69540823f3bfb",
+      "classic-explorer-treeview": "d4cb1bf49e2db5fb31943ccc9854c9e12797c4f1204a80d0314825c61314b15b",
+      "classic-menus": "1af4d0bf32013d6c5c87473372572a45f7c2a994ae74102b37ff49704ea603c4",
+      "classic-theme-enable": "94f56419bf0f6d9fd12c98e7bc4932b8a8782b0dd506207d1584f6401b624939",
+      "classic-uwp-fix": "17ee9d483da8805926445955502c60010c3b93b4bf6a3fc4eb8bc7b84abd639d",
+      "control-panel-revival": "4d84257b703cdbddcbccf5a6787ea0a579a0af6993880dfc9e978b93646c5050",
+      "disable-office-hotkeys": "e770533e66eb0a08a5a573451cd48faa308e0ff83dc0297cc33dbfb5f78ae4d5",
+      "eradicate-immersive-menus": "b1193cc717397115cd03b0a568566d10c8eee1b9f906adee3c5f0e1955c88523",
+      "icon-resource-redirect": "97c42ab86fef4268b71b941998f343c2955c89bfa1f1177e7e83fbfe09f82baf",
+      "legacy-file-copy": "0f37b6a85385d68e99562b943b5a03a45328b3a91fecff5b072c2a00ead69a52",
+      "msg-box-font-fix": "bbde6e24e347f1e208c56981414e470f86b303761bacbd407adeab65508df364",
+      "old-this-pc-commands": "4cadfb75609d1e964fd29e8d11fcb76db7f5031dca9dfb06bc94630c83b6a5cf",
+      "taskbar-show-desktop-button-aero-peek": "78e6dd2fe707b7202ca3e58893156f928123e1341e0eae11278384523faa7d76",
+      "transparent-screensaver-fix": "76efb0f69b14912d4c7fa6d7ea345459a735c160be014d4a0667ed751215bbce",
+      "uifile-override": "a5c1fb1f47970195a58781e39bd2d2bb2c44d063f96c4e5f5ae13216e5890120",
+      "win32-tray-clock-experience": "a894ee13c3e85a8c550cffc7dbbb378d9e69f16fa84a5c941b515f55070daafc",
+      "win7-alttab-loader": "1b7015ca4c58be808989e0cf518ad53ad200096d8b630b55e1db895fd584ec93",
+      "win7-style-uac-dim": "c0e8c6066fdb9fdc23dfa2425c9562452b6ada7abacb48d3a0488484c69dd1e6",
+      "windows-7-clock-spacing": "63af40dccb726b7bb3152c92f4161194c0f59d146a3c46f6e44cbd857b629477",
+      "classic-taskbar-properties": "c8aeec23c1d59cd5c34b778ff39348d77feb505cc6abc1bf6dec7bf25c50b236",
+      "settings-to-control-panel": "77665938bdc9fbd583455ce4155d26ebeaae4ba07260aea8cba0985cd5e5073a",
+      "win7-action-center-recreation": "e1d66a9975e5fc7a112058846fdee8b232ea020966772bd2b8399c5fed7f9106",
+      "win7-legacy-applet-restorer": "fe28ac8c30f2a9dc30c3c180dddae998c77b554f2fefb43efa5d0f028b69b051",
+      "win7-network-flyout-recreation": "81d4b8c0a9ab24dbe574b85afe4ec957170dc46534086e42de717896db4c4840",
+      "win7-open-with-dialog": "0c761a4c1dec4e401dcae98f52c03e83eab8404477a48a264282bf4bbd129b4a",
+      "win7-display-control-panel-restorer": "9b80414834872d6373111304bcc6e5ed283aded29ba4cc40be25c30aec29baba",
+      "classic-theme-explorer-lite": "3a298bede982a3a7f6e54f4c0d6dc027877e66813d502b4ade839334699d7d74",
+      "classic-theme-transparency-fix": "23bdeaf5831cf3fa814b9001539ffe83391587711f84bf30bfc741d65b6540e7",
+      "disable-navigation-bar": "8fc1184b8d42f4f69d68a38a034953acca40aeabb9659d79071f92fe68360a33",
+      "remove-command-bar": "2223c7b7b62cdb71ce46f0aa4912406ee5f1745d938cb423c8e8809a4f4dc66b",
+      "syslistview32-enabler": "f3f563308c83cfda2f07506e574d1d985a0bb53ebc6fa7a51882ea3e7f543a86",
+      "classic-taskbar-buttons-lite": "1d06e083a58437fbd8bc99f64f7385d65020ab401696f4df791c8aedc8e6ac91"
+    },
+    "additionalGitBlobs": {
+      "settings-to-control-panel": "c09d21c0b8cfa10321a553228b2b774c29d08c0c",
+      "classic-taskbar-properties": "1c86468bdfdcd6b0678b861e78a394e7fdc7b028",
+      "win7-network-flyout-recreation": "8d16b3bb615f55aca58db269c3fcbd48f3267c8c",
+      "win7-open-with-dialog": "18b56f7053485b0db0605cd89fcb9268bfc5b32a",
+      "win7-legacy-applet-restorer": "e2d5584d37e751dcf1f264ff0a3b2f20af1d660f",
+      "win7-action-center-recreation": "b4bae5457f5a3b8096d30ad9ceeabd9ac06d3132",
+      "win7-display-control-panel-restorer": "cec02ba75bf7a811af6bf12771b856b5b1cc5408"
+    }
+  },
+  "optionalDependencies": [
+    {
+      "id": "open-shell",
+      "name": "Open-Shell",
+      "version": "4.4.198",
+      "license": "MIT",
+      "description": "\u041a\u043b\u0430\u0441\u0441\u0438\u0447\u0435\u0441\u043a\u043e\u0435 \u043c\u0435\u043d\u044e \u00ab\u041f\u0443\u0441\u043a\u00bb. \u0423\u0441\u0442\u0430\u043d\u0430\u0432\u043b\u0438\u0432\u0430\u0435\u0442\u0441\u044f \u043e\u0444\u0438\u0446\u0438\u0430\u043b\u044c\u043d\u044b\u043c \u0443\u0441\u0442\u0430\u043d\u043e\u0432\u0449\u0438\u043a\u043e\u043c \u043e\u0442\u0434\u0435\u043b\u044c\u043d\u043e; AeroForge \u043d\u0435 \u0443\u0434\u0430\u043b\u044f\u0435\u0442 \u0435\u0433\u043e \u043f\u0440\u0438 \u043e\u0442\u043a\u0430\u0442\u0435 \u043f\u0440\u043e\u0444\u0438\u043b\u044f.",
+      "sourceUrl": "https://github.com/Open-Shell/Open-Shell-Menu",
+      "downloadUrl": "https://github.com/Open-Shell/Open-Shell-Menu/releases/download/v4.4.198/OpenShellSetup_4_4_198.exe",
+      "sha256": "a4d2d4459de55b5e962ba2a14f7bb794170511649138173dfa72949837b48c3f",
+      "fileName": "OpenShellSetup_4_4_198.exe"
+    },
+    {
+      "id": "secureuxtheme",
+      "name": "SecureUxTheme",
+      "version": "4.0.0",
+      "license": "LGPL-2.1",
+      "description": "\u041f\u043e\u0434\u043a\u043b\u044e\u0447\u0435\u043d\u0438\u0435 \u0441\u0442\u043e\u0440\u043e\u043d\u043d\u0438\u0445 \u0432\u0438\u0437\u0443\u0430\u043b\u044c\u043d\u044b\u0445 \u0441\u0442\u0438\u043b\u0435\u0439. \u0418\u0437\u043c\u0435\u043d\u0435\u043d\u0438\u044f \u0443\u0441\u0442\u0430\u043d\u043e\u0432\u0449\u0438\u043a\u0430 \u0443\u043f\u0440\u0430\u0432\u043b\u044f\u044e\u0442\u0441\u044f \u0441\u0440\u0435\u0434\u0441\u0442\u0432\u0430\u043c\u0438 Windows Installer.",
+      "sourceUrl": "https://github.com/namazso/SecureUxTheme",
+      "downloadUrl": "https://github.com/namazso/SecureUxTheme/releases/download/v4.0.0/SecureUxTheme_x64.msi",
+      "sha256": "af6ab67e0a283a0138b827b6731d5bb1f4ffc59e6d905f1c41567eb3305a9537",
+      "fileName": "SecureUxTheme_x64.msi"
+    },
+    {
+      "id": "openglass",
+      "name": "OpenGlass",
+      "version": "3.0.2.3749",
+      "license": "GPL-3.0",
+      "description": "\u041f\u0440\u043e\u0437\u0440\u0430\u0447\u043d\u043e\u0441\u0442\u044c \u0438 \u0440\u0430\u043c\u043a\u0438 Aero. \u0421\u043e\u0432\u043c\u0435\u0441\u0442\u0438\u043c\u043e\u0441\u0442\u044c \u043a\u043e\u043d\u043a\u0440\u0435\u0442\u043d\u043e\u0439 \u0440\u0435\u0432\u0438\u0437\u0438\u0438 Windows \u043f\u0440\u043e\u0432\u0435\u0440\u044f\u0435\u0442\u0441\u044f \u043e\u0442\u0434\u0435\u043b\u044c\u043d\u043e.",
+      "sourceUrl": "https://github.com/ALTaleX531/OpenGlass",
+      "downloadUrl": "https://github.com/ALTaleX531/OpenGlass/releases/download/v3.0.2.3749/OpenGlassSetup.Signed.exe",
+      "sha256": "191553cf594af2459631a8d00a48ffe0375868210f5e84c60ff75a668529405f",
+      "fileName": "OpenGlassSetup.Signed.exe"
+    }
+  ],
+  "externalLabDisplayProvider": {
+    "url": "https://msdl.microsoft.com/download/symbols/display.dll/5632D659c3000/display.dll",
+    "sha256": "a2624a5e908fc9b99edf89a1aaeee0c70dd10ed3142d1f922f308ad35993d30c",
+    "bundled": false
+  }
+}

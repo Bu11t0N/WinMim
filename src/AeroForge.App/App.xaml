@@ -1,0 +1,7 @@
+<Application x:Class="AeroForge.App.App" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+ <Application.Resources>
+  <!-- Only the remaining standalone WPF tools use these system resources.
+       The WinMim interface itself uses native Windows Forms controls. -->
+  <Style TargetType="Window"><Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/><Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/><Setter Property="FontFamily" Value="{DynamicResource {x:Static SystemFonts.MessageFontFamilyKey}}"/><Setter Property="FontSize" Value="{DynamicResource {x:Static SystemFonts.MessageFontSizeKey}}"/></Style>
+ </Application.Resources>
+</Application>

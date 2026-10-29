@@ -1,0 +1,7 @@
+* text=auto eol=lf
+*.png -text
+*.ico -text
+# Integrity manifests refer to the exact bytes of these source/resource files.
+vendor/windhawk-mods/** -text
+src/WinMim.Native/** -text
+content/classic95/** -text

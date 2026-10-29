@@ -1,0 +1,40 @@
+{
+  "repo": "ke2083/Windows95Theme",
+  "commit": "d1cb96c9841c9ce321d7c95c0ee266e0d483c702",
+  "license": "GPL-3.0",
+  "note": "Original homage artwork by ke2083, not extracted Windows 95 binaries.",
+  "files": [
+    {
+      "name": "bin1_1_9fQ_icon.ico",
+      "sha256": "415940935f289a4d03b243e51facaacc4227b0b8805c9168caa22c6a4ba785e2"
+    },
+    {
+      "name": "bin2_1_3l0_icon.ico",
+      "sha256": "0896572b7a6008c9f726217b945846a433436fa31c0a6c20f11610f5a0c37e6e"
+    },
+    {
+      "name": "LICENSE",
+      "sha256": "8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903"
+    },
+    {
+      "name": "mycomputer_1_G3M_icon.ico",
+      "sha256": "e24ba5d4b89cd9e12af6ccc4f253618e606a1a712e92a291ac4ae38bbee3be43"
+    },
+    {
+      "name": "mydocuments_vlJ_icon.ico",
+      "sha256": "bb3cd979e6c5b752b0a290db3a6acf5558c6563e3b893aa9283707f1b8e0e1d0"
+    },
+    {
+      "name": "network_1_jsM_icon.ico",
+      "sha256": "eed2068dc2abcc30eabeecc0508740b605a4103acea0e4cf24ef5407b5d38948"
+    },
+    {
+      "name": "StartButton.png",
+      "sha256": "1b8c9d9e9e143c409d84039b1184144ddc96640b830960019fda903c5c64eb8f"
+    },
+    {
+      "name": "UPSTREAM-README.md",
+      "sha256": "afc2be78e19a944bce00255a926fa5e908db652760e6f026c186c560a615f2a6"
+    }
+  ]
+}

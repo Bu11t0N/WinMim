@@ -1,0 +1,1636 @@
+{
+  "schemaVersion": 1,
+  "version": "0.1.0",
+  "sourceCommit": "3f11069419fad9103a56cf78b28d293fee6c20cf",
+  "modules": [
+    {
+      "id": "aerexplorer",
+      "name": "Aerexplorer",
+      "description": "Панели, адресная строка и другие элементы классического Проводника.",
+      "category": "Проводник",
+      "author": "aubymori",
+      "version": "1.8.2",
+      "license": "MIT (Windhawk mods contribution policy)",
+      "sourceUrl": "https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/aerexplorer.wh.cpp",
+      "sourceSha256": "7108ba15fbd57cd45876ccb2b712b7892738b07d3ed97306d810a9335b97f783",
+      "includes": [
+        "*"
+      ],
+      "excludes": [],
+      "architecture": [],
+      "defaultSettings": {
+        "alwayscpl": "1",
+        "smalladdress": "1",
+        "tbst": "seven",
+        "dropdownwidth": "19",
+        "refreshwidth": "25",
+        "oldsearch": "1",
+        "noribbon": "1",
+        "listview": "0",
+        "colheaders": "0",
+        "npst": "seven",
+        "nopins": "1",
+        "navbarglass": "1",
+        "nocomposition": "0",
+        "hidetitle": "1",
+        "noup": "1",
+        "aerotravel": "1",
+        "detailspane": "1",
+        "classicgrouping": "1",
+        "nopcfolders": "1",
+        "vistasearchplaceholder": "0",
+        "beta8navbarbg": "0",
+        "leftviews": "0",
+        "cmdbaricons": "0"
+      },
+      "criticalProcess": false,
+      "requiresResources": false,
+      "conflicts": [],
+      "status": "built",
+      "binaries": [
+        {
+          "path": "modules/32/aeroforge-aerexplorer_1.8.2-winmim1.dll",
+          "target": "Data/Engine/Mods/32/aeroforge-aerexplorer_1.8.2-winmim1.dll",
+          "sha256": "8672bfd0ec9490f148e1f8a8424e132ccb051112d9040f723c443b49825ca09e"
+        },
+        {
+          "path": "modules/64/aeroforge-aerexplorer_1.8.2-winmim1.dll",
+          "target": "Data/Engine/Mods/64/aeroforge-aerexplorer_1.8.2-winmim1.dll",
+          "sha256": "1b7df1e32eb3194ddbd62119d94bd70d44edd93b67d36755729c698d09d0fdbd"
+        }
+      ],
+      "compilerOptions": "-lgdi32 -lcomctl32 -lole32 -loleaut32 -luxtheme -ldwmapi -lversion -DWINVER=0x0A00"
+    },
+    {
+      "id": "aero-flyout-fix",
+      "name": "Aero Flyout Fix",
+      "description": "Оформление всплывающих системных окон в стиле Aero.",
+      "category": "Трей",
+      "author": "aubymori",
+      "version": "1.1.0",
+      "license": "MIT (Windhawk mods contribution policy)",
+      "sourceUrl": "https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/aero-flyout-fix.wh.cpp",
+      "sourceSha256": "b9cfa4c707aec6e8bdcbb8d4435c8c6f477f31dedf808059df7f3b4d782e9e6b",
+      "includes": [
+        "explorer.exe",
+        "SndVol.exe"
+      ],
+      "excludes": [],
+      "architecture": [
+        "x86-64"
+      ],
+      "defaultSettings": {},
+      "criticalProcess": false,
+      "requiresResources": false,
+      "conflicts": [],
+      "status": "built",
+      "binaries": [
+        {
+          "path": "modules/64/aeroforge-aero-flyout-fix_1.1.0.dll",
+          "target": "Data/Engine/Mods/64/aeroforge-aero-flyout-fix_1.1.0.dll",
+          "sha256": "61bb859afe10364bc36694e35d26d9e46744b88a497b771d59d48b85a7ebeb2f"
+        }
+      ],
+      "compilerOptions": "-lgdi32 -lshell32 -luxtheme -ldwmapi"
+    },
+    {
+      "id": "aero-tray",
+      "name": "Aero Tray",
+      "description": "Классическое оформление области уведомлений.",
+      "category": "Трей",
+      "author": "aubymori",
+      "version": "1.0.2",
+      "license": "MIT (Windhawk mods contribution policy)",
+      "sourceUrl": "https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/aero-tray.wh.cpp",
+      "sourceSha256": "6022fd6f23256f2d25d585252964e6f189e4693ee20d56102e03c05cc6cb229e",
+      "includes": [
+        "explorer.exe"
+      ],
+      "excludes": [],
+      "architecture": [
+        "x86-64"
+      ],
+      "defaultSettings": {
+        "composition": "default",
+        "customizetext": "Customize...",
+        "customizetooltip": "Click here to select what icons appear on the taskbar."
+      },
+      "criticalProcess": false,
+      "requiresResources": false,
+      "conflicts": [],
+      "status": "built",
+      "binaries": [
+        {
+          "path": "modules/64/aeroforge-aero-tray_1.0.2.dll",
+          "target": "Data/Engine/Mods/64/aeroforge-aero-tray_1.0.2.dll",
+          "sha256": "70bc3295766a85271bec9799dcc4b2b02bcd9f1813e137c6c382f89b510a5169"
+        }
+      ],
+      "compilerOptions": "-lpsapi -lgdi32 -luxtheme -lshell32 -lcomctl32"
+    },
+    {
+      "id": "basic-themer",
+      "name": "Basic Themer",
+      "description": "Оформление окон Basic через DWM. Требует испытаний в VM.",
+      "category": "Оформление",
+      "author": "aubymori",
+      "version": "1.1.1",
+      "license": "MIT (Windhawk mods contribution policy)",
+      "sourceUrl": "https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/basic-themer.wh.cpp",
+      "sourceSha256": "f09ecf5eed7e2dae5a997a73939a804442a7e7dc4edecccf79f94fbbaa13e5c9",
+      "includes": [
+        "dwm.exe"
+      ],
+      "excludes": [],
+      "architecture": [
+        "x86-64"
+      ],
+      "defaultSettings": {
+        "whitelistmode": "0",
+        "blacklist[0][0].process": "",
+        "whitelist[0][0].process": "",
+        "secureonly": "0",
+        "noanims": "0"
+      },
+      "criticalProcess": true,
+      "requiresResources": false,
+      "conflicts": [],
+      "status": "built",
+      "binaries": [
+        {
+          "path": "modules/64/aeroforge-basic-themer_1.1.1.dll",
+          "target": "Data/Engine/Mods/64/aeroforge-basic-themer_1.1.1.dll",
+          "sha256": "69c2229c366427285fb8bda280a84c6988c5fbc01b4f7d330aa441c695a45bac"
+        }
+      ],
+      "compilerOptions": "-ldwmapi -lwtsapi32"
+    },
+    {
+      "id": "classic-explorer-statusbar",
+      "name": "Classic Explorer Status Bar",
+      "description": "Классическая строка состояния Проводника.",
+      "category": "Проводник",
+      "author": "Anixx",
+      "version": "1.0.0",
+      "license": "MIT (Windhawk mods contribution policy)",
+      "sourceUrl": "https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/classic-explorer-statusbar.wh.cpp",
+      "sourceSha256": "bb55b7cd16c5d993722fef67e1c49668d83abc8747a3aea797a69540823f3bfb",
+      "includes": [
+        "explorer.exe"
+      ],
+      "excludes": [],
+      "architecture": [],
+      "defaultSettings": {},
+      "criticalProcess": false,
+      "requiresResources": false,
+      "conflicts": [],
+      "status": "built",
+      "binaries": [
+        {
+          "path": "modules/32/aeroforge-classic-explorer-statusbar_1.0.0.dll",
+          "target": "Data/Engine/Mods/32/aeroforge-classic-explorer-statusbar_1.0.0.dll",
+          "sha256": "9fd373f20c8677265f51b7bd46ad79fe7861cc8749105eb5feb7db4ec10a9bac"
+        },
+        {
+          "path": "modules/64/aeroforge-classic-explorer-statusbar_1.0.0.dll",
+          "target": "Data/Engine/Mods/64/aeroforge-classic-explorer-statusbar_1.0.0.dll",
+          "sha256": "0fc5672116fddf3b2583523a7dbd7810d0f506d7bcb5ba8fe7a449d57a81437c"
+        }
+      ],
+      "compilerOptions": "-lcomctl32 -lshlwapi -lole32 -loleaut32 -luuid -lgdi32"
+    },
+    {
+      "id": "classic-explorer-treeview",
+      "name": "Classic Explorer Treeview",
+      "description": "Классическая панель дерева каталогов.",
+      "category": "Проводник",
+      "author": "Waldemar",
+      "version": "1.1.3",
+      "license": "MIT (Windhawk mods contribution policy)",
+      "sourceUrl": "https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/classic-explorer-treeview.wh.cpp",
+      "sourceSha256": "d4cb1bf49e2db5fb31943ccc9854c9e12797c4f1204a80d0314825c61314b15b",
+      "includes": [
+        "explorer.exe"
+      ],
+      "excludes": [],
+      "architecture": [
+        "x86-64"
+      ],
+      "defaultSettings": {
+        "FoldersText": "default",
+        "DrawLines": "1",
+        "HotTracking": "0",
+        "LinesAtRoot": "0",
+        "GradientBackground": "0",
+        "DrawButtons": "1",
+        "AlternateLineColor": "Automatic",
+        "CloseButtonXOffset": "0",
+        "CloseButtonYOffset": "0"
+      },
+      "criticalProcess": false,
+      "requiresResources": false,
+      "conflicts": [],
+      "status": "built",
+      "binaries": [
+        {
+          "path": "modules/64/aeroforge-classic-explorer-treeview_1.1.3.dll",
+          "target": "Data/Engine/Mods/64/aeroforge-classic-explorer-treeview_1.1.3.dll",
+          "sha256": "e8060d716d2a47be3404c9c57adcdbd8c0087b3ddf4182a65d4995d673afa343"
+        }
+      ],
+      "compilerOptions": "-lcomctl32 -lgdi32 -loleaut32 -lole32 -lshlwapi -lruntimeobject -luxtheme"
+    },
+    {
+      "id": "classic-menus",
+      "name": "Classic Menus",
+      "description": "Классическое оформление стандартных меню.",
+      "category": "Меню",
+      "author": "aubymori",
+      "version": "1.1.0",
+      "license": "MIT (Windhawk mods contribution policy)",
+      "sourceUrl": "https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/classic-menus.wh.cpp",
+      "sourceSha256": "1af4d0bf32013d6c5c87473372572a45f7c2a994ae74102b37ff49704ea603c4",
+      "includes": [
+        "*"
+      ],
+      "excludes": [],
+      "architecture": [],
+      "defaultSettings": {},
+      "criticalProcess": false,
+      "requiresResources": false,
+      "conflicts": [
+        "eradicate-immersive-menus"
+      ],
+      "status": "built",
+      "binaries": [
+        {
+          "path": "modules/32/aeroforge-classic-menus_1.1.0.dll",
+          "target": "Data/Engine/Mods/32/aeroforge-classic-menus_1.1.0.dll",
+          "sha256": "ddec1193b31d9f40d5df04a42aac553b177d61e84046551320b912890867a732"
+        },
+        {
+          "path": "modules/64/aeroforge-classic-menus_1.1.0.dll",
+          "target": "Data/Engine/Mods/64/aeroforge-classic-menus_1.1.0.dll",
+          "sha256": "e98f1fd51e24737ea9ea8e12b70b780a97d1b3d9912e9bc31474ab22664451ca"
+        }
+      ],
+      "compilerOptions": "-luxtheme"
+    },
+    {
+      "id": "classic-theme-enable",
+      "name": "Classic Theme",
+      "description": "Включение классической темы через системный процесс. Требует VM.",
+      "category": "Оформление",
+      "author": "Anixx",
+      "version": "1.2.8",
+      "license": "MIT (Windhawk mods contribution policy)",
+      "sourceUrl": "https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/classic-theme-enable.wh.cpp",
+      "sourceSha256": "94f56419bf0f6d9fd12c98e7bc4932b8a8782b0dd506207d1584f6401b624939",
+      "includes": [
+        "winlogon.exe"
+      ],
+      "excludes": [],
+      "architecture": [],
+      "defaultSettings": {},
+      "criticalProcess": true,
+      "requiresResources": false,
+      "conflicts": [],
+      "status": "built",
+      "binaries": [
+        {
+          "path": "modules/32/aeroforge-classic-theme-enable_1.2.8.dll",
+          "target": "Data/Engine/Mods/32/aeroforge-classic-theme-enable_1.2.8.dll",
+          "sha256": "40e1370ed85ef430ccabde912dde214f82ed6c10feba097b9a75409e64ec1894"
+        },
+        {
+          "path": "modules/64/aeroforge-classic-theme-enable_1.2.8.dll",
+          "target": "Data/Engine/Mods/64/aeroforge-classic-theme-enable_1.2.8.dll",
+          "sha256": "5456fd8d85c14caee149dbf13297c0048fb02edcee82c2723d8257e30feae252"
+        }
+      ],
+      "compilerOptions": "-lntdll"
+    },
+    {
+      "id": "classic-uwp-fix",
+      "name": "Classic UWP Fix",
+      "description": "Исправления окон UWP для классического стиля.",
+      "category": "Оформление",
+      "author": "Ingan121",
+      "version": "0.3",
+      "license": "MIT (Windhawk mods contribution policy)",
+      "sourceUrl": "https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/classic-uwp-fix.wh.cpp",
+      "sourceSha256": "17ee9d483da8805926445955502c60010c3b93b4bf6a3fc4eb8bc7b84abd639d",
+      "includes": [
+        "ApplicationFrameHost.exe",
+        "explorer.exe",
+        "ShellAppRuntime.exe",
+        "CustomShellHost.exe"
+      ],
+      "excludes": [],
+      "architecture": [
+        "x86-64"
+      ],
+      "defaultSettings": {},
+      "criticalProcess": false,
+      "requiresResources": false,
+      "conflicts": [],
+      "status": "built",
+      "binaries": [
+        {
+          "path": "modules/64/aeroforge-classic-uwp-fix_0.3.dll",
+          "target": "Data/Engine/Mods/64/aeroforge-classic-uwp-fix_0.3.dll",
+          "sha256": "e9c38a78c88e587c82682e7485931d0eda1b997637fd37879be9bc9318d1e027"
+        }
+      ],
+      "compilerOptions": ""
+    },
+    {
+      "id": "control-panel-revival",
+      "name": "Control Panel Revival",
+      "description": "Возвращение доступных классических страниц панели управления.",
+      "category": "Панель управления",
+      "author": "AdmXP8",
+      "version": "1.0.0",
+      "license": "MIT (Windhawk mods contribution policy)",
+      "sourceUrl": "https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/control-panel-revival.wh.cpp",
+      "sourceSha256": "4d84257b703cdbddcbccf5a6787ea0a579a0af6993880dfc9e978b93646c5050",
+      "includes": [
+        "explorer.exe",
+        "control.exe"
+      ],
+      "excludes": [],
+      "architecture": [
+        "x86-64"
+      ],
+      "defaultSettings": {
+        "EnableSystem": "1",
+        "EnableDevicesAndPrinters": "1",
+        "EnableInstalledUpdates": "1",
+        "EnableDefaultPrograms": "1",
+        "EnableTroubleshooting": "1",
+        "EnableFonts": "1",
+        "CustomApplets[0]": ""
+      },
+      "criticalProcess": false,
+      "requiresResources": false,
+      "conflicts": [],
+      "status": "built",
+      "binaries": [
+        {
+          "path": "modules/64/aeroforge-control-panel-revival_1.0.0.dll",
+          "target": "Data/Engine/Mods/64/aeroforge-control-panel-revival_1.0.0.dll",
+          "sha256": "317026a6bf80e71adcbcbacf7a3305164980ed3ccbd9148037d4a5b42fb1a455"
+        }
+      ],
+      "compilerOptions": "-lcomctl32"
+    },
+    {
+      "id": "disable-office-hotkeys",
+      "name": "Disable Office Hotkeys",
+      "description": "Отключение зарезервированных сочетаний клавиш Office.",
+      "category": "Поведение",
+      "author": "ItsProfessional",
+      "version": "1.0.0",
+      "license": "MIT (Windhawk mods contribution policy)",
+      "sourceUrl": "https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/disable-office-hotkeys.wh.cpp",
+      "sourceSha256": "e770533e66eb0a08a5a573451cd48faa308e0ff83dc0297cc33dbfb5f78ae4d5",
+      "includes": [
+        "explorer.exe"
+      ],
+      "excludes": [],
+      "architecture": [],
+      "defaultSettings": {},
+      "criticalProcess": false,
+      "requiresResources": false,
+      "conflicts": [],
+      "status": "built",
+      "binaries": [
+        {
+          "path": "modules/32/aeroforge-disable-office-hotkeys_1.0.0.dll",
+          "target": "Data/Engine/Mods/32/aeroforge-disable-office-hotkeys_1.0.0.dll",
+          "sha256": "dce8ee9b1702c58bb3d7e6d3d57c7f4956246fd791d174fa67b3e6610ed3caaa"
+        },
+        {
+          "path": "modules/64/aeroforge-disable-office-hotkeys_1.0.0.dll",
+          "target": "Data/Engine/Mods/64/aeroforge-disable-office-hotkeys_1.0.0.dll",
+          "sha256": "d4b3a3668f5816cd6c72e213bddbdde10937a85cd5d9224cf2840fd59e7ce030"
+        }
+      ],
+      "compilerOptions": ""
+    },
+    {
+      "id": "eradicate-immersive-menus",
+      "name": "Eradicate Immersive Menus",
+      "description": "Классические контекстные меню Win32.",
+      "category": "Меню",
+      "author": "aubymori",
+      "version": "1.1.0",
+      "license": "MIT (Windhawk mods contribution policy)",
+      "sourceUrl": "https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/eradicate-immersive-menus.wh.cpp",
+      "sourceSha256": "b1193cc717397115cd03b0a568566d10c8eee1b9f906adee3c5f0e1955c88523",
+      "includes": [
+        "*"
+      ],
+      "excludes": [
+        "windhawk.exe",
+        "dwm.exe",
+        "ShellExperienceHost.exe",
+        "wlanext.exe",
+        "svchost.exe",
+        "SearchIndexer.exe",
+        "consent.exe"
+      ],
+      "architecture": [],
+      "defaultSettings": {
+        "explorer": "1",
+        "nosettingsicon": "1",
+        "sound": "1",
+        "network": "1",
+        "defender": "1",
+        "narrator": "1"
+      },
+      "criticalProcess": false,
+      "requiresResources": false,
+      "conflicts": [
+        "classic-menus"
+      ],
+      "status": "built",
+      "binaries": [
+        {
+          "path": "modules/32/aeroforge-eradicate-immersive-menus_1.1.0.dll",
+          "target": "Data/Engine/Mods/32/aeroforge-eradicate-immersive-menus_1.1.0.dll",
+          "sha256": "691565a83760704658024aa0decc6ad9d25a56128037ee7caf76d3833523f4b5"
+        },
+        {
+          "path": "modules/64/aeroforge-eradicate-immersive-menus_1.1.0.dll",
+          "target": "Data/Engine/Mods/64/aeroforge-eradicate-immersive-menus_1.1.0.dll",
+          "sha256": "2f83d01cfb92e1f0d976ebd4093a4622f7527779bd906d475e8a4784a2d7f685"
+        }
+      ],
+      "compilerOptions": "-luser32"
+    },
+    {
+      "id": "icon-resource-redirect",
+      "name": "Resource Redirect",
+      "description": "Подмена иконок и ресурсов через отдельный пакет оформления.",
+      "category": "Ресурсы",
+      "author": "m417z",
+      "version": "1.3",
+      "license": "GNU General Public License v3.0",
+      "sourceUrl": "https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/icon-resource-redirect.wh.cpp",
+      "sourceSha256": "97c42ab86fef4268b71b941998f343c2955c89bfa1f1177e7e83fbfe09f82baf",
+      "includes": [
+        "*"
+      ],
+      "excludes": [],
+      "architecture": [],
+      "defaultSettings": {
+        "iconTheme": "",
+        "disableThumbnails": "0",
+        "allResourceRedirect": "0",
+        "themePaths[0]": "",
+        "redirectionResourcePaths[0][0].original": "",
+        "redirectionResourcePaths[0][1].redirect": "",
+        "themeFolder": ""
+      },
+      "criticalProcess": false,
+      "requiresResources": true,
+      "conflicts": [],
+      "status": "built",
+      "binaries": [
+        {
+          "path": "modules/32/aeroforge-icon-resource-redirect_1.3-winmim1.dll",
+          "target": "Data/Engine/Mods/32/aeroforge-icon-resource-redirect_1.3-winmim1.dll",
+          "sha256": "d11e96a478d15f435cad088ae89fa35a65cd1fd53a9eedaf8d8236c786d1b428"
+        },
+        {
+          "path": "modules/64/aeroforge-icon-resource-redirect_1.3-winmim1.dll",
+          "target": "Data/Engine/Mods/64/aeroforge-icon-resource-redirect_1.3-winmim1.dll",
+          "sha256": "213cedcaed8a132ebcf3751a54a4534de388ce4f4f16d6c4f47f0c66e4655fec"
+        }
+      ],
+      "compilerOptions": "-lcomctl32 -lgdi32 -lole32 -loleaut32"
+    },
+    {
+      "id": "legacy-file-copy",
+      "name": "Legacy File Copy",
+      "description": "Классический интерфейс копирования файлов.",
+      "category": "Диалоги",
+      "author": "rounk-ctrl",
+      "version": "1.0.0",
+      "license": "MIT (Windhawk mods contribution policy)",
+      "sourceUrl": "https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/legacy-file-copy.wh.cpp",
+      "sourceSha256": "0f37b6a85385d68e99562b943b5a03a45328b3a91fecff5b072c2a00ead69a52",
+      "includes": [
+        "explorer.exe"
+      ],
+      "excludes": [],
+      "architecture": [
+        "x86-64"
+      ],
+      "defaultSettings": {},
+      "criticalProcess": false,
+      "requiresResources": false,
+      "conflicts": [],
+      "status": "built",
+      "binaries": [
+        {
+          "path": "modules/64/aeroforge-legacy-file-copy_1.0.0.dll",
+          "target": "Data/Engine/Mods/64/aeroforge-legacy-file-copy_1.0.0.dll",
+          "sha256": "3782e74f6c05abed987623e1edd77af23f3b5dded22aad5019e8d941cb14f558"
+        }
+      ],
+      "compilerOptions": "-lole32 -loleaut32 -lruntimeobject -ldbghelp"
+    },
+    {
+      "id": "msg-box-font-fix",
+      "name": "Message Box Fix",
+      "description": "Шрифты и оформление стандартных сообщений.",
+      "category": "Диалоги",
+      "author": "aubymori",
+      "version": "2.3.0",
+      "license": "MIT (Windhawk mods contribution policy)",
+      "sourceUrl": "https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/msg-box-font-fix.wh.cpp",
+      "sourceSha256": "bbde6e24e347f1e208c56981414e470f86b303761bacbd407adeab65508df364",
+      "includes": [
+        "*"
+      ],
+      "excludes": [],
+      "architecture": [],
+      "defaultSettings": {
+        "style": "seven"
+      },
+      "criticalProcess": false,
+      "requiresResources": false,
+      "conflicts": [],
+      "status": "built",
+      "binaries": [
+        {
+          "path": "modules/32/aeroforge-msg-box-font-fix_2.3.0.dll",
+          "target": "Data/Engine/Mods/32/aeroforge-msg-box-font-fix_2.3.0.dll",
+          "sha256": "c874aa4e9643445330b980a2e251e7e2f230723a9d7e064bfd31924bb3c8d336"
+        },
+        {
+          "path": "modules/64/aeroforge-msg-box-font-fix_2.3.0.dll",
+          "target": "Data/Engine/Mods/64/aeroforge-msg-box-font-fix_2.3.0.dll",
+          "sha256": "2781f52f4977dec5dc2f611f640eadc68386ce9807da201eb6c49b100a50efe1"
+        }
+      ],
+      "compilerOptions": "-luser32 -lgdi32 -lcomctl32 -DWINVER=0x0A00"
+    },
+    {
+      "id": "old-this-pc-commands",
+      "name": "Old This PC Commands",
+      "description": "Классические команды раздела «Этот компьютер».",
+      "category": "Проводник",
+      "author": "aubymori",
+      "version": "1.0.1",
+      "license": "MIT (Windhawk mods contribution policy)",
+      "sourceUrl": "https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/old-this-pc-commands.wh.cpp",
+      "sourceSha256": "4cadfb75609d1e964fd29e8d11fcb76db7f5031dca9dfb06bc94630c83b6a5cf",
+      "includes": [
+        "explorer.exe"
+      ],
+      "excludes": [],
+      "architecture": [
+        "x86-64"
+      ],
+      "defaultSettings": {},
+      "criticalProcess": false,
+      "requiresResources": false,
+      "conflicts": [],
+      "status": "built",
+      "binaries": [
+        {
+          "path": "modules/64/aeroforge-old-this-pc-commands_1.0.1.dll",
+          "target": "Data/Engine/Mods/64/aeroforge-old-this-pc-commands_1.0.1.dll",
+          "sha256": "5aabbd5e0b404ace56515178e3925a161c6685dea79b71e62dd46ea2f478d02f"
+        }
+      ],
+      "compilerOptions": "-lole32"
+    },
+    {
+      "id": "taskbar-show-desktop-button-aero-peek",
+      "name": "Aero Peek on \"Show desktop\" button hover",
+      "description": "Поведение кнопки «Показать рабочий стол» и Aero Peek.",
+      "category": "Панель задач",
+      "author": "m417z",
+      "version": "1.0.2",
+      "license": "GNU General Public License v3.0",
+      "sourceUrl": "https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/taskbar-show-desktop-button-aero-peek.wh.cpp",
+      "sourceSha256": "78e6dd2fe707b7202ca3e58893156f928123e1341e0eae11278384523faa7d76",
+      "includes": [
+        "explorer.exe"
+      ],
+      "excludes": [],
+      "architecture": [
+        "x86-64"
+      ],
+      "defaultSettings": {
+        "hoverDelay": "500"
+      },
+      "criticalProcess": false,
+      "requiresResources": false,
+      "conflicts": [],
+      "status": "built",
+      "binaries": [
+        {
+          "path": "modules/64/aeroforge-taskbar-show-desktop-button-aero-peek_1.0.2.dll",
+          "target": "Data/Engine/Mods/64/aeroforge-taskbar-show-desktop-button-aero-peek_1.0.2.dll",
+          "sha256": "8708247dd852fa4ac91fa8b778fbfac11bc7b224528548ad99bdfd029b6b40fe"
+        }
+      ],
+      "compilerOptions": "-lole32 -loleaut32 -lruntimeobject -lversion"
+    },
+    {
+      "id": "transparent-screensaver-fix",
+      "name": "Transparent Screensaver Fix",
+      "description": "Исправление прозрачности экранных заставок.",
+      "category": "Система",
+      "author": "aubymori",
+      "version": "1.0.0",
+      "license": "MIT (Windhawk mods contribution policy)",
+      "sourceUrl": "https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/transparent-screensaver-fix.wh.cpp",
+      "sourceSha256": "76efb0f69b14912d4c7fa6d7ea345459a735c160be014d4a0667ed751215bbce",
+      "includes": [
+        "winlogon.exe"
+      ],
+      "excludes": [],
+      "architecture": [
+        "x86-64"
+      ],
+      "defaultSettings": {},
+      "criticalProcess": true,
+      "requiresResources": false,
+      "conflicts": [],
+      "status": "built",
+      "binaries": [
+        {
+          "path": "modules/64/aeroforge-transparent-screensaver-fix_1.0.0.dll",
+          "target": "Data/Engine/Mods/64/aeroforge-transparent-screensaver-fix_1.0.0.dll",
+          "sha256": "7e7c2d794b151415bd89bed0a9520e9972468d9f943f96226bc2769469c6e3c7"
+        }
+      ],
+      "compilerOptions": ""
+    },
+    {
+      "id": "uifile-override",
+      "name": "UIFILE Override",
+      "description": "Подмена UIFILE через пакет ресурсов.",
+      "category": "Ресурсы",
+      "author": "xalejandro",
+      "version": "1.0.3",
+      "license": "MIT (Windhawk mods contribution policy)",
+      "sourceUrl": "https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/uifile-override.wh.cpp",
+      "sourceSha256": "a5c1fb1f47970195a58781e39bd2d2bb2c44d063f96c4e5f5ae13216e5890120",
+      "includes": [
+        "*"
+      ],
+      "excludes": [],
+      "architecture": [],
+      "defaultSettings": {},
+      "criticalProcess": false,
+      "requiresResources": true,
+      "conflicts": [],
+      "status": "built",
+      "binaries": [
+        {
+          "path": "modules/32/aeroforge-uifile-override_1.0.3.dll",
+          "target": "Data/Engine/Mods/32/aeroforge-uifile-override_1.0.3.dll",
+          "sha256": "88f7f4670ac22974b1e2e1f84d62dd79b3a600085c6714a76ac6e6854c124415"
+        },
+        {
+          "path": "modules/64/aeroforge-uifile-override_1.0.3.dll",
+          "target": "Data/Engine/Mods/64/aeroforge-uifile-override_1.0.3.dll",
+          "sha256": "4b52d56ed8464e6162a900dac4e134e759c3230273debcb7452ee22f36cb5559"
+        }
+      ],
+      "compilerOptions": "-luxtheme -lshlwapi"
+    },
+    {
+      "id": "win32-tray-clock-experience",
+      "name": "Win32 Tray Clock Experience",
+      "description": "Классическое окно часов Windows.",
+      "category": "Трей",
+      "author": "aubymori",
+      "version": "1.0.0",
+      "license": "MIT (Windhawk mods contribution policy)",
+      "sourceUrl": "https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/win32-tray-clock-experience.wh.cpp",
+      "sourceSha256": "a894ee13c3e85a8c550cffc7dbbb378d9e69f16fa84a5c941b515f55070daafc",
+      "includes": [
+        "explorer.exe"
+      ],
+      "excludes": [],
+      "architecture": [
+        "x86-64"
+      ],
+      "defaultSettings": {},
+      "criticalProcess": false,
+      "requiresResources": false,
+      "conflicts": [],
+      "status": "built",
+      "binaries": [
+        {
+          "path": "modules/64/aeroforge-win32-tray-clock-experience_1.0.0.dll",
+          "target": "Data/Engine/Mods/64/aeroforge-win32-tray-clock-experience_1.0.0.dll",
+          "sha256": "f3c07c9ce85abd94ce35a64361e84b18d1c2de9cbb192c62256f4e947dabaf10"
+        }
+      ],
+      "compilerOptions": "-lole32"
+    },
+    {
+      "id": "win7-alttab-loader",
+      "name": "Windows 7/8.x Alt+Tab Loader",
+      "description": "Загрузка старого Alt+Tab; нужен отдельно проверенный ресурс AltTab.dll.",
+      "category": "Переключение окон",
+      "author": "aubymori",
+      "version": "2.1.1",
+      "license": "MIT (Windhawk mods contribution policy)",
+      "sourceUrl": "https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/win7-alttab-loader.wh.cpp",
+      "sourceSha256": "1b7015ca4c58be808989e0cf518ad53ad200096d8b630b55e1db895fd584ec93",
+      "includes": [
+        "explorer.exe"
+      ],
+      "excludes": [],
+      "architecture": [
+        "x86-64"
+      ],
+      "defaultSettings": {},
+      "criticalProcess": false,
+      "requiresResources": true,
+      "conflicts": [],
+      "status": "built",
+      "binaries": [
+        {
+          "path": "modules/64/aeroforge-win7-alttab-loader_2.1.1.dll",
+          "target": "Data/Engine/Mods/64/aeroforge-win7-alttab-loader_2.1.1.dll",
+          "sha256": "ce21ab94801243d480ab920ac65358e2b5562690dd2a47e71798daf7e1487a00"
+        }
+      ],
+      "compilerOptions": "-ldwmapi -lcomctl32 -lgdi32"
+    },
+    {
+      "id": "win7-style-uac-dim",
+      "name": "Windows 7 Style UAC Dim",
+      "description": "Затемнение окна UAC в стиле Windows 7.",
+      "category": "Система",
+      "author": "aubymori",
+      "version": "1.0.1",
+      "license": "MIT (Windhawk mods contribution policy)",
+      "sourceUrl": "https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/win7-style-uac-dim.wh.cpp",
+      "sourceSha256": "c0e8c6066fdb9fdc23dfa2425c9562452b6ada7abacb48d3a0488484c69dd1e6",
+      "includes": [
+        "consent.exe"
+      ],
+      "excludes": [],
+      "architecture": [
+        "x86-64"
+      ],
+      "defaultSettings": {},
+      "criticalProcess": true,
+      "requiresResources": false,
+      "conflicts": [],
+      "status": "built",
+      "binaries": [
+        {
+          "path": "modules/64/aeroforge-win7-style-uac-dim_1.0.1.dll",
+          "target": "Data/Engine/Mods/64/aeroforge-win7-style-uac-dim_1.0.1.dll",
+          "sha256": "fa303220f419de566849b4bbfae5721b0aac5082d4eb35106e85d49375781756"
+        }
+      ],
+      "compilerOptions": "-lgdi32 -lgdiplus"
+    },
+    {
+      "id": "windows-7-clock-spacing",
+      "name": "Windows 7 Clock Spacing",
+      "description": "Отступы часов и области уведомлений в стиле Windows 7.",
+      "category": "Трей",
+      "author": "aubymori",
+      "version": "1.0.0",
+      "license": "MIT (Windhawk mods contribution policy)",
+      "sourceUrl": "https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/windows-7-clock-spacing.wh.cpp",
+      "sourceSha256": "63af40dccb726b7bb3152c92f4161194c0f59d146a3c46f6e44cbd857b629477",
+      "includes": [
+        "explorer.exe"
+      ],
+      "excludes": [],
+      "architecture": [
+        "x86-64"
+      ],
+      "defaultSettings": {},
+      "criticalProcess": false,
+      "requiresResources": false,
+      "conflicts": [],
+      "status": "built",
+      "binaries": [
+        {
+          "path": "modules/64/aeroforge-windows-7-clock-spacing_1.0.0.dll",
+          "target": "Data/Engine/Mods/64/aeroforge-windows-7-clock-spacing_1.0.0.dll",
+          "sha256": "abaff97f8946feb85a10c43c955a012df2f9b1017eaa89e32b375ee66c36f49f"
+        }
+      ],
+      "compilerOptions": "-lgdi32 -lshell32 -lcomctl32"
+    },
+    {
+      "id": "classic-taskbar-properties",
+      "name": "Classic Taskbar and Start Menu Properties",
+      "description": "Классические свойства панели и меню «Пуск» из upstream; самостоятельный дополнительный компонент.",
+      "category": "Панель задач",
+      "author": "babamohammed",
+      "version": "3.5.0",
+      "license": "MIT (Windhawk mods contribution policy)",
+      "sourceUrl": "https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/classic-taskbar-properties.wh.cpp",
+      "sourceSha256": "c8aeec23c1d59cd5c34b778ff39348d77feb505cc6abc1bf6dec7bf25c50b236",
+      "includes": [
+        "explorer.exe"
+      ],
+      "excludes": [],
+      "architecture": [],
+      "defaultSettings": {
+        "language": "auto"
+      },
+      "criticalProcess": false,
+      "requiresResources": false,
+      "conflicts": [],
+      "status": "built",
+      "binaries": [
+        {
+          "path": "modules/32/aeroforge-classic-taskbar-properties_3.5.0-winmim1.dll",
+          "target": "Data/Engine/Mods/32/aeroforge-classic-taskbar-properties_3.5.0-winmim1.dll",
+          "sha256": "b9053139a847ac2190702cd3a93bee211d3329d046a52b3d86d10bd908f02246"
+        },
+        {
+          "path": "modules/64/aeroforge-classic-taskbar-properties_3.5.0-winmim1.dll",
+          "target": "Data/Engine/Mods/64/aeroforge-classic-taskbar-properties_3.5.0-winmim1.dll",
+          "sha256": "b88d339ac78245b007fd1cee3376fd130afd8422d233cb5cf032f79b414e9e91"
+        }
+      ],
+      "compilerOptions": "-lgdi32 -lcomctl32 -luser32 -lole32 -lshlwapi -lshell32 -luxtheme -ldwmapi -luuid -loleaut32 -lmsimg32"
+    },
+    {
+      "id": "settings-to-control-panel",
+      "name": "Redirect Settings to Control Panel",
+      "description": "Переходы к классическим страницам панели управления.",
+      "category": "Поведение",
+      "author": "babamohammed",
+      "version": "10.0.36",
+      "license": "MIT (Windhawk mods contribution policy)",
+      "sourceUrl": "https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/settings-to-control-panel.wh.cpp",
+      "sourceSha256": "77665938bdc9fbd583455ce4155d26ebeaae4ba07260aea8cba0985cd5e5073a",
+      "includes": [
+        "explorer.exe"
+      ],
+      "excludes": [],
+      "architecture": [
+        "x86-64"
+      ],
+      "defaultSettings": {
+        "EnableRedirects": "1",
+        "RedirectSystemTray": "0",
+        "UIOnlyRedirects": "0",
+        "FallbackMode": "2",
+        "Win11CompatibilityMode": "0",
+        "MaxLaunchesPerUri": "3",
+        "ComActivationRedirect": "0",
+        "LegacyNameMappingFix": "1",
+        "RedirectDisplayPages": "1"
+      },
+      "criticalProcess": false,
+      "requiresResources": false,
+      "conflicts": [],
+      "status": "built",
+      "binaries": [
+        {
+          "path": "modules/64/aeroforge-settings-to-control-panel_10.0.36.dll",
+          "target": "Data/Engine/Mods/64/aeroforge-settings-to-control-panel_10.0.36.dll",
+          "sha256": "3630acb272c4aea8a90158bd93fa1fe6bd5e6e0f1374fec35dc79976cb52a090"
+        }
+      ],
+      "compilerOptions": "-lcomctl32 -lpsapi -lole32"
+    },
+    {
+      "id": "win7-action-center-recreation",
+      "name": "Windows 7/8.1 Action Center Recreation",
+      "description": "Классический центр поддержки с информацией о состоянии системы.",
+      "category": "Трей",
+      "author": "babamohammed",
+      "version": "2.2.0",
+      "license": "MIT (Windhawk mods contribution policy)",
+      "sourceUrl": "https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/win7-action-center-recreation.wh.cpp",
+      "sourceSha256": "e1d66a9975e5fc7a112058846fdee8b232ea020966772bd2b8399c5fed7f9106",
+      "includes": [
+        "explorer.exe",
+        "control.exe"
+      ],
+      "excludes": [],
+      "architecture": [
+        "x86-64"
+      ],
+      "defaultSettings": {
+        "useRoundedCorners": "1",
+        "refreshInterval": "5000",
+        "enableHotkey": "0",
+        "enableNotificationSimulation": "1",
+        "privacyMode": "0",
+        "language": "auto",
+        "restoreCplHubLinks": "1",
+        "useEmbeddedUifile": "0",
+        "theme": "auto"
+      },
+      "criticalProcess": false,
+      "requiresResources": false,
+      "conflicts": [],
+      "status": "built",
+      "binaries": [
+        {
+          "path": "modules/64/aeroforge-win7-action-center-recreation_2.2.0.dll",
+          "target": "Data/Engine/Mods/64/aeroforge-win7-action-center-recreation_2.2.0.dll",
+          "sha256": "0c56ede2b47a33f1fbd7f0ca20958ec2de262a82adc0ffa7822053d01ff7f42b"
+        }
+      ],
+      "compilerOptions": "-lgdi32 -luser32 -lshell32 -lwscapi -ldwmapi -lole32 -ladvapi32 -lshlwapi -lpropsys"
+    },
+    {
+      "id": "win7-legacy-applet-restorer",
+      "name": "Windows Vista/7 Legacy Applet Restorer",
+      "description": "Восстановление доступных классических апплетов.",
+      "category": "Панель управления",
+      "author": "babamohammed",
+      "version": "3.2.0",
+      "license": "MIT (Windhawk mods contribution policy)",
+      "sourceUrl": "https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/win7-legacy-applet-restorer.wh.cpp",
+      "sourceSha256": "fe28ac8c30f2a9dc30c3c180dddae998c77b554f2fefb43efa5d0f028b69b051",
+      "includes": [
+        "explorer.exe",
+        "control.exe"
+      ],
+      "excludes": [],
+      "architecture": [
+        "x86-64"
+      ],
+      "defaultSettings": {
+        "enablePersonalization": "1",
+        "enableNotificationIcons": "1",
+        "enableNetworkConnections": "1",
+        "enablePrintersAndFaxes": "1",
+        "enableIscsiInitiator": "1",
+        "enableGameControllers": "1",
+        "enableOfflineFiles": "1",
+        "enableHomeGroup": "0",
+        "bitLockerMode": "auto",
+        "tabletPcMode": "auto",
+        "speechMode": "auto",
+        "unhideLegacyApplets": "1",
+        "enableCategoryAppearanceLinks": "1",
+        "useOriginalHomeTaskGuids": "1",
+        "suppressCompanySync": "1",
+        "suppressWindowsToGo": "0",
+        "suppressInfrared": "0",
+        "suppressWorkFolders": "0",
+        "restoreClassicTaskLinks": "1",
+        "restoreWin7CategoryTaskLinks": "1",
+        "inlinePersonalizationNavigation": "0"
+      },
+      "criticalProcess": false,
+      "requiresResources": false,
+      "conflicts": [],
+      "status": "built",
+      "binaries": [
+        {
+          "path": "modules/64/aeroforge-win7-legacy-applet-restorer_3.2.0.dll",
+          "target": "Data/Engine/Mods/64/aeroforge-win7-legacy-applet-restorer_3.2.0.dll",
+          "sha256": "acafa07e02883fa182c137d106aced32bdc209f52d75d8134143ffb86a6800e0"
+        }
+      ],
+      "compilerOptions": "-lcomctl32 -lshlwapi -lole32 -lpsapi"
+    },
+    {
+      "id": "win7-network-flyout-recreation",
+      "name": "Windows 7 Network Flyout Recreation",
+      "description": "Сетевое окно в стиле Windows 7.",
+      "category": "Трей",
+      "author": "babamohammed",
+      "version": "5.2.0",
+      "license": "MIT (Windhawk mods contribution policy)",
+      "sourceUrl": "https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/win7-network-flyout-recreation.wh.cpp",
+      "sourceSha256": "81d4b8c0a9ab24dbe574b85afe4ec957170dc46534086e42de717896db4c4840",
+      "includes": [
+        "explorer.exe",
+        "control.exe",
+        "RetroBar.exe"
+      ],
+      "excludes": [],
+      "architecture": [],
+      "defaultSettings": {
+        "language": "auto",
+        "interceptNativeFlyout": "1",
+        "privacyMode": "0",
+        "refreshInterval": "3000",
+        "enableHotkey": "0",
+        "useRoundedCorners": "1",
+        "restoreClassicNetworkCenterLinks": "1",
+        "useNetworkLocationIcons": "1",
+        "theme": "light"
+      },
+      "criticalProcess": false,
+      "requiresResources": false,
+      "conflicts": [],
+      "status": "built",
+      "binaries": [
+        {
+          "path": "modules/32/aeroforge-win7-network-flyout-recreation_5.2.0.dll",
+          "target": "Data/Engine/Mods/32/aeroforge-win7-network-flyout-recreation_5.2.0.dll",
+          "sha256": "a98d4aadf210eb1954e0a8353aa61288383087457ffd9a4cb4b216cba8809c11"
+        },
+        {
+          "path": "modules/64/aeroforge-win7-network-flyout-recreation_5.2.0.dll",
+          "target": "Data/Engine/Mods/64/aeroforge-win7-network-flyout-recreation_5.2.0.dll",
+          "sha256": "ab7e0aff9b662578a4299654bd6a4c884b2c4379adfa827818108b80ba1be0fc"
+        }
+      ],
+      "compilerOptions": "-DWIN32_LEAN_AND_MEAN -lgdi32 -ldwmapi -luxtheme -lole32 -lshell32 -luser32 -lcomctl32 -liphlpapi -lwlanapi -luuid -lshlwapi"
+    },
+    {
+      "id": "win7-open-with-dialog",
+      "name": "Windows Vista/7 \"Open with\" Dialog Restorer",
+      "description": "Классическое окно «Открыть с помощью».",
+      "category": "Диалоги",
+      "author": "babamohammed",
+      "version": "1.1.0",
+      "license": "MIT",
+      "sourceUrl": "https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/win7-open-with-dialog.wh.cpp",
+      "sourceSha256": "0c761a4c1dec4e401dcae98f52c03e83eab8404477a48a264282bf4bbd129b4a",
+      "includes": [
+        "explorer.exe",
+        "OpenWith.exe",
+        "rundll32.exe"
+      ],
+      "excludes": [],
+      "architecture": [
+        "x86-64"
+      ],
+      "defaultSettings": {
+        "replaceSystemDialog": "1",
+        "darkMode": "auto",
+        "showWebLink": "1",
+        "hideDescriptionField": "1",
+        "defaultAssociationBehavior": "disabled",
+        "language": "auto"
+      },
+      "criticalProcess": false,
+      "requiresResources": false,
+      "conflicts": [],
+      "status": "built",
+      "binaries": [
+        {
+          "path": "modules/64/aeroforge-win7-open-with-dialog_1.1.0.dll",
+          "target": "Data/Engine/Mods/64/aeroforge-win7-open-with-dialog_1.1.0.dll",
+          "sha256": "06b783452c3750c5977226242a81420465b2bfe0414357800e2e83d60064723b"
+        }
+      ],
+      "compilerOptions": "-lole32 -lshell32 -lshlwapi -lversion -ladvapi32 -lcomctl32 -luxtheme -ldwmapi -luser32 -lgdi32 -luuid -lwinpthread"
+    },
+    {
+      "id": "win7-display-control-panel-restorer",
+      "name": "Classic Display Control Panel Restorer",
+      "description": "Классические страницы экрана и разрешения.",
+      "category": "Панель управления",
+      "author": "babamohammed",
+      "version": "1.1.0",
+      "license": "MIT (Windhawk mods contribution policy)",
+      "sourceUrl": "https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/win7-display-control-panel-restorer.wh.cpp",
+      "sourceSha256": "9b80414834872d6373111304bcc6e5ed283aded29ba4cc40be25c30aec29baba",
+      "includes": [
+        "explorer.exe",
+        "control.exe",
+        "rundll32.exe"
+      ],
+      "excludes": [],
+      "architecture": [
+        "x86-64"
+      ],
+      "defaultSettings": {
+        "language": "auto",
+        "keepFilesOnDisable": "1",
+        "showSidebarLinks": "1",
+        "resolutionPageCompatibility": "1",
+        "redirectClassicLaunch": "1",
+        "redirectDisplaySettingsUri": "0",
+        "showOrientationPanel": "0",
+        "enableDpiPresets": "1",
+        "hideBrokenTextSizeSection": "1",
+        "regenerateResourcesOnEnable": "0"
+      },
+      "criticalProcess": false,
+      "requiresResources": true,
+      "conflicts": [],
+      "status": "built",
+      "binaries": [
+        {
+          "path": "modules/64/aeroforge-win7-display-control-panel-restorer_1.1.0.dll",
+          "target": "Data/Engine/Mods/64/aeroforge-win7-display-control-panel-restorer_1.1.0.dll",
+          "sha256": "e97d0f93cdf6e3c1793a665587d39edd45d7b3257bbd8662e3dee93842284a72"
+        }
+      ],
+      "compilerOptions": "-lwininet -ladvapi32 -lole32 -luser32 -lshell32 -luuid -lwinpthread -lgdi32 -lcomctl32 -lmsimg32"
+    },
+    {
+      "id": "classic-theme-explorer-lite",
+      "name": "Classic Theme Explorer Lite",
+      "description": "Исправления классической панели задач Windows 10 и рамок Проводника.",
+      "category": "Оформление",
+      "author": "Anixx",
+      "version": "1.3",
+      "license": "MIT (Windhawk mods contribution policy)",
+      "sourceUrl": "https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/classic-theme-explorer-lite.wh.cpp",
+      "sourceSha256": "3a298bede982a3a7f6e54f4c0d6dc027877e66813d502b4ade839334699d7d74",
+      "includes": [
+        "explorer.exe"
+      ],
+      "excludes": [],
+      "architecture": [],
+      "defaultSettings": {
+        "clientedge_3d_borders": "1"
+      },
+      "criticalProcess": false,
+      "requiresResources": false,
+      "conflicts": [],
+      "status": "built",
+      "binaries": [
+        {
+          "path": "modules/32/aeroforge-classic-theme-explorer-lite_1.3.dll",
+          "target": "Data/Engine/Mods/32/aeroforge-classic-theme-explorer-lite_1.3.dll",
+          "sha256": "7e8059c3e7fd588011806e2b495095ac2e23f611b88c09f43d8cbaca8dc4d282"
+        },
+        {
+          "path": "modules/64/aeroforge-classic-theme-explorer-lite_1.3.dll",
+          "target": "Data/Engine/Mods/64/aeroforge-classic-theme-explorer-lite_1.3.dll",
+          "sha256": "45223e156f300ee1becf4b3de127bfa9ebc5ac5be152228a24d9d39979b64d32"
+        }
+      ],
+      "compilerOptions": "-luxtheme -lgdi32"
+    },
+    {
+      "id": "classic-theme-transparency-fix",
+      "name": "Classic theme transparency fix",
+      "description": "Исправления прозрачности окон в классическом режиме.",
+      "category": "Оформление",
+      "author": "Anixx",
+      "version": "1.5",
+      "license": "MIT (Windhawk mods contribution policy)",
+      "sourceUrl": "https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/classic-theme-transparency-fix.wh.cpp",
+      "sourceSha256": "23bdeaf5831cf3fa814b9001539ffe83391587711f84bf30bfc741d65b6540e7",
+      "includes": [
+        "*",
+        "dllhost.exe"
+      ],
+      "excludes": [],
+      "architecture": [],
+      "defaultSettings": {
+        "removeDialogTransparency": "1"
+      },
+      "criticalProcess": false,
+      "requiresResources": false,
+      "conflicts": [],
+      "status": "built",
+      "binaries": [
+        {
+          "path": "modules/32/aeroforge-classic-theme-transparency-fix_1.5.dll",
+          "target": "Data/Engine/Mods/32/aeroforge-classic-theme-transparency-fix_1.5.dll",
+          "sha256": "daa255d372aa131ce5813449ad3581f369415bef1bf26385ac3f9afb6a987d00"
+        },
+        {
+          "path": "modules/64/aeroforge-classic-theme-transparency-fix_1.5.dll",
+          "target": "Data/Engine/Mods/64/aeroforge-classic-theme-transparency-fix_1.5.dll",
+          "sha256": "0e79a5a52b79a471bc1186b42efb8e7b9ace71425ffb990a980f756a6612949f"
+        }
+      ],
+      "compilerOptions": "-luxtheme"
+    },
+    {
+      "id": "disable-navigation-bar",
+      "name": "Disable Navigation Bar",
+      "description": "Убрать современную навигационную панель.",
+      "category": "Проводник",
+      "author": "ItsProfessional",
+      "version": "1.0.0",
+      "license": "MIT (Windhawk mods contribution policy)",
+      "sourceUrl": "https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/disable-navigation-bar.wh.cpp",
+      "sourceSha256": "8fc1184b8d42f4f69d68a38a034953acca40aeabb9659d79071f92fe68360a33",
+      "includes": [
+        "*"
+      ],
+      "excludes": [],
+      "architecture": [],
+      "defaultSettings": {},
+      "criticalProcess": false,
+      "requiresResources": false,
+      "conflicts": [],
+      "status": "built",
+      "binaries": [
+        {
+          "path": "modules/32/aeroforge-disable-navigation-bar_1.0.0.dll",
+          "target": "Data/Engine/Mods/32/aeroforge-disable-navigation-bar_1.0.0.dll",
+          "sha256": "4651c295eb0a774569d5d84c607ad5f0417e24b351112ef512885389dece0588"
+        },
+        {
+          "path": "modules/64/aeroforge-disable-navigation-bar_1.0.0.dll",
+          "target": "Data/Engine/Mods/64/aeroforge-disable-navigation-bar_1.0.0.dll",
+          "sha256": "6185f17d63b8e04a04cab413e5f89ced3b2ce0023828c9d7405203d4afe18d80"
+        }
+      ],
+      "compilerOptions": ""
+    },
+    {
+      "id": "remove-command-bar",
+      "name": "Remove Command Bar",
+      "description": "Убрать командную панель Vista/7 для исторического оформления.",
+      "category": "Проводник",
+      "author": "Waldemar",
+      "version": "1.0.1",
+      "license": "MIT (Windhawk mods contribution policy)",
+      "sourceUrl": "https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/remove-command-bar.wh.cpp",
+      "sourceSha256": "2223c7b7b62cdb71ce46f0aa4912406ee5f1745d938cb423c8e8809a4f4dc66b",
+      "includes": [
+        "explorer.exe"
+      ],
+      "excludes": [],
+      "architecture": [
+        "x86-64"
+      ],
+      "defaultSettings": {
+        "Offset": "-40"
+      },
+      "criticalProcess": false,
+      "requiresResources": false,
+      "conflicts": [],
+      "status": "built",
+      "binaries": [
+        {
+          "path": "modules/64/aeroforge-remove-command-bar_1.0.1.dll",
+          "target": "Data/Engine/Mods/64/aeroforge-remove-command-bar_1.0.1.dll",
+          "sha256": "188da4f06f892011ecaba8fd0110ec2250dad62b56ba8916df0a87a089b0b4df"
+        }
+      ],
+      "compilerOptions": ""
+    },
+    {
+      "id": "syslistview32-enabler",
+      "name": "Enable SyslistView32",
+      "description": "Классический список SysListView32 вместо современного представления.",
+      "category": "Проводник",
+      "author": "anixx",
+      "version": "2.0.0",
+      "license": "MIT (Windhawk mods contribution policy)",
+      "sourceUrl": "https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/syslistview32-enabler.wh.cpp",
+      "sourceSha256": "f3f563308c83cfda2f07506e574d1d985a0bb53ebc6fa7a51882ea3e7f543a86",
+      "includes": [
+        "explorer.exe"
+      ],
+      "excludes": [],
+      "architecture": [],
+      "defaultSettings": {},
+      "criticalProcess": false,
+      "requiresResources": false,
+      "conflicts": [],
+      "status": "built",
+      "binaries": [
+        {
+          "path": "modules/32/aeroforge-syslistview32-enabler_2.0.0.dll",
+          "target": "Data/Engine/Mods/32/aeroforge-syslistview32-enabler_2.0.0.dll",
+          "sha256": "25cc6791d8090a81c7cb44608bd020dd914ef780a1579ae3c25e45924875a928"
+        },
+        {
+          "path": "modules/64/aeroforge-syslistview32-enabler_2.0.0.dll",
+          "target": "Data/Engine/Mods/64/aeroforge-syslistview32-enabler_2.0.0.dll",
+          "sha256": "9d308996f28ecd0df177ca5364697e14d56ef11b8a5726333cf62ddb7d934744"
+        }
+      ],
+      "compilerOptions": ""
+    },
+    {
+      "id": "classic-taskbar-buttons-lite",
+      "name": "Classic Taskbar 3D buttons Lite",
+      "description": "Объёмные кнопки классической панели задач.",
+      "category": "Панель задач",
+      "author": "Anixx",
+      "version": "1.4",
+      "license": "MIT (Windhawk mods contribution policy)",
+      "sourceUrl": "https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/classic-taskbar-buttons-lite.wh.cpp",
+      "sourceSha256": "1d06e083a58437fbd8bc99f64f7385d65020ab401696f4df791c8aedc8e6ac91",
+      "includes": [
+        "explorer.exe"
+      ],
+      "excludes": [],
+      "architecture": [],
+      "defaultSettings": {},
+      "criticalProcess": false,
+      "requiresResources": false,
+      "conflicts": [],
+      "status": "built",
+      "binaries": [
+        {
+          "path": "modules/32/aeroforge-classic-taskbar-buttons-lite_1.4.dll",
+          "target": "Data/Engine/Mods/32/aeroforge-classic-taskbar-buttons-lite_1.4.dll",
+          "sha256": "93f64f184567c64125fc769bdae687133a0ebb09226abf070c5eff6b7cf3f5fe"
+        },
+        {
+          "path": "modules/64/aeroforge-classic-taskbar-buttons-lite_1.4.dll",
+          "target": "Data/Engine/Mods/64/aeroforge-classic-taskbar-buttons-lite_1.4.dll",
+          "sha256": "8ae7a97533ba346608d018fd9765124bf1a32ee50c5bd1525acfd273b734cdfa"
+        }
+      ],
+      "compilerOptions": "-lcomctl32"
+    },
+    {
+      "id": "winmim-shell-behavior",
+      "name": "WinMim: классические переходы оболочки",
+      "description": "Свойства панели задач и классические страницы вместо выбранных переходов в Параметры.",
+      "category": "Поведение",
+      "author": "WinMim contributors",
+      "version": "0.1.0",
+      "license": "GPL-3.0",
+      "sourceUrl": "src/WinMim.Native/winmim-shell-behavior.wh.cpp",
+      "sourcePath": "src/WinMim.Native/winmim-shell-behavior.wh.cpp",
+      "sourceSha256": "38f6e129bcae0976e8a3d69a5fe23058d3c01e4372fd9b4d82b87cb08db68b1c",
+      "includes": [
+        "explorer.exe",
+        "StartMenu.exe",
+        "WinMim.ShellProbe.exe"
+      ],
+      "excludes": [],
+      "architecture": [
+        "x86-64"
+      ],
+      "defaultSettings": {
+        "controller": "",
+        "useOwnTaskbarDialog": "1"
+      },
+      "criticalProcess": false,
+      "requiresResources": false,
+      "conflicts": [],
+      "status": "built",
+      "binaries": [
+        {
+          "path": "modules/64/aeroforge-winmim-shell-behavior_0.1.0-38f6e129bc.dll",
+          "target": "Data/Engine/Mods/64/aeroforge-winmim-shell-behavior_0.1.0-38f6e129bc.dll",
+          "sha256": "d08a97ccc7ad0e78951332252bd1e17137e6512bfcf694dccec260bbcae6233a"
+        }
+      ],
+      "compilerOptions": "-lshell32"
+    }
+  ],
+  "profiles": [
+    {
+      "id": "seven",
+      "name": "Seven",
+      "accent": "#69BCEF",
+      "description": "Классическая оболочка Windows 7. Визуальный стиль и Aero Glass подключаются отдельно.",
+      "modules": [
+        "aerexplorer",
+        "eradicate-immersive-menus",
+        "msg-box-font-fix",
+        "old-this-pc-commands",
+        "win32-tray-clock-experience",
+        "windows-7-clock-spacing",
+        "aero-tray",
+        "aero-flyout-fix",
+        "disable-office-hotkeys",
+        "legacy-file-copy",
+        "taskbar-show-desktop-button-aero-peek",
+        "winmim-shell-behavior",
+        "settings-to-control-panel",
+        "classic-taskbar-properties",
+        "win7-network-flyout-recreation",
+        "win7-open-with-dialog",
+        "win7-legacy-applet-restorer",
+        "win7-action-center-recreation",
+        "win7-display-control-panel-restorer"
+      ],
+      "settings": {
+        "settings-to-control-panel": {
+          "RedirectSystemTray": "1",
+          "RedirectDisplayPages": "0",
+          "FallbackMode": "2"
+        },
+        "win7-action-center-recreation": {
+          "enableNotificationSimulation": "0",
+          "enableHotkey": "0",
+          "theme": "light"
+        },
+        "win7-network-flyout-recreation": {
+          "enableHotkey": "0",
+          "theme": "light"
+        },
+        "win7-open-with-dialog": {
+          "defaultAssociationBehavior": "disabled"
+        }
+      }
+    },
+    {
+      "id": "vista",
+      "name": "Vista",
+      "accent": "#7DC8B3",
+      "description": "Профиль оболочки Vista; точные темы и ресурсы ещё требуют открытого пакета.",
+      "modules": [
+        "aerexplorer",
+        "eradicate-immersive-menus",
+        "msg-box-font-fix",
+        "old-this-pc-commands",
+        "win32-tray-clock-experience",
+        "aero-tray",
+        "aero-flyout-fix",
+        "disable-office-hotkeys",
+        "legacy-file-copy",
+        "taskbar-show-desktop-button-aero-peek"
+      ]
+    },
+    {
+      "id": "basic",
+      "name": "Basic",
+      "accent": "#7F9BD1",
+      "description": "Экспериментальный профиль Basic. Системный модуль DWM требует отдельной проверки.",
+      "modules": [
+        "aerexplorer",
+        "eradicate-immersive-menus",
+        "msg-box-font-fix",
+        "old-this-pc-commands",
+        "win32-tray-clock-experience",
+        "windows-7-clock-spacing",
+        "aero-tray",
+        "aero-flyout-fix",
+        "disable-office-hotkeys",
+        "legacy-file-copy",
+        "taskbar-show-desktop-button-aero-peek",
+        "basic-themer"
+      ]
+    },
+    {
+      "id": "classic",
+      "name": "Classic",
+      "accent": "#B8B9C7",
+      "description": "Экспериментальный Classic. Системный модуль winlogon требует отдельной проверки.",
+      "modules": [
+        "aerexplorer",
+        "msg-box-font-fix",
+        "old-this-pc-commands",
+        "win32-tray-clock-experience",
+        "windows-7-clock-spacing",
+        "disable-office-hotkeys",
+        "legacy-file-copy",
+        "taskbar-show-desktop-button-aero-peek",
+        "classic-theme-enable",
+        "classic-menus",
+        "classic-uwp-fix"
+      ]
+    },
+    {
+      "id": "windows95",
+      "name": "Windows 95 (стенд)",
+      "accent": "#008080",
+      "description": "Классическая отрисовка, системные метрики и исправления Explorer. Требуется отдельно включённый ClassicSession.",
+      "modules": [
+        "winmim-shell-behavior",
+        "classic-taskbar-buttons-lite",
+        "aerexplorer",
+        "classic-theme-explorer-lite",
+        "classic-theme-transparency-fix",
+        "syslistview32-enabler",
+        "remove-command-bar",
+        "disable-navigation-bar",
+        "classic-uwp-fix",
+        "eradicate-immersive-menus",
+        "legacy-file-copy",
+        "old-this-pc-commands",
+        "msg-box-font-fix"
+      ],
+      "settings": {
+        "aerexplorer": {
+          "noribbon": "1",
+          "hidetitle": "0",
+          "detailspane": "0"
+        },
+        "classic-theme-transparency-fix": {
+          "removeDialogTransparency": "1"
+        }
+      }
+    }
+  ],
+  "runtimeFiles": [
+    {
+      "path": "runtime/windhawk.exe",
+      "target": "windhawk.exe",
+      "sha256": "52db87dee0160a13cf51e31bee6320da09767582f1f359f8cf9a787d1228bf44"
+    },
+    {
+      "path": "runtime/windhawk-x64-helper.exe",
+      "target": "windhawk-x64-helper.exe",
+      "sha256": "d8f771ca3bf96dadb24767603acf01255c2b3bc509c9d7faf463edc388dbcd99"
+    },
+    {
+      "path": "runtime/Engine/1.7.3/32/msdia140_windhawk.dll",
+      "target": "Engine/1.7.3/32/msdia140_windhawk.dll",
+      "sha256": "d9c4fd69f7bc0bf1f9066df0502a57de5f6d73dfff99c9fe5c75b491aecee86b"
+    },
+    {
+      "path": "runtime/Engine/1.7.3/32/symsrv.yes",
+      "target": "Engine/1.7.3/32/symsrv.yes",
+      "sha256": "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068"
+    },
+    {
+      "path": "runtime/Engine/1.7.3/32/symsrv_windhawk.dll",
+      "target": "Engine/1.7.3/32/symsrv_windhawk.dll",
+      "sha256": "7a9fadded044916c645789a1e7185b0bc83f226052dc93015d59826541dcfa4a"
+    },
+    {
+      "path": "runtime/Engine/1.7.3/32/windhawk.dll",
+      "target": "Engine/1.7.3/32/windhawk.dll",
+      "sha256": "67cdaaf26d342b3f2a2a84ea6f7474ac43340711675b66edef34cc3fcee1ea8f"
+    },
+    {
+      "path": "runtime/Data/Engine/Mods/32/libc++.whl",
+      "target": "Data/Engine/Mods/32/libc++.whl",
+      "sha256": "a0f36ff21a32fa09de8de64d8021f444de57e48f469fe8152cc41e3dc58a1d90"
+    },
+    {
+      "path": "runtime/Data/Engine/Mods/32/libunwind.whl",
+      "target": "Data/Engine/Mods/32/libunwind.whl",
+      "sha256": "f48eaae7c06622b81b55ffa09338af4b7778121847f2f9bf1f0e6cef32d8695e"
+    },
+    {
+      "path": "runtime/Data/Engine/Mods/32/windhawk-mod-shim.dll",
+      "target": "Data/Engine/Mods/32/windhawk-mod-shim.dll",
+      "sha256": "1c0e8105bdfb3c6a7f3a2ebd2f25e38e7c23dd66619364a3fe620e6603a0ba2d"
+    },
+    {
+      "path": "runtime/Engine/1.7.3/64/msdia140_windhawk.dll",
+      "target": "Engine/1.7.3/64/msdia140_windhawk.dll",
+      "sha256": "6465aca7b9a162726ca98c6e633fc70b8cb2a8c0a4f90c2b32e0ca99fb5f9cf8"
+    },
+    {
+      "path": "runtime/Engine/1.7.3/64/symsrv.yes",
+      "target": "Engine/1.7.3/64/symsrv.yes",
+      "sha256": "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068"
+    },
+    {
+      "path": "runtime/Engine/1.7.3/64/symsrv_windhawk.dll",
+      "target": "Engine/1.7.3/64/symsrv_windhawk.dll",
+      "sha256": "67bdff85d161888f2c6a8a385f9b35aa1c1c231ed3b59c01fa54f598ac37d374"
+    },
+    {
+      "path": "runtime/Engine/1.7.3/64/windhawk.dll",
+      "target": "Engine/1.7.3/64/windhawk.dll",
+      "sha256": "0aad074caf156200be7a77e4615f9171cea884cde96baf90397366c28c4f10a1"
+    },
+    {
+      "path": "runtime/Data/Engine/Mods/64/libc++.whl",
+      "target": "Data/Engine/Mods/64/libc++.whl",
+      "sha256": "74c541f76732d738642072e90f26343e44d66d97bb258db76f2f3bee7e30060c"
+    },
+    {
+      "path": "runtime/Data/Engine/Mods/64/libunwind.whl",
+      "target": "Data/Engine/Mods/64/libunwind.whl",
+      "sha256": "6e6d1e74d17ee361b3f3661faa3d07fa7597257df1cd3dd360719222e54aa36c"
+    },
+    {
+      "path": "runtime/Data/Engine/Mods/64/windhawk-mod-shim.dll",
+      "target": "Data/Engine/Mods/64/windhawk-mod-shim.dll",
+      "sha256": "cb4808ede8e31abb5142657187ebf51449331112c1679a3bca6792d6d1fe09bf"
+    }
+  ],
+  "dependencies": [
+    {
+      "id": "open-shell",
+      "name": "Open-Shell",
+      "version": "4.4.198",
+      "license": "MIT",
+      "description": "Классическое меню «Пуск». Устанавливается официальным установщиком отдельно; AeroForge не удаляет его при откате профиля.",
+      "sourceUrl": "https://github.com/Open-Shell/Open-Shell-Menu",
+      "downloadUrl": "https://github.com/Open-Shell/Open-Shell-Menu/releases/download/v4.4.198/OpenShellSetup_4_4_198.exe",
+      "sha256": "a4d2d4459de55b5e962ba2a14f7bb794170511649138173dfa72949837b48c3f",
+      "fileName": "OpenShellSetup_4_4_198.exe"
+    },
+    {
+      "id": "secureuxtheme",
+      "name": "SecureUxTheme",
+      "version": "4.0.0",
+      "license": "LGPL-2.1",
+      "description": "Подключение сторонних визуальных стилей. Изменения установщика управляются средствами Windows Installer.",
+      "sourceUrl": "https://github.com/namazso/SecureUxTheme",
+      "downloadUrl": "https://github.com/namazso/SecureUxTheme/releases/download/v4.0.0/SecureUxTheme_x64.msi",
+      "sha256": "af6ab67e0a283a0138b827b6731d5bb1f4ffc59e6d905f1c41567eb3305a9537",
+      "fileName": "SecureUxTheme_x64.msi"
+    },
+    {
+      "id": "openglass",
+      "name": "OpenGlass",
+      "version": "3.0.2.3749",
+      "license": "GPL-3.0",
+      "description": "Прозрачность и рамки Aero. Совместимость конкретной ревизии Windows проверяется отдельно.",
+      "sourceUrl": "https://github.com/ALTaleX531/OpenGlass",
+      "downloadUrl": "https://github.com/ALTaleX531/OpenGlass/releases/download/v3.0.2.3749/OpenGlassSetup.Signed.exe",
+      "sha256": "191553cf594af2459631a8d00a48ffe0375868210f5e84c60ff75a668529405f",
+      "fileName": "OpenGlassSetup.Signed.exe"
+    }
+  ]
+}
