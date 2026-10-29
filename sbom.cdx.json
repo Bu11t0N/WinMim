@@ -762,6 +762,156 @@
     },
     {
       "type": "library",
+      "name": "classic-theme-explorer-lite",
+      "version": "1.3",
+      "author": "Anixx",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT (Windhawk mods contribution policy)"
+          }
+        }
+      ],
+      "externalReferences": [
+        {
+          "type": "vcs",
+          "url": "https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/classic-theme-explorer-lite.wh.cpp"
+        }
+      ],
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "3a298bede982a3a7f6e54f4c0d6dc027877e66813d502b4ade839334699d7d74"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "classic-theme-transparency-fix",
+      "version": "1.5",
+      "author": "Anixx",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT (Windhawk mods contribution policy)"
+          }
+        }
+      ],
+      "externalReferences": [
+        {
+          "type": "vcs",
+          "url": "https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/classic-theme-transparency-fix.wh.cpp"
+        }
+      ],
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "23bdeaf5831cf3fa814b9001539ffe83391587711f84bf30bfc741d65b6540e7"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "disable-navigation-bar",
+      "version": "1.0.0",
+      "author": "ItsProfessional",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT (Windhawk mods contribution policy)"
+          }
+        }
+      ],
+      "externalReferences": [
+        {
+          "type": "vcs",
+          "url": "https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/disable-navigation-bar.wh.cpp"
+        }
+      ],
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "8fc1184b8d42f4f69d68a38a034953acca40aeabb9659d79071f92fe68360a33"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "remove-command-bar",
+      "version": "1.0.1",
+      "author": "Waldemar",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT (Windhawk mods contribution policy)"
+          }
+        }
+      ],
+      "externalReferences": [
+        {
+          "type": "vcs",
+          "url": "https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/remove-command-bar.wh.cpp"
+        }
+      ],
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "2223c7b7b62cdb71ce46f0aa4912406ee5f1745d938cb423c8e8809a4f4dc66b"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "syslistview32-enabler",
+      "version": "2.0.0",
+      "author": "anixx",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT (Windhawk mods contribution policy)"
+          }
+        }
+      ],
+      "externalReferences": [
+        {
+          "type": "vcs",
+          "url": "https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/syslistview32-enabler.wh.cpp"
+        }
+      ],
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "f3f563308c83cfda2f07506e574d1d985a0bb53ebc6fa7a51882ea3e7f543a86"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "classic-taskbar-buttons-lite",
+      "version": "1.4",
+      "author": "Anixx",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT (Windhawk mods contribution policy)"
+          }
+        }
+      ],
+      "externalReferences": [
+        {
+          "type": "vcs",
+          "url": "https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/classic-taskbar-buttons-lite.wh.cpp"
+        }
+      ],
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "1d06e083a58437fbd8bc99f64f7385d65020ab401696f4df791c8aedc8e6ac91"
+        }
+      ]
+    },
+    {
+      "type": "library",
       "name": "winmim-shell-behavior",
       "version": "0.1.0",
       "author": "WinMim contributors",

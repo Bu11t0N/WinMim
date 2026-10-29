@@ -51,6 +51,12 @@ The optional legacy Microsoft display.dll provider is verified and supplied sepa
 | Windows 7 Network Flyout Recreation | babamohammed | 5.2.0 | MIT (Windhawk mods contribution policy) | [source](https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/win7-network-flyout-recreation.wh.cpp) |
 | Windows Vista/7 "Open with" Dialog Restorer | babamohammed | 1.1.0 | MIT | [source](https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/win7-open-with-dialog.wh.cpp) |
 | Classic Display Control Panel Restorer | babamohammed | 1.1.0 | MIT (Windhawk mods contribution policy) | [source](https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/win7-display-control-panel-restorer.wh.cpp) |
+| Classic Theme Explorer Lite | Anixx | 1.3 | MIT (Windhawk mods contribution policy) | [source](https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/classic-theme-explorer-lite.wh.cpp) |
+| Classic theme transparency fix | Anixx | 1.5 | MIT (Windhawk mods contribution policy) | [source](https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/classic-theme-transparency-fix.wh.cpp) |
+| Disable Navigation Bar | ItsProfessional | 1.0.0 | MIT (Windhawk mods contribution policy) | [source](https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/disable-navigation-bar.wh.cpp) |
+| Remove Command Bar | Waldemar | 1.0.1 | MIT (Windhawk mods contribution policy) | [source](https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/remove-command-bar.wh.cpp) |
+| Enable SyslistView32 | anixx | 2.0.0 | MIT (Windhawk mods contribution policy) | [source](https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/syslistview32-enabler.wh.cpp) |
+| Classic Taskbar 3D buttons Lite | Anixx | 1.4 | MIT (Windhawk mods contribution policy) | [source](https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/classic-taskbar-buttons-lite.wh.cpp) |
 | WinMim: классические переходы оболочки | WinMim contributors | 0.1.0 | GPL-3.0 | [source](src/WinMim.Native/winmim-shell-behavior.wh.cpp) |
 
 ## Optional installers
@@ -67,6 +73,10 @@ Aero10 Seven by vaporvance is a separate CC BY-NC-SA 4.0 package; Microsoft asse
 ## Private reference resources and extras
 
 The optional private W7Aero-Redstone theme, 56 resource-only icon libraries, games, Desktop Gadgets, Media Center, Windows 7 WAV sounds and DVD Appx/license are supplied separately for the private lab. None is bundled or relicensed. The original WinMim coordinator validates pinned files and retains native uninstallers. See docs/SEVEN-PROGRESS-20261024.md.
+
+## Classic95 artwork
+
+Five original homage icons by ke2083 are included under GPL-3.0, pinned at d1cb96c9841c9ce321d7c95c0ee266e0d483c702. See content/classic95/LICENSE, UPSTREAM-README.md and sources.json. They are not extracted Microsoft Windows 95 binaries. The Start button in the Classic95 profile uses the existing system icon and the native Open-Shell classic renderer.
 
 ## Original tools and artwork
 
