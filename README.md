@@ -12,16 +12,19 @@ WinMim is an experimental Windows customization toolkit that aims to recreate th
 
 **Developer preview, version 0.1.0.** WinMim does not yet match Revert8Plus feature for feature, and does not provide an indistinguishable recreation of any Windows release.
 
-The current integration target is **Windows 10 IoT Enterprise LTSC 2021, x64, build 19044**. Full desktop operations are deliberately restricted to the prepared `AEROFORGE-LAB` virtual machine. General installation on other machines is not implemented.
+Tested on **Windows 10 IoT Enterprise LTSC 2021, x64, build 19044**. Full desktop conversion is an experimental developer feature; general-purpose installation is not available yet.
 
 | Target appearance | Current implementation |
 | --- | --- |
 | Windows 95 | Experimental native classic rendering, palette and metrics, Open-Shell menu, desktop icons and Explorer/taskbar modules. Apply/restore and controlled resume/restore after reboot tested; normal startup still requires elevation. |
-| Windows 7 | Experimental desktop coordinator, Explorer behavior, taskbar properties, icons and optional components in the private lab. Some required visual resources are external and are not in this repository. |
+| Windows 7 | Experimental desktop coordinator, Explorer behavior, taskbar properties, icons and optional components. Some required visual resources are external and are not in this repository. |
 | Windows Vista | Module preset; complete desktop conversion is pending. |
-| Windows 98, Me, 2000, XP, 8, 8.1, 10, 11 | Catalog entries and future targets. Selecting them does not apply a theme. |
+| Windows 98, Me, 2000, 8, 8.1, 10, 11 | Catalog entries and future targets. Selecting them does not apply a theme. |
+| Windows XP | Existing placeholder; implementation is deferred and excluded from the current classic-theme plan. |
 
 Long term, WinMim will support multiple target appearances on Windows 10 and Windows 11. This is a roadmap, not a compatibility claim. Windows 11 integration is not validated yet.
+
+The next planned appearance family is [classic Windows before XP](docs/CLASSIC-PRE-XP-PLAN.md), starting from the existing Windows 95 foundation. These are target appearances for a modern host, not supported host operating systems.
 
 ## Screenshots
 
@@ -35,11 +38,11 @@ Actual captures of the developer preview, taken on October 30, 2026. The applica
 
 ![Windows 95 appearance applied to Windows 10 LTSC, with WinMim and the classic Start menu open](assets/screenshots/windows-95.png)
 
-**Windows 7 appearance — private lab integration, with the Start menu open.**
+**Windows 7 appearance — experimental integration, with the Start menu open.**
 
 ![Windows 7 appearance applied to Windows 10 LTSC, with WinMim and the Windows 7-style Start menu open](assets/screenshots/windows-7.png)
 
-Windows 95 and Windows 7 are the two desktop integrations currently demonstrated. The other target appearances are catalog entries or incomplete presets; they do not yet have a complete theme to demonstrate. The Windows 7 desktop in the last image was applied through the separate lab coordinator; selecting the Windows 7 catalog row alone does not apply it.
+Windows 95 and Windows 7 are the two desktop integrations currently demonstrated. The other target appearances are catalog entries or incomplete presets; they do not yet have a complete theme to demonstrate. The Windows 7 desktop uses its dedicated setup workflow; selecting the Windows 7 catalog row alone does not apply it.
 
 ## Features
 
@@ -47,8 +50,8 @@ Windows 95 and Windows 7 are the two desktop integrations currently demonstrated
 - Profile planning, module configuration, JSON import/export and separate engine start/stop controls.
 - Journaled changes with backups written before mutation, failure recovery and conflict-aware rollback.
 - A pinned Windhawk runtime and module collection: 39 catalog modules and 56 compiled x86/x64 module DLLs in the prepared build.
-- A Windows 7 lab coordinator for Open-Shell, visual styles, Aero Glass, desktop resources and classic shell behavior.
-- A Windows 95 lab profile with native classic drawing, compact menus, a teal desktop and 3D taskbar controls.
+- A Windows 7 desktop coordinator for Open-Shell, visual styles, Aero Glass, desktop resources and classic shell behavior.
+- A Windows 95 profile with native classic drawing, compact menus, a teal desktop and 3D taskbar controls.
 - Standalone Mines, notes, memory/clock gadgets, a local media player and window switcher.
 - A CLI for diagnostics, verification, planning, staging and recovery.
 
@@ -62,7 +65,7 @@ To run a prepared build:
 - A disposable Windows 10 LTSC 2021 VM with a recovery snapshot for full desktop experiments.
 - Internet access for optional dependency downloads and first-time Windows symbol resolution, or a prepared local cache.
 
-Some lab operations require administrator rights and an Explorer restart. Runtime compatibility depends on the exact Windows build and update revision, selected modules and third-party components.
+Some operations require administrator rights and an Explorer restart. Runtime compatibility depends on the exact Windows build and update revision, selected modules and third-party components.
 
 ## Building from source
 
@@ -98,7 +101,7 @@ Internal `AeroForge` namespaces and state directory names are retained for compa
 .\build\cli\AeroForge.Cli.exe plan --content .\content --profile seven
 ```
 
-Launching the control panel alone does not apply a profile. Inspect the plan before using the explicit apply/start actions. Complete Windows 7 and Windows 95 integration actions currently require the lab environment and its separately prepared dependencies.
+Launching the control panel alone does not apply a profile. Inspect the plan before using the explicit apply/start actions. Full Windows 7 and Windows 95 integration currently requires a prepared test environment and separately obtained dependencies; it is not a general installer.
 
 Validation after native preparation:
 
@@ -117,7 +120,7 @@ Use the application's recovery page or matching profile restore action. Stop the
 
 Keep a VM snapshot in addition to WinMim's journals. A journal cannot recover an unbootable guest, remove every effect of an external installer, or undo changes outside its recorded scope. Windows 95 passed a controlled reboot/resume/restore test after the [reliability fixes](docs/CLASSIC95-BUGFIXES-20261029.md). This does not establish unattended startup or fully explain the original black-screen incident.
 
-The lab was recovered to its Seven snapshot, updated and successfully rebooted. See the [recovery report](docs/VM-RECOVERY-20261029.md) and subsequent [UI, resource and performance fixes](docs/CLASSIC95-RELIABILITY-20261030.md) for observations and limits.
+Technical details and validation limits are documented in the [recovery report](docs/VM-RECOVERY-20261029.md) and [UI, resource and performance fixes](docs/CLASSIC95-RELIABILITY-20261030.md).
 
 Remaining gaps include complete historical icons and cursors, Explorer content and commands, tray details, system dialogs, modern app surfaces, logon screens and consistent behavior across Windows updates. See [development priorities](docs/DEVELOPMENT.md) and the [Windows 7 gap list](docs/WIN7-VISUAL-GAPS.md).
 
