@@ -146,7 +146,7 @@ docs/                Architecture, implementation notes and research
 
 Historical implementation notes are currently mostly in Russian. Raw diagnostic captures, credentials, private resource packs and local session notes are excluded from Git. The curated screenshots above are included under `assets/screenshots/`.
 
-For the current decisions, completed work and next steps, see the [project handoff](docs/PROJECT-STATE.md) and the [Windows 7 appearance research](docs/SEVEN-APPEARANCE-RESEARCH-20261030.md), both in Russian.
+For the current decisions, completed work and next steps, see the [project handoff](docs/PROJECT-STATE.md) and the [Windows 7 appearance research](docs/SEVEN-APPEARANCE-RESEARCH-20261030.md), both in Russian. XP work has a [dedicated assignment](docs/tasks/XP.md) and a [Windows eXPerience source and materials review](docs/XP-EXPERIENCE-RESEARCH-20261030.md).
 
 ## Contributing
 
