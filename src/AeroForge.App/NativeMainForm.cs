@@ -77,7 +77,7 @@ public sealed class NativeMainForm : F.Form
         top.Controls.Add(Label("Во что превратить Windows"));
         top.Controls.Add(Label("Классические оформления и XP доступны для применения в подготовленной Windows 10 LTSC 2021. Это первые рабочие версии: часть ресурсов и системных окон ещё отличается от оригинала."));
         top.Controls.Add(Label("Рабочий профиль Windows 7 для подготовленной ВМ вынесен на отдельную вкладку «Windows 7 (стенд)»."));
-        top.Controls.Add(Label("XP: панель и меню Luna, пока классические рамки. Классические профили используют общий набор значков; оригинальные ресурсы каждой версии будут уточняться отдельно."));
+        top.Controls.Add(Label("XP использует отдельный личный пакет Luna Blue. Для остальных классических профилей точность ресурсов ещё уточняется. Перед применением XP программа проверяет наличие пакета."));
         var bottom=Flow(true);bottom.Dock=F.DockStyle.Bottom;bottom.Controls.Add(targetDetail);
         var action=Button("Выбрать оформление");bottom.Controls.Add(action);
         page.Controls.Add(targets);page.Controls.Add(bottom);page.Controls.Add(top);

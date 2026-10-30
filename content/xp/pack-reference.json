@@ -1,0 +1,1493 @@
+{
+  "schemaVersion": 1,
+  "build": 19044,
+  "source": "Luna10-derived resources from offline Windows eXPerience R2 RC3 community mirror (not an authenticated author release); icons from user-supplied XP SP3 RU media",
+  "license": "Private evaluation only. Microsoft resources retain Microsoft rights. Luna10 author page lists CC BY-NC 3.0; provenance of this older mirror is limited. Do not redistribute the binary pack. Open-Shell menu skin: MIT, modified text configuration only; bitmap resources unchanged.",
+  "sourceArchiveSha256": "4d71d0bb85ba843d7f4b459a9d1c26b1457b4270ed77ba741de376cb9ed1d612",
+  "sourceBinarySha256": "fd59f3c43b1a1e2e4f2987a933a16ab4e5ceef5d26b1e4416cb7604f17df8f8b",
+  "style": "Luna/Luna.msstyles",
+  "color": "NormalColor",
+  "size": "NormalSize",
+  "wallpaper": "Luna/Bliss.jpg",
+  "icons": {
+    "computer": "Icons/computer.ico",
+    "documents": "Icons/documents.ico",
+    "network": "Icons/network.ico",
+    "recycle-empty": "Icons/recycle-empty.ico",
+    "recycle-full": "Icons/recycle-full.ico",
+    "programs": "Icons/programs.ico",
+    "settings": "Icons/settings.ico",
+    "search": "Icons/search.ico",
+    "help": "Icons/help.ico",
+    "run": "Icons/run.ico",
+    "shutdown": "Icons/shutdown.ico",
+    "start": "Icons/start.ico",
+    "printers": "Icons/printers.ico",
+    "folder-closed": "Icons/folder-closed.ico",
+    "folder-open": "Icons/folder-open.ico",
+    "drive-removable": "Icons/drive-removable.ico",
+    "drive-fixed": "Icons/drive-fixed.ico",
+    "drive-network": "Icons/drive-network.ico",
+    "drive-disconnected": "Icons/drive-disconnected.ico",
+    "drive-cd": "Icons/drive-cd.ico",
+    "drive-floppy": "Icons/drive-floppy.ico",
+    "notepad": "Icons/notepad.ico"
+  },
+  "files": [
+    {
+      "name": "Icons/computer.ico",
+      "sha256": "bb9ce1e08b2dd78edf42d7e7b1ee70f5c8b665a4342ee36832001bfda201a4fd",
+      "bytes": 29926,
+      "sizes": [
+        {
+          "width": 48,
+          "height": 48,
+          "bitDepth": 4
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 4
+        },
+        {
+          "width": 24,
+          "height": 24,
+          "bitDepth": 4
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 4
+        },
+        {
+          "width": 48,
+          "height": 48,
+          "bitDepth": 8
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 8
+        },
+        {
+          "width": 24,
+          "height": 24,
+          "bitDepth": 8
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 8
+        },
+        {
+          "width": 48,
+          "height": 48,
+          "bitDepth": 32
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 32
+        },
+        {
+          "width": 24,
+          "height": 24,
+          "bitDepth": 32
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 32
+        }
+      ]
+    },
+    {
+      "name": "Icons/documents.ico",
+      "sha256": "65edad016e3ffd1689b18e9454748ac0cf0ac301cd9df8de9f82b489b60ee5c4",
+      "bytes": 29926,
+      "sizes": [
+        {
+          "width": 48,
+          "height": 48,
+          "bitDepth": 4
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 4
+        },
+        {
+          "width": 24,
+          "height": 24,
+          "bitDepth": 4
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 4
+        },
+        {
+          "width": 48,
+          "height": 48,
+          "bitDepth": 8
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 8
+        },
+        {
+          "width": 24,
+          "height": 24,
+          "bitDepth": 8
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 8
+        },
+        {
+          "width": 48,
+          "height": 48,
+          "bitDepth": 32
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 32
+        },
+        {
+          "width": 24,
+          "height": 24,
+          "bitDepth": 32
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 32
+        }
+      ]
+    },
+    {
+      "name": "Icons/drive-cd.ico",
+      "sha256": "b91c49a9832888b9ecc8aaf8ead98588363a77ddf99af31feb08f63ce0f9b3a8",
+      "bytes": 25214,
+      "sizes": [
+        {
+          "width": 48,
+          "height": 48,
+          "bitDepth": 4
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 4
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 4
+        },
+        {
+          "width": 48,
+          "height": 48,
+          "bitDepth": 8
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 8
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 8
+        },
+        {
+          "width": 48,
+          "height": 48,
+          "bitDepth": 32
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 32
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 32
+        }
+      ]
+    },
+    {
+      "name": "Icons/drive-disconnected.ico",
+      "sha256": "ea4ff967ac56ae0d447ce8bec2d8f3b0c36b7f02801717fd8049b1b0bca789d7",
+      "bytes": 25214,
+      "sizes": [
+        {
+          "width": 48,
+          "height": 48,
+          "bitDepth": 4
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 4
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 4
+        },
+        {
+          "width": 48,
+          "height": 48,
+          "bitDepth": 8
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 8
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 8
+        },
+        {
+          "width": 48,
+          "height": 48,
+          "bitDepth": 32
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 32
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 32
+        }
+      ]
+    },
+    {
+      "name": "Icons/drive-fixed.ico",
+      "sha256": "4be5de424082dccd0ec42045cd3a52a029544949ccbb4debdc242695c4904a05",
+      "bytes": 25214,
+      "sizes": [
+        {
+          "width": 48,
+          "height": 48,
+          "bitDepth": 4
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 4
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 4
+        },
+        {
+          "width": 48,
+          "height": 48,
+          "bitDepth": 8
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 8
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 8
+        },
+        {
+          "width": 48,
+          "height": 48,
+          "bitDepth": 32
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 32
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 32
+        }
+      ]
+    },
+    {
+      "name": "Icons/drive-floppy.ico",
+      "sha256": "e19b364f4237a0f34cffa661bad2cd52c148e47c800c9ac2d645ee4f3114ea3b",
+      "bytes": 23558,
+      "sizes": [
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 4
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 4
+        },
+        {
+          "width": 48,
+          "height": 48,
+          "bitDepth": 8
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 8
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 8
+        },
+        {
+          "width": 48,
+          "height": 48,
+          "bitDepth": 32
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 32
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 32
+        }
+      ]
+    },
+    {
+      "name": "Icons/drive-network.ico",
+      "sha256": "a78724dc7a8549236d3ca7396474ecb6148571be61a50022c7ab228a5bbae384",
+      "bytes": 25214,
+      "sizes": [
+        {
+          "width": 48,
+          "height": 48,
+          "bitDepth": 4
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 4
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 4
+        },
+        {
+          "width": 48,
+          "height": 48,
+          "bitDepth": 8
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 8
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 8
+        },
+        {
+          "width": 48,
+          "height": 48,
+          "bitDepth": 32
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 32
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 32
+        }
+      ]
+    },
+    {
+      "name": "Icons/drive-removable.ico",
+      "sha256": "fa035f7d96fedc422b6ed1643075630e8f5dcf9b91e3c9898b554f44a962b2a4",
+      "bytes": 22486,
+      "sizes": [
+        {
+          "width": 48,
+          "height": 48,
+          "bitDepth": 8
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 8
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 8
+        },
+        {
+          "width": 48,
+          "height": 48,
+          "bitDepth": 32
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 32
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 32
+        }
+      ]
+    },
+    {
+      "name": "Icons/folder-closed.ico",
+      "sha256": "c66540175143c39dd6f6fef1b255ff2ab6c6346fe16bd8f2d2d96e48cf83aac4",
+      "bytes": 78942,
+      "sizes": [
+        {
+          "width": 48,
+          "height": 48,
+          "bitDepth": 4
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 4
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 4
+        },
+        {
+          "width": 48,
+          "height": 48,
+          "bitDepth": 8
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 8
+        },
+        {
+          "width": 24,
+          "height": 24,
+          "bitDepth": 8
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 8
+        },
+        {
+          "width": 48,
+          "height": 48,
+          "bitDepth": 32
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 32
+        },
+        {
+          "width": 24,
+          "height": 24,
+          "bitDepth": 32
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 32
+        },
+        {
+          "width": 96,
+          "height": 96,
+          "bitDepth": 8
+        },
+        {
+          "width": 96,
+          "height": 96,
+          "bitDepth": 32
+        }
+      ]
+    },
+    {
+      "name": "Icons/folder-open.ico",
+      "sha256": "d181a43ae257c9510ad3cad6144b9a07719f5fd2b483ad9717dd661225d96921",
+      "bytes": 25214,
+      "sizes": [
+        {
+          "width": 48,
+          "height": 48,
+          "bitDepth": 4
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 4
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 4
+        },
+        {
+          "width": 48,
+          "height": 48,
+          "bitDepth": 8
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 8
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 8
+        },
+        {
+          "width": 48,
+          "height": 48,
+          "bitDepth": 32
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 32
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 32
+        }
+      ]
+    },
+    {
+      "name": "Icons/help.ico",
+      "sha256": "6050a70afef5607a9040099ae7a596186202c34df0cc9fd96439c9e53d199d3d",
+      "bytes": 29926,
+      "sizes": [
+        {
+          "width": 48,
+          "height": 48,
+          "bitDepth": 4
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 4
+        },
+        {
+          "width": 24,
+          "height": 24,
+          "bitDepth": 4
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 4
+        },
+        {
+          "width": 48,
+          "height": 48,
+          "bitDepth": 8
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 8
+        },
+        {
+          "width": 24,
+          "height": 24,
+          "bitDepth": 8
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 8
+        },
+        {
+          "width": 48,
+          "height": 48,
+          "bitDepth": 32
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 32
+        },
+        {
+          "width": 24,
+          "height": 24,
+          "bitDepth": 32
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 32
+        }
+      ]
+    },
+    {
+      "name": "Icons/network.ico",
+      "sha256": "927bc8871aaa52569ec2bfd1f42c77fb144f663b22be9a9e3a81674e820d684a",
+      "bytes": 29422,
+      "sizes": [
+        {
+          "width": 48,
+          "height": 48,
+          "bitDepth": 4
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 4
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 4
+        },
+        {
+          "width": 48,
+          "height": 48,
+          "bitDepth": 8
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 8
+        },
+        {
+          "width": 24,
+          "height": 24,
+          "bitDepth": 8
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 8
+        },
+        {
+          "width": 48,
+          "height": 48,
+          "bitDepth": 32
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 32
+        },
+        {
+          "width": 24,
+          "height": 24,
+          "bitDepth": 32
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 32
+        }
+      ]
+    },
+    {
+      "name": "Icons/printers.ico",
+      "sha256": "f82efba87521464a17cbe52478e21b12d04544504bbace93f6d1aa2dc027e423",
+      "bytes": 23558,
+      "sizes": [
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 4
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 4
+        },
+        {
+          "width": 48,
+          "height": 48,
+          "bitDepth": 8
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 8
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 8
+        },
+        {
+          "width": 48,
+          "height": 48,
+          "bitDepth": 32
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 32
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 32
+        }
+      ]
+    },
+    {
+      "name": "Icons/programs.ico",
+      "sha256": "70e6ed4fa51cabd1d3ac7ab6de803cc34df78001ed7a7032ec33938c844f254a",
+      "bytes": 25214,
+      "sizes": [
+        {
+          "width": 48,
+          "height": 48,
+          "bitDepth": 4
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 4
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 4
+        },
+        {
+          "width": 48,
+          "height": 48,
+          "bitDepth": 8
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 8
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 8
+        },
+        {
+          "width": 48,
+          "height": 48,
+          "bitDepth": 32
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 32
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 32
+        }
+      ]
+    },
+    {
+      "name": "Icons/recycle-empty.ico",
+      "sha256": "e5fd1987abde480e45391abd68187cbfd69bd9508400bcd1bb1a13c6c92f52ac",
+      "bytes": 25214,
+      "sizes": [
+        {
+          "width": 48,
+          "height": 48,
+          "bitDepth": 4
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 4
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 4
+        },
+        {
+          "width": 48,
+          "height": 48,
+          "bitDepth": 8
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 8
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 8
+        },
+        {
+          "width": 48,
+          "height": 48,
+          "bitDepth": 32
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 32
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 32
+        }
+      ]
+    },
+    {
+      "name": "Icons/recycle-full.ico",
+      "sha256": "89ded8e60a6e1cf61405f3944a2ae8928bf345fcbbaaa39bccfcce34f5d2fd29",
+      "bytes": 25214,
+      "sizes": [
+        {
+          "width": 48,
+          "height": 48,
+          "bitDepth": 4
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 4
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 4
+        },
+        {
+          "width": 48,
+          "height": 48,
+          "bitDepth": 8
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 8
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 8
+        },
+        {
+          "width": 48,
+          "height": 48,
+          "bitDepth": 32
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 32
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 32
+        }
+      ]
+    },
+    {
+      "name": "Icons/run.ico",
+      "sha256": "49bc167269d0ddec7a3a03582f8da89308fe68d8bac7cb377c748710b714c577",
+      "bytes": 29422,
+      "sizes": [
+        {
+          "width": 48,
+          "height": 48,
+          "bitDepth": 4
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 4
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 4
+        },
+        {
+          "width": 48,
+          "height": 48,
+          "bitDepth": 8
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 8
+        },
+        {
+          "width": 24,
+          "height": 24,
+          "bitDepth": 8
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 8
+        },
+        {
+          "width": 48,
+          "height": 48,
+          "bitDepth": 32
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 32
+        },
+        {
+          "width": 24,
+          "height": 24,
+          "bitDepth": 32
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 32
+        }
+      ]
+    },
+    {
+      "name": "Icons/search.ico",
+      "sha256": "6f36c5ab771b8bb17ff04b3445041abe33e6dd0fee7ab1284e41776e5bd1cd0c",
+      "bytes": 29926,
+      "sizes": [
+        {
+          "width": 48,
+          "height": 48,
+          "bitDepth": 4
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 4
+        },
+        {
+          "width": 24,
+          "height": 24,
+          "bitDepth": 4
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 4
+        },
+        {
+          "width": 48,
+          "height": 48,
+          "bitDepth": 8
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 8
+        },
+        {
+          "width": 24,
+          "height": 24,
+          "bitDepth": 8
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 8
+        },
+        {
+          "width": 48,
+          "height": 48,
+          "bitDepth": 32
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 32
+        },
+        {
+          "width": 24,
+          "height": 24,
+          "bitDepth": 32
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 32
+        }
+      ]
+    },
+    {
+      "name": "Icons/settings.ico",
+      "sha256": "6de01ede2a0d6365c4d85592f5449a05abeb64a16869ae56c60433c07a96d0ca",
+      "bytes": 29926,
+      "sizes": [
+        {
+          "width": 48,
+          "height": 48,
+          "bitDepth": 4
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 4
+        },
+        {
+          "width": 24,
+          "height": 24,
+          "bitDepth": 4
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 4
+        },
+        {
+          "width": 48,
+          "height": 48,
+          "bitDepth": 8
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 8
+        },
+        {
+          "width": 24,
+          "height": 24,
+          "bitDepth": 8
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 8
+        },
+        {
+          "width": 48,
+          "height": 48,
+          "bitDepth": 32
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 32
+        },
+        {
+          "width": 24,
+          "height": 24,
+          "bitDepth": 32
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 32
+        }
+      ]
+    },
+    {
+      "name": "Icons/shutdown.ico",
+      "sha256": "9a4865078e2e81f682774214043320a58726282b5ecefdce93ef238884dd5c5c",
+      "bytes": 10134,
+      "sizes": [
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 4
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 4
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 8
+        },
+        {
+          "width": 48,
+          "height": 48,
+          "bitDepth": 8
+        },
+        {
+          "width": 48,
+          "height": 48,
+          "bitDepth": 4
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 8
+        }
+      ]
+    },
+    {
+      "name": "Icons/start.ico",
+      "sha256": "d50aedd33ac8d2a82aaf1ad9c3a9f449cccf3b9b98cb904c1296dc088c26b6c2",
+      "bytes": 10134,
+      "sizes": [
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 4
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 4
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 8
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 8
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "bitDepth": 32
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "bitDepth": 32
+        }
+      ]
+    },
+    {
+      "name": "Luna/Bliss.jpg",
+      "sha256": "40d8d0e7823dce07b358a5f91c72065114760dd3a14fe3527ee543f664edd1b7",
+      "bytes": 208714
+    },
+    {
+      "name": "Luna/Homestead.msstyles",
+      "sha256": "4bdadafe6a3cdaaa06d0961646468179d0f29388a01909e24e6b0243a41c7118",
+      "bytes": 1524880
+    },
+    {
+      "name": "Luna/Luna.msstyles",
+      "sha256": "0dfd0a107b746ff329f98fb18c614b667f1d39f3e9e88426351578d501a67949",
+      "bytes": 1542288
+    },
+    {
+      "name": "Luna/Metallic.msstyles",
+      "sha256": "33112fb6b0a54bf679fb451d38a0b2af6b498bc80f1c74dc01d6749c77360d68",
+      "bytes": 1519248
+    },
+    {
+      "name": "Luna/Shell/NormalColor/en-US/shellstyle.dll.mui",
+      "sha256": "339869ea975c67deef8afdaa6638b72b825f5899141fe68861aa4afd74cd516f",
+      "bytes": 70656
+    },
+    {
+      "name": "Luna/Shell/NormalColor/shellstyle.dll",
+      "sha256": "922b13f2d370f5c94af7d0ccc4f53146640e6e6304911f28d7af92a9e635a806",
+      "bytes": 1149440
+    },
+    {
+      "name": "Resources/imageres.dll",
+      "sha256": "a1237035316775573b1ef6cc3b094da3dd3833f2cee38ad89ccadec087dcc10e",
+      "bytes": 248320
+    },
+    {
+      "name": "Resources/manifest.json",
+      "sha256": "32e60f3c8ab937399401bd32d81131eb35a5549b0639de902c1e61fa2a1c416f",
+      "bytes": 403
+    },
+    {
+      "name": "Resources/shell32.dll",
+      "sha256": "c9131aefcb3101c4e372139007c4a27f2cb0b557f1c1b8582a57e59fd62d667f",
+      "bytes": 579584
+    },
+    {
+      "name": "Cursors/AppStarting.cur",
+      "sha256": "9c4a7ae36d7f1b0b00137dd35d76936cff3f9d632ce2dbfb36d3db0482f5f63b",
+      "bytes": 326
+    },
+    {
+      "name": "Cursors/Arrow.cur",
+      "sha256": "5d8e1861f0df5c80a63c872c64f226e47ec163b20933173e9b10eedc051c3982",
+      "bytes": 326
+    },
+    {
+      "name": "Cursors/Crosshair.cur",
+      "sha256": "162f5f84231e1c84420bb11765f9f8f84bc919cdef05a9df6e4345582050fc2a",
+      "bytes": 326
+    },
+    {
+      "name": "Cursors/Hand.cur",
+      "sha256": "2fb4228046eaf53f3de6c26bc4fd97dd4b2de0b2ae0a5808704ae9a86a895aa3",
+      "bytes": 326
+    },
+    {
+      "name": "Cursors/Help.cur",
+      "sha256": "2e760ccdbd9ddc33ed8f76dc86cada17a11bd3eefb2d15705640911e4d85f4e5",
+      "bytes": 326
+    },
+    {
+      "name": "Cursors/IBeam.cur",
+      "sha256": "5c2d90489f151c2db977a949b45b212e0788e74f1ab80efb2b2b5793b335e5ba",
+      "bytes": 326
+    },
+    {
+      "name": "Cursors/No.cur",
+      "sha256": "e0ff4ca466ec07dae9884039c50055679b43a54fb111e45411d1efc8ae950d71",
+      "bytes": 326
+    },
+    {
+      "name": "Cursors/NWPen.cur",
+      "sha256": "4a68e0a21222a337c9fa414ad1cbba28ce4e78d3d9b8d770d3c89b385555e0d9",
+      "bytes": 326
+    },
+    {
+      "name": "Cursors/SizeAll.cur",
+      "sha256": "926c350ccc69df467c32d2e92eb3e2e89f52fe004d9e5dd807e1a49935170678",
+      "bytes": 326
+    },
+    {
+      "name": "Cursors/SizeNESW.cur",
+      "sha256": "35f610aa92d14ab0b3b5c48664487cc7fd8c67b4d0333d6f862f878fe52a87ad",
+      "bytes": 326
+    },
+    {
+      "name": "Cursors/SizeNS.cur",
+      "sha256": "c475155d9a5d4d52a73c9c6a558d2d53725fbcb75a257fd85655431e2b8ab786",
+      "bytes": 326
+    },
+    {
+      "name": "Cursors/SizeNWSE.cur",
+      "sha256": "80f8f18f1fcb776dc364d89c0590a813731ec5cac3a881ae97d0d7c618ff2da3",
+      "bytes": 326
+    },
+    {
+      "name": "Cursors/SizeWE.cur",
+      "sha256": "330c26c9a675cbce807fb4a00751083f33a79a559f2895172cfe349489d044ba",
+      "bytes": 326
+    },
+    {
+      "name": "Cursors/UpArrow.cur",
+      "sha256": "d17d2b7c2e6c6e353b3f10cdb924828dd1b7ed24cd4c2911ece558af50ccd48b",
+      "bytes": 326
+    },
+    {
+      "name": "Cursors/Wait.cur",
+      "sha256": "be630ef373d2547b8b3dbff38f0db5a9468a2e584a5142095dd65b68f9c63265",
+      "bytes": 326
+    },
+    {
+      "name": "Sounds/Windows XP Balloon.wav",
+      "sha256": "c9de87a87b68dd754fa29f2989c240949ad9b1f0423d019ca68afcd86e107639",
+      "bytes": 6400
+    },
+    {
+      "name": "Sounds/Windows XP Battery Critical.wav",
+      "sha256": "cb02dd9f8b4d18aab9a5c51a26faac12e861dd362800a12292f243432a982325",
+      "bytes": 36910
+    },
+    {
+      "name": "Sounds/Windows XP Battery Low.wav",
+      "sha256": "bd4a58b1e2b8e93bcf5b76df3e4a9f67ce0926107a5702ed6bac0e63466a22fd",
+      "bytes": 53864
+    },
+    {
+      "name": "Sounds/Windows XP Critical Stop.wav",
+      "sha256": "1b86a1b8b7b5925f9346b64115b0b92744a142b06b09f44263a57419bc2bb6e6",
+      "bytes": 39382
+    },
+    {
+      "name": "Sounds/Windows XP Default.wav",
+      "sha256": "d0426433cb153f860f02320408a1922558742bc3d170eb47715192ff86a66a16",
+      "bytes": 24530
+    },
+    {
+      "name": "Sounds/Windows XP Error.wav",
+      "sha256": "4b51ec1b1b14889bc2c2cdad8c80dafc974d78b9292c3ccb344e44e93383cac4",
+      "bytes": 44136
+    },
+    {
+      "name": "Sounds/Windows XP Exclamation.wav",
+      "sha256": "b57b8e8818c424452ca4fb8abb219ae01c0e31db2f955e1f85d9fcb5a0dabfbe",
+      "bytes": 42576
+    },
+    {
+      "name": "Sounds/Windows XP Hardware Fail.wav",
+      "sha256": "fe6e852ff646c0a896995632f76a3e390bea6163b40639c87bf45c1d8a7475c2",
+      "bytes": 36614
+    },
+    {
+      "name": "Sounds/Windows XP Hardware Insert.wav",
+      "sha256": "a3e44db9179591a705baed6daa00efb988197c0698a9747980126d5939e9d506",
+      "bytes": 36636
+    },
+    {
+      "name": "Sounds/Windows XP Hardware Remove.wav",
+      "sha256": "c4d09c6ad6a9090c4e611330a7501f7a84abc7c777c6e3d1915179f8d1ed45f3",
+      "bytes": 36538
+    },
+    {
+      "name": "Sounds/Windows XP Information Bar.wav",
+      "sha256": "b4dfbdfd8d6a102123a7966da358781bd32bb6d78e833514705cb7de76efa410",
+      "bytes": 20336
+    },
+    {
+      "name": "Sounds/Windows XP Logoff Sound.wav",
+      "sha256": "e0c0e5dea2550c8f235c0bb1584d9011a35ca23bc18597bf7ac6581efcd7b7aa",
+      "bytes": 179704
+    },
+    {
+      "name": "Sounds/Windows XP Logon Sound.wav",
+      "sha256": "8d71fba4267fb3454030c7289079421a08fc3e773caa47107d832f855ae85396",
+      "bytes": 190208
+    },
+    {
+      "name": "Sounds/Windows XP Menu Command.wav",
+      "sha256": "da4fc6f8917b97725e6de85bb45b574c7895ec46672e6eb439a462cfd9940ac7",
+      "bytes": 1404
+    },
+    {
+      "name": "Sounds/Windows XP Minimize.wav",
+      "sha256": "974da6baee4187c37e514186b99691132988140cca95402589c6fdc1417e5926",
+      "bytes": 22580
+    },
+    {
+      "name": "Sounds/Windows XP Notify.wav",
+      "sha256": "760cdd5685008255d6e188a8c528ebcb74daf806bb24a81c2a36086df6a95c76",
+      "bytes": 48988
+    },
+    {
+      "name": "Sounds/Windows XP Pop-up Blocked.wav",
+      "sha256": "df7cad111688dadb00469203dd7228df99e49e86ae7ba937e308d947cd9790f2",
+      "bytes": 29444
+    },
+    {
+      "name": "Sounds/Windows XP Print complete.wav",
+      "sha256": "e411c02471876c4d1075ec8fcd406e99ac7c9a5e0c6322ed579de50c8ca3b844",
+      "bytes": 43762
+    },
+    {
+      "name": "Sounds/Windows XP Recycle.wav",
+      "sha256": "a8a7028f9fe989cdde61bf22b73f0ff23ae291dbf8e056bb09682a7487c49ad7",
+      "bytes": 22816
+    },
+    {
+      "name": "Sounds/Windows XP Restore.wav",
+      "sha256": "480dea5b1808dd67c5a5946e7a47e8e582d5cb1c7fdce4b037140157da0ecadf",
+      "bytes": 19458
+    },
+    {
+      "name": "Sounds/Windows XP Shutdown.wav",
+      "sha256": "3d937337075a647950f6aa557bca23dea6e17cf6d14814ca7dbc55b827678a0b",
+      "bytes": 282608
+    },
+    {
+      "name": "Sounds/Windows XP Start.wav",
+      "sha256": "d5712a8963eb3e1e181b25649ecff3080ede89c96350eb07e7d7cad429e959ea",
+      "bytes": 2202
+    },
+    {
+      "name": "Menu/WinMim XP.skin",
+      "sha256": "5b4f739fd5e7f26fac37dd6ba795a3b0b5b900482d57a93078db160861df86cd",
+      "bytes": 967680
+    },
+    {
+      "name": "Icons/notepad.ico",
+      "sha256": "3ba74c6a0aebff365a07b9cfd317d976c7bc579db71d3b6d0a600ebaade31ea3",
+      "bytes": 25214
+    }
+  ],
+  "sourceCursorBinarySha256": "8f29a88d7a2d837a0ae40f5d40a164add0310013e86380fdecac90877e8e9a2c",
+  "cursorResourceIds": {
+    "Arrow": 100,
+    "Help": 112,
+    "Hand": 114,
+    "AppStarting": 111,
+    "Wait": 102,
+    "NWPen": 113,
+    "No": 110,
+    "SizeNS": 108,
+    "SizeWE": 107,
+    "Crosshair": 103,
+    "IBeam": 101,
+    "SizeNWSE": 105,
+    "SizeNESW": 106,
+    "SizeAll": 109,
+    "UpArrow": 104
+  },
+  "cursors": {
+    "Arrow": "Cursors/Arrow.cur",
+    "Help": "Cursors/Help.cur",
+    "Hand": "Cursors/Hand.cur",
+    "AppStarting": "Cursors/AppStarting.cur",
+    "Wait": "Cursors/Wait.cur",
+    "NWPen": "Cursors/NWPen.cur",
+    "No": "Cursors/No.cur",
+    "SizeNS": "Cursors/SizeNS.cur",
+    "SizeWE": "Cursors/SizeWE.cur",
+    "Crosshair": "Cursors/Crosshair.cur",
+    "IBeam": "Cursors/IBeam.cur",
+    "SizeNWSE": "Cursors/SizeNWSE.cur",
+    "SizeNESW": "Cursors/SizeNESW.cur",
+    "SizeAll": "Cursors/SizeAll.cur",
+    "UpArrow": "Cursors/UpArrow.cur"
+  },
+  "sounds": {
+    ".Default/.Default": "Sounds/Windows XP Default.wav",
+    ".Default/SystemAsterisk": "Sounds/Windows XP Error.wav",
+    ".Default/SystemExclamation": "Sounds/Windows XP Exclamation.wav",
+    ".Default/SystemHand": "Sounds/Windows XP Critical Stop.wav",
+    ".Default/SystemNotification": "Sounds/Windows XP Balloon.wav",
+    ".Default/DeviceConnect": "Sounds/Windows XP Hardware Insert.wav",
+    ".Default/DeviceDisconnect": "Sounds/Windows XP Hardware Remove.wav",
+    ".Default/DeviceFail": "Sounds/Windows XP Hardware Fail.wav",
+    ".Default/LowBatteryAlarm": "Sounds/Windows XP Battery Low.wav",
+    ".Default/CriticalBatteryAlarm": "Sounds/Windows XP Battery Critical.wav",
+    ".Default/MailBeep": "Sounds/Windows XP Notify.wav",
+    ".Default/WindowsLogon": "Sounds/Windows XP Logon Sound.wav",
+    ".Default/WindowsLogoff": "Sounds/Windows XP Logoff Sound.wav",
+    ".Default/SystemExit": "Sounds/Windows XP Shutdown.wav",
+    ".Default/MenuCommand": "Sounds/Windows XP Menu Command.wav",
+    ".Default/Minimize": "Sounds/Windows XP Minimize.wav",
+    ".Default/RestoreUp": "Sounds/Windows XP Restore.wav",
+    ".Default/RestoreDown": "Sounds/Windows XP Restore.wav",
+    ".Default/PrintComplete": "Sounds/Windows XP Print complete.wav",
+    "Explorer/EmptyRecycleBin": "Sounds/Windows XP Recycle.wav",
+    "Explorer/Navigating": "Sounds/Windows XP Start.wav",
+    "Explorer/BlockedPopup": "Sounds/Windows XP Pop-up Blocked.wav",
+    "Explorer/SecurityBand": "Sounds/Windows XP Information Bar.wav"
+  },
+  "menuSkin": "Menu/WinMim XP.skin",
+  "sourceMenuSkinSha256": "5c1ac7e266a39ceb358e996a480658e8bc1389a73b5d4f3b8d0374f9059e97fc",
+  "sourceNotepadSha256": "42fdb8be709abed7a12a8c76e9e4ff5b85a54c659862c59a25b2f09baebef0df"
+}

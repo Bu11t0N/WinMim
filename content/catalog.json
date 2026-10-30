@@ -1418,14 +1418,14 @@
     {
       "id": "winmim-classic-frames",
       "name": "WinMim: классические рамки окон",
-      "description": "Штатные классические рамки вместо Aero в пользовательском сеансе стенда.",
+      "description": "Штатные классические или тематизированные basic-рамки в пользовательском сеансе стенда.",
       "category": "Оформление",
       "author": "WinMim contributors",
-      "version": "0.1.0",
+      "version": "0.3.0",
       "license": "GPL-3.0",
       "sourceUrl": "src/WinMim.Native/winmim-classic-frames.wh.cpp",
       "sourcePath": "src/WinMim.Native/winmim-classic-frames.wh.cpp",
-      "sourceSha256": "3a50e2ce7754a2da6d4bc7c0d58b75724d099ba59cf7985e97b99d3bf1313038",
+      "sourceSha256": "c5ac722c800f0c45a6f9d3124d6d380123f64454cb5ac0096455420b733e557c",
       "includes": [
         "*"
       ],
@@ -1439,24 +1439,62 @@
         "x86",
         "x86-64"
       ],
-      "defaultSettings": {},
+      "defaultSettings": {
+        "basicThemed": "0"
+      },
       "criticalProcess": false,
       "requiresResources": false,
       "conflicts": [],
       "status": "built",
       "binaries": [
         {
-          "path": "modules/32/aeroforge-winmim-classic-frames_0.1.0-3a50e2ce77.dll",
-          "target": "Data/Engine/Mods/32/aeroforge-winmim-classic-frames_0.1.0-3a50e2ce77.dll",
-          "sha256": "18ee7a22b6327df2ee8961094efad3931bbba36230170389661c43547f8c0f7b"
+          "path": "modules/32/aeroforge-winmim-classic-frames_0.3.0-c5ac722c80.dll",
+          "target": "Data/Engine/Mods/32/aeroforge-winmim-classic-frames_0.3.0-c5ac722c80.dll",
+          "sha256": "74d8827270affda70de79d0d1aa7d6b32eca025857c50a909f6687cb6cf4a379"
         },
         {
-          "path": "modules/64/aeroforge-winmim-classic-frames_0.1.0-3a50e2ce77.dll",
-          "target": "Data/Engine/Mods/64/aeroforge-winmim-classic-frames_0.1.0-3a50e2ce77.dll",
-          "sha256": "03f5b3232bb4dde7bd5c9175df074dc2f0fd34fb1eb1d919fca36ba2d108ddc3"
+          "path": "modules/64/aeroforge-winmim-classic-frames_0.3.0-c5ac722c80.dll",
+          "target": "Data/Engine/Mods/64/aeroforge-winmim-classic-frames_0.3.0-c5ac722c80.dll",
+          "sha256": "1b097ba79648ab0f3565bb2a424dcfa598a9cc41bb2574a185ec095a417bc5fc"
         }
       ],
       "compilerOptions": "-ldwmapi -luxtheme"
+    },
+    {
+      "id": "fix-basic-caption-text",
+      "name": "Fix Basic Caption Text",
+      "description": "Цвет текста basic-заголовков из активного визуального стиля.",
+      "category": "Оформление",
+      "author": "aubymori",
+      "version": "1.1.1",
+      "license": "MIT (Windhawk mods contribution policy)",
+      "sourceUrl": "https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/fix-basic-caption-text.wh.cpp",
+      "sourceSha256": "bb531f4ba900921f4a3702bc2054dd3b201a166d509e05664ab416b2d66db0df",
+      "includes": [
+        "*"
+      ],
+      "excludes": [],
+      "architecture": [],
+      "defaultSettings": {
+        "smallicons": "1"
+      },
+      "criticalProcess": false,
+      "requiresResources": false,
+      "conflicts": [],
+      "status": "built",
+      "binaries": [
+        {
+          "path": "modules/32/aeroforge-fix-basic-caption-text_1.1.1.dll",
+          "target": "Data/Engine/Mods/32/aeroforge-fix-basic-caption-text_1.1.1.dll",
+          "sha256": "bfc7f0333e2821555db85fcf3948ba91cb85835461fdecf0b77310cd27d0f54e"
+        },
+        {
+          "path": "modules/64/aeroforge-fix-basic-caption-text_1.1.1.dll",
+          "target": "Data/Engine/Mods/64/aeroforge-fix-basic-caption-text_1.1.1.dll",
+          "sha256": "a973c634a9d711e2582742e360a91c7350ae56b1847f06bd34c921287eb21f67"
+        }
+      ],
+      "compilerOptions": "-luser32 -luxtheme"
     }
   ],
   "profiles": [
@@ -1597,6 +1635,36 @@
         "taskbar-thumbnails": {
           "mode": "listOnClick",
           "noTooltips": "0"
+        }
+      }
+    },
+    {
+      "id": "windowsxp",
+      "name": "Windows XP Luna (стенд)",
+      "accent": "#0054E3",
+      "description": "Визуальный стиль Luna, тематизация контролов и basic-рамки. Нужен проверенный личный пакет XP.",
+      "modules": [
+        "winmim-shell-behavior",
+        "winmim-classic-frames",
+        "fix-basic-caption-text",
+        "aerexplorer",
+        "syslistview32-enabler",
+        "eradicate-immersive-menus",
+        "legacy-file-copy",
+        "old-this-pc-commands",
+        "msg-box-font-fix"
+      ],
+      "settings": {
+        "winmim-classic-frames": {
+          "basicThemed": "1"
+        },
+        "aerexplorer": {
+          "noribbon": "1",
+          "hidetitle": "0",
+          "detailspane": "0",
+          "navbarglass": "0",
+          "nocomposition": "1",
+          "aerotravel": "0"
         }
       }
     }

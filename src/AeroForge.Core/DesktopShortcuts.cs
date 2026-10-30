@@ -6,7 +6,7 @@ public static class DesktopShortcuts
 {
     // [MS-SHLLINK]: Unicode LinkInfo and StringData, with no volatile tracker,
     // timestamps, environment expansion, or script execution dependencies.
-    public static byte[] Create(string executable,string arguments="")
+    public static byte[] Create(string executable,string arguments="",string? iconLocation=null)
     {
         if(!Path.IsPathFullyQualified(executable)||!File.Exists(executable))throw new FileNotFoundException("Shortcut target is unavailable",executable);
         executable=Path.GetFullPath(executable);
@@ -31,7 +31,8 @@ public static class DesktopShortcuts
             if(value.Length>ushort.MaxValue||value.Contains('\0'))throw new InvalidDataException("Invalid shortcut string");
             writer.Write((ushort)value.Length);writer.Write(Encoding.Unicode.GetBytes(value));
         }
-        Text(directory);if(arguments.Length>0)Text(arguments);Text(executable);
+        if(iconLocation!=null&&!Path.IsPathFullyQualified(iconLocation))throw new InvalidDataException("Shortcut icon requires an absolute path");
+        Text(directory);if(arguments.Length>0)Text(arguments);Text(iconLocation??executable);
         // EnvironmentVariableDataBlock also accepts an absolute path without variables.
         // Unlike filesystem ID lists, it contains no access times or machine-specific object IDs.
         writer.Write(0x314u);writer.Write(0xA0000001u);

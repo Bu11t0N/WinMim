@@ -44,7 +44,8 @@
       "remove-command-bar": "2223c7b7b62cdb71ce46f0aa4912406ee5f1745d938cb423c8e8809a4f4dc66b",
       "syslistview32-enabler": "f3f563308c83cfda2f07506e574d1d985a0bb53ebc6fa7a51882ea3e7f543a86",
       "classic-taskbar-buttons-lite": "1d06e083a58437fbd8bc99f64f7385d65020ab401696f4df791c8aedc8e6ac91",
-      "taskbar-thumbnails": "f46265753cbe0a9ed46f17ee6a36e737e5e1084e809c9c1c30097ce7d026b3db"
+      "taskbar-thumbnails": "f46265753cbe0a9ed46f17ee6a36e737e5e1084e809c9c1c30097ce7d026b3db",
+      "fix-basic-caption-text": "bb531f4ba900921f4a3702bc2054dd3b201a166d509e05664ab416b2d66db0df"
     },
     "additionalGitBlobs": {
       "settings-to-control-panel": "c09d21c0b8cfa10321a553228b2b774c29d08c0c",

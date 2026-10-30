@@ -963,7 +963,7 @@
     {
       "type": "library",
       "name": "winmim-classic-frames",
-      "version": "0.1.0",
+      "version": "0.3.0",
       "author": "WinMim contributors",
       "licenses": [
         {
@@ -981,7 +981,32 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "3a50e2ce7754a2da6d4bc7c0d58b75724d099ba59cf7985e97b99d3bf1313038"
+          "content": "c5ac722c800f0c45a6f9d3124d6d380123f64454cb5ac0096455420b733e557c"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "fix-basic-caption-text",
+      "version": "1.1.1",
+      "author": "aubymori",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT (Windhawk mods contribution policy)"
+          }
+        }
+      ],
+      "externalReferences": [
+        {
+          "type": "vcs",
+          "url": "https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/fix-basic-caption-text.wh.cpp"
+        }
+      ],
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "bb531f4ba900921f4a3702bc2054dd3b201a166d509e05664ab416b2d66db0df"
         }
       ]
     },

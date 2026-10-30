@@ -84,7 +84,7 @@ public sealed class ProfilePlanner(ContentStore store, Catalog catalog)
         if (profile.Settings.TryGetValue(module.Id, out var overrides))
             foreach (var pair in overrides) settings[pair.Key] = pair.Value;
         // Controllers and guest integration must remain available for recovery.
-        var controllers=module.Id=="winmim-classic-frames"?new[]{"AeroForge.exe","AeroForge.Cli.exe","AeroForge.VmSmoke.exe"}:new[]{"WinMim.exe","WinMim.UiProbe.exe","AeroForge.exe","AeroForge.Cli.exe","AeroForge.VmSmoke.exe"};
+        var controllers=module.Id is "winmim-classic-frames" or "fix-basic-caption-text"?new[]{"AeroForge.exe","AeroForge.Cli.exe","AeroForge.VmSmoke.exe"}:new[]{"WinMim.exe","WinMim.UiProbe.exe","AeroForge.exe","AeroForge.Cli.exe","AeroForge.VmSmoke.exe"};
         var excludes=module.Excludes.Concat(controllers).Concat(new[]{"vmtoolsd.exe","vm3dservice.exe","VGAuthService.exe","vmwaretray.exe","vmwareuser.exe",
             "RetroBar.exe","dwm.exe","winlogon.exe","consent.exe","LogonUI.exe","csrss.exe","smss.exe","services.exe","lsass.exe","svchost.exe","fontdrvhost.exe","smartscreen.exe","RuntimeBroker.exe"}).Distinct(StringComparer.OrdinalIgnoreCase);
         var includes=module.Includes;

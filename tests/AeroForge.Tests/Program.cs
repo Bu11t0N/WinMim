@@ -12,6 +12,18 @@ void Throws(Action action) { try { action(); } catch { return; } throw new Excep
 Change FileChange(string name, string value) => new() { Kind = ChangeKind.File, Target = name, Content = Encoding.UTF8.GetBytes(value), Description = name };
 Plan PlanOf(params Change[] changes) => new() { ProfileId = "test", Changes = changes.ToList() };
 string NewState() => Path.Combine(scratch, Guid.NewGuid().ToString("N"));
+(string Directory,XpThemePack Pack) XpFixture()
+{
+    string directory=NewState();Directory.CreateDirectory(directory);
+    string content=Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,"../../../../../content"));
+    byte[] icon=File.ReadAllBytes(Path.Combine(content,"classic95/mycomputer_1_G3M_icon.ico"));
+    byte[] pe=new byte[128];pe[0]=77;pe[1]=90;pe[60]=64;pe[64]=80;pe[65]=69;
+    File.WriteAllBytes(Path.Combine(directory,"test.msstyles"),pe);File.WriteAllBytes(Path.Combine(directory,"test.ico"),icon);
+    var manifest=new XpPackManifest{Source="unit-test fixture, not a visual style",License="test only",Style="test.msstyles",
+        Files=[new("test.msstyles",Hashing.Bytes(pe)),new("test.ico",Hashing.Bytes(icon))],
+        Icons=new[]{"computer","documents","network","recycle-empty","recycle-full","programs","settings","search","help","run","shutdown","printers","start"}.ToDictionary(r=>r,_=>"test.ico")};
+    return(directory,XpThemePack.Read(manifest,directory));
+}
 
 Test("Classic colors and assets build a native profile without critical process modules", () =>
 {
@@ -80,24 +92,72 @@ Test("all classic and XP targets build distinct real plans", () =>
 {
     string content=Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,"../../../../../content"));
     var before=ClassicAppearance.Read();var snapshots=new Dictionary<string,ClassicAppearanceState>();
+    var fixture=XpFixture();
     foreach(var theme in ClassicThemes.All){
         Assert(AppearanceCatalog.Select(theme.Id).Target.Available);
-        var plan=Classic95Profile.Build(content,NewState(),before,target:theme.Id);
+        var plan=Classic95Profile.Build(content,NewState(),before,privateIcons:theme.Xp?fixture.Directory:null,target:theme.Id,xpPack:theme.Xp?fixture.Pack:null);
         Assert(ClassicThemes.FromReceipt(plan.ProfileId)==theme.Id);
         var backend=new DesktopBackend(NewState());foreach(var c in plan.Changes)backend.Validate(c);
         Assert(plan.Changes.Select(c=>c.Identity).Distinct().Count()==plan.Changes.Count);
         Assert(plan.Changes.Any(c=>c.ValueName=="MenuCaption"&&c.Value==theme.Name));
-        snapshots[theme.Id]=ClassicAppearance.Parse(plan.Changes.Single(c=>c.Kind==ChangeKind.ClassicAppearance).Value!);
+        snapshots[theme.Id]=ClassicAppearance.Parse(plan.Changes.Single(c=>c.Kind is ChangeKind.ClassicAppearance or ChangeKind.XpAppearance).Value!);
         Assert((theme.Id!="windows-95")==plan.Changes.Any(c=>c.Kind==ChangeKind.File&&c.Target.EndsWith("RetroBar.exe")));
         if(theme.Id!="windows-95")Assert(plan.Changes.Any(c=>c.Target=="QuickLaunch/Проводник.lnk"));
     }
     Assert(!snapshots["windows-95"].Gradient && snapshots["windows-98"].Gradient);
     Assert(!snapshots["windows-95"].Colors.SequenceEqual(snapshots["windows-2000"].Colors));
     Assert(snapshots["windows-95"].Metrics!=snapshots["windows-me"].Metrics);
-    var xp=Classic95Profile.Build(content,NewState(),before,target:"windows-xp");
+    var xp=Classic95Profile.Build(content,NewState(),before,privateIcons:fixture.Directory,target:"windows-xp",xpPack:fixture.Pack);
     Assert(xp.Changes.Any(c=>c.ValueName=="SkinC2"&&c.Value=="Windows XP Luna"));
     Assert(xp.Changes.Any(c=>c.ValueName=="MenuStyle"&&c.Value=="Classic2"));
+    Assert(xp.Changes.Single(c=>c.Kind==ChangeKind.Wallpaper).Value==xp.Changes.Single(c=>c.Kind==ChangeKind.Wallpaper).Value!.ToUpperInvariant());
     Throws(()=>ClassicThemes.Get("windows-31"));Throws(()=>ClassicThemes.Get("../windows-xp"));
+});
+Test("XP shell plan keeps visual styles and usable navigation without classic frame competitors",()=>
+{
+    string content=Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,"../../../../../content"));
+    var store=new ContentStore(content);var catalog=store.Load();
+    var xp=new ProfilePlanner(store,catalog).Build(ClassicThemes.Get("windows-xp").ShellProfile);
+    Assert(xp.ProfileId=="windowsxp"&&xp.Blockers.Count==0,string.Join(";",xp.Blockers));
+    foreach(string incompatible in new[]{"classic-theme-explorer-lite","classic-theme-transparency-fix","classic-uwp-fix","classic-taskbar-buttons-lite","disable-navigation-bar","remove-command-bar"})Assert(!xp.Modules.Contains(incompatible));
+    var frame=catalog.Modules.Single(m=>m.Id=="winmim-classic-frames");
+    Assert(ProfilePlanner.Ini(frame,true,catalog.Profiles.Single(p=>p.Id=="windowsxp")).Contains("basicThemed=1"));
+    Assert(ProfilePlanner.Ini(frame,true,catalog.Profiles.Single(p=>p.Id=="windows95")).Contains("basicThemed=0"));
+});
+Test("XP assets fail closed for tampering, wrong builds, code and path traversal",()=>
+{
+    var fixture=XpFixture();var manifest=fixture.Pack.Manifest;
+    manifest.Build=19045;Throws(()=>XpThemePack.Read(manifest,fixture.Directory));manifest.Build=19044;
+    File.AppendAllText(Path.Combine(fixture.Directory,"test.ico"),"tampered");Throws(()=>XpThemePack.Read(manifest,fixture.Directory));
+    Throws(()=>XpThemePack.ValidateResourcePe([77,90]));
+    var code=new byte[128];code[0]=77;code[1]=90;code[60]=64;code[64]=80;code[65]=69;code[104]=1;
+    Throws(()=>XpThemePack.ValidateResourcePe(code));
+    manifest.Files=[new("../outside.msstyles",new string('0',64))];Throws(()=>XpThemePack.Read(manifest,fixture.Directory));
+    Throws(()=>Classic95Profile.Build(NewState(),NewState(),ClassicAppearance.Read(),target:"windows-xp"));
+});
+Test("XP typography and geometry scale without overwriting AppliedDPI",()=>
+{
+    var original=ClassicAppearance.Read();
+    var a=XpAppearance.PersistentMetrics(XpAppearance.Desired(original,96),96).ToArray();
+    var b=XpAppearance.PersistentMetrics(XpAppearance.Desired(original,120),120).ToArray();
+    string Face(Change c)=>Encoding.Unicode.GetString(Convert.FromBase64String(c.Value!),28,64).TrimEnd('\0');
+    Assert(Face(a.Single(c=>c.ValueName=="CaptionFont"))=="Trebuchet MS");
+    Assert(a.Where(c=>c.ValueKind=="Binary").All(c=>Convert.FromBase64String(c.Value!)[26]==0),"XP uses the same LOGFONT quality Windows persists at logon");
+    Assert(Face(a.Single(c=>c.ValueName=="MenuFont"))=="Tahoma");
+    Assert(a.Single(c=>c.ValueName=="CaptionHeight").Value=="-375");
+    Assert(a.All(c=>c.ValueName!="AppliedDPI")&&b.All(c=>c.ValueName!="AppliedDPI"));
+    Assert(a.Single(c=>c.ValueName=="CaptionFont").Value!=b.Single(c=>c.ValueName=="CaptionFont").Value);
+    Assert(ClassicAppearance.Desired(original,"windows-95").Metrics!=XpAppearance.Desired(original,96).Metrics);
+});
+Test("XP pointer and sound plans stay within the named per-user resources",()=>
+{
+    var manifest=new XpPackManifest{Cursors=new(){{"Arrow","Cursors/Arrow.cur"}},Sounds=new(){{".Default/SystemAsterisk","Sounds/error.wav"}}};
+    var plan=XpDesktopResources.Build(manifest,NewState()).ToArray();
+    var backend=new DesktopBackend(NewState());foreach(var change in plan)backend.Validate(change);
+    Assert(plan.All(c=>c.Kind==ChangeKind.Registry&&c.Target.StartsWith("HKCU\\")));
+    Assert(!XpDesktopResources.Allows(new(){Kind=ChangeKind.Registry,Target=XpDesktopResources.CursorKey,ValueName="Foreign"}));
+    Assert(!XpDesktopResources.Allows(new(){Kind=ChangeKind.Registry,Target=@"HKLM\Control Panel\Cursors",ValueName="Arrow"}));
+    Assert(plan.Select(c=>c.Identity).Distinct().Count()==plan.Length);
 });
 Test("RetroBar JSON field journal preserves upstream defaults and restores original fields", () =>
 {

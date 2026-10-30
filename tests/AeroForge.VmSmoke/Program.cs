@@ -17,6 +17,7 @@ if(args.Contains("--probe-explorer"))
     return inspection.TimedOut || inspection.Error!=null || inspection.Processes.Any(p=>p.Error!=null) ? 1 : 0;
 }
 if(args.Contains("--sounds"))return SoundsSmoke.Run(args);
+if(args.Contains("--xp"))return await XpSmoke.Run(args);
 if(args.Contains("--desktop"))return DesktopSmoke.Run(args);
 if(args.Contains("--favorites-namespace"))return NamespaceSmoke.Run(args);
 string Arg(string name, string fallback) => Array.IndexOf(args, name) is var n && n >= 0 && n + 1 < args.Length ? args[n + 1] : fallback;

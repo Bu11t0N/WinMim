@@ -7,7 +7,7 @@ with 7-Zip first. Only the pinned Russian retail binary is currently supported.
 from pathlib import Path
 import argparse,hashlib,json,struct
 
-def extract(data):
+def read_resources(data):
     pe=struct.unpack_from('<I',data,0x3c)[0];opt=pe+24
     if data[pe:pe+4]!=b'PE\0\0':raise ValueError('Not a PE image')
     directories=opt+(112 if struct.unpack_from('<H',data,opt)[0]==0x20b else 96)
@@ -29,7 +29,10 @@ def extract(data):
             else:
                 rva,size=struct.unpack_from('<II',data,base+value);result[key]=data[offset(rva):offset(rva)+size]
         return result
-    resources=tree(base);icons={}
+    return tree(base)
+
+def extract(data):
+    resources=read_resources(data);icons={}
     for group_id,languages in resources[14].items():
         language=next(iter(languages));group=languages[language];count=struct.unpack_from('<H',group,4)[0]
         entries=[];images=[];position=6+16*count

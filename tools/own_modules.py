@@ -35,7 +35,7 @@ def register(catalog):
                     for key,value in settings.items():target.setdefault(key,value)
 
     frame_source=ROOT/'src/WinMim.Native/winmim-classic-frames.wh.cpp'
-    frame={'id':'winmim-classic-frames','name':'WinMim: классические рамки окон','description':'Штатные классические рамки вместо Aero в пользовательском сеансе стенда.','category':'Оформление','author':'WinMim contributors','version':'0.1.0','license':'GPL-3.0','sourceUrl':'src/WinMim.Native/winmim-classic-frames.wh.cpp','sourcePath':'src/WinMim.Native/winmim-classic-frames.wh.cpp','sourceSha256':sha(frame_source),'includes':['*'],'excludes':['dwm.exe','winlogon.exe','consent.exe','LogonUI.exe'],'architecture':['x86','x86-64'],'defaultSettings':{},'criticalProcess':False,'requiresResources':False,'conflicts':[],'status':'source','binaries':[],'compilerOptions':'-ldwmapi -luxtheme'}
+    frame={'id':'winmim-classic-frames','name':'WinMim: классические рамки окон','description':'Штатные классические или тематизированные basic-рамки в пользовательском сеансе стенда.','category':'Оформление','author':'WinMim contributors','version':'0.3.0','license':'GPL-3.0','sourceUrl':'src/WinMim.Native/winmim-classic-frames.wh.cpp','sourcePath':'src/WinMim.Native/winmim-classic-frames.wh.cpp','sourceSha256':sha(frame_source),'includes':['*'],'excludes':['dwm.exe','winlogon.exe','consent.exe','LogonUI.exe'],'architecture':['x86','x86-64'],'defaultSettings':{'basicThemed':'0'},'criticalProcess':False,'requiresResources':False,'conflicts':[],'status':'source','binaries':[],'compilerOptions':'-ldwmapi -luxtheme'}
     previous_frame=next((m for m in catalog['modules'] if m['id']==frame['id']),None)
     if previous_frame and previous_frame['sourceSha256']==frame['sourceSha256']:frame.update(status=previous_frame['status'],binaries=previous_frame['binaries'])
     catalog['modules']=[m for m in catalog['modules'] if m['id']!=frame['id']]+[frame]
@@ -44,3 +44,12 @@ def register(catalog):
     if all(any(m['id']==id for m in catalog['modules']) for id in classic95):
         catalog['profiles']=[p for p in catalog['profiles'] if p['id']!='windows95']+[{'id':'windows95','name':'Windows 95 (стенд)','accent':'#008080','description':'Классическая отрисовка, системные метрики и исправления Explorer. Требуется отдельно включённый ClassicSession.','modules':classic95,'settings':{'aerexplorer':{'noribbon':'1','hidetitle':'0','detailspane':'0'},'classic-theme-transparency-fix':{'removeDialogTransparency':'1'}}}]
         catalog['profiles'][-1]['settings']['taskbar-thumbnails']={'mode':'listOnClick','noTooltips':'0'}
+
+    # One owner for each Explorer surface. Keep navigation usable until an XP
+    # address-band adapter is available; no classic taskbar/Explorer frame fixes.
+    xp=['winmim-shell-behavior','winmim-classic-frames','fix-basic-caption-text','aerexplorer','syslistview32-enabler','eradicate-immersive-menus','legacy-file-copy','old-this-pc-commands','msg-box-font-fix']
+    catalog['profiles']=[p for p in catalog['profiles'] if p['id']!='windowsxp']+[{
+        'id':'windowsxp','name':'Windows XP Luna (стенд)','accent':'#0054E3',
+        'description':'Визуальный стиль Luna, тематизация контролов и basic-рамки. Нужен проверенный личный пакет XP.',
+        'modules':xp,'settings':{'winmim-classic-frames':{'basicThemed':'1'},
+        'aerexplorer':{'noribbon':'1','hidetitle':'0','detailspane':'0','navbarglass':'0','nocomposition':'1','aerotravel':'0'}}}]

@@ -22,6 +22,7 @@ public static class ClassicAppearance
     public static ClassicAppearanceState Desired(ClassicAppearanceState current,string target="windows-95")
     {
         var theme=ClassicThemes.Get(target);
+        if(theme.Xp)return XpAppearance.Desired(current,XpAppearance.SystemDpi);
         var m=Decode<Ncm>(current.Metrics);var font=new LogFont{Height=-11,Weight=400,CharSet=1,Quality=3,Pitch=0,Face=theme.Font};
         m.Border=1;m.ScrollWidth=16;m.ScrollHeight=16;m.CaptionWidth=18;m.CaptionHeight=18;m.SmallCaptionWidth=15;m.SmallCaptionHeight=15;m.MenuWidth=18;m.MenuHeight=18;m.PaddedBorder=0;
         m.CaptionFont=font;m.CaptionFont.Weight=700;m.SmallCaptionFont=font;m.SmallCaptionFont.Weight=700;m.MenuFont=font;m.StatusFont=font;m.MessageFont=font;
@@ -61,12 +62,12 @@ public static class ClassicAppearance
             yield return new(){Kind=ChangeKind.Registry,Target=@"HKCU\Control Panel\Desktop\WindowMetrics",ValueName=name,ValueKind="String",Value=data,Description="Метрика Windows 95: "+name};
     }
     private static bool Bool(uint action){if(!GetBool(action,0,out int value,0))throw new Win32Exception();return value!=0;}
-    private static string Encode<T>(T value)where T:struct
+    internal static string Encode<T>(T value)where T:struct
     {int size=Marshal.SizeOf<T>();IntPtr p=Marshal.AllocHGlobal(size);try{Marshal.Copy(new byte[size],0,p,size);Marshal.StructureToPtr(value,p,false);var bytes=new byte[size];Marshal.Copy(p,bytes,0,size);return Convert.ToBase64String(bytes);}finally{Marshal.FreeHGlobal(p);}}
-    private static T Decode<T>(string text)where T:struct
+    internal static T Decode<T>(string text)where T:struct
     {var bytes=Convert.FromBase64String(text);if(bytes.Length!=Marshal.SizeOf<T>())throw new InvalidDataException("Неверный размер снимка");IntPtr p=Marshal.AllocHGlobal(bytes.Length);try{Marshal.Copy(bytes,0,p,bytes.Length);return Marshal.PtrToStructure<T>(p);}finally{Marshal.FreeHGlobal(p);}}
-    [StructLayout(LayoutKind.Sequential,CharSet=System.Runtime.InteropServices.CharSet.Unicode)]private struct LogFont{public int Height,Width,Escapement,Orientation,Weight;public byte Italic,Underline,StrikeOut,CharSet,OutPrecision,ClipPrecision,Quality,Pitch;[MarshalAs(UnmanagedType.ByValTStr,SizeConst=32)]public string Face;}
-    [StructLayout(LayoutKind.Sequential,CharSet=System.Runtime.InteropServices.CharSet.Unicode)]private struct Ncm{public uint Size;public int Border,ScrollWidth,ScrollHeight,CaptionWidth,CaptionHeight;public LogFont CaptionFont;public int SmallCaptionWidth,SmallCaptionHeight;public LogFont SmallCaptionFont;public int MenuWidth,MenuHeight;public LogFont MenuFont,StatusFont,MessageFont;public int PaddedBorder;}
+    [StructLayout(LayoutKind.Sequential,CharSet=System.Runtime.InteropServices.CharSet.Unicode)]internal struct LogFont{public int Height,Width,Escapement,Orientation,Weight;public byte Italic,Underline,StrikeOut,CharSet,OutPrecision,ClipPrecision,Quality,Pitch;[MarshalAs(UnmanagedType.ByValTStr,SizeConst=32)]public string Face;}
+    [StructLayout(LayoutKind.Sequential,CharSet=System.Runtime.InteropServices.CharSet.Unicode)]internal struct Ncm{public uint Size;public int Border,ScrollWidth,ScrollHeight,CaptionWidth,CaptionHeight;public LogFont CaptionFont;public int SmallCaptionWidth,SmallCaptionHeight;public LogFont SmallCaptionFont;public int MenuWidth,MenuHeight;public LogFont MenuFont,StatusFont,MessageFont;public int PaddedBorder;}
     [DllImport("user32.dll")]private static extern int GetSysColor(int index);
     [DllImport("user32.dll",EntryPoint="PostMessageW")]private static extern bool PostMessage(IntPtr window,uint message,IntPtr wParam,IntPtr lParam);
     [DllImport("user32.dll",SetLastError=true)]private static extern bool SetSysColors(int count,int[] indices,int[] colors);

@@ -59,7 +59,8 @@ The optional legacy Microsoft display.dll provider is verified and supplied sepa
 | Classic Taskbar 3D buttons Lite | Anixx | 1.4 | MIT (Windhawk mods contribution policy) | [source](https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/classic-taskbar-buttons-lite.wh.cpp) |
 | Disable Taskbar Thumbnails | m417z | 1.2 | GNU General Public License v3.0 | [source](https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/taskbar-thumbnails.wh.cpp) |
 | WinMim: классические переходы оболочки | WinMim contributors | 0.1.0 | GPL-3.0 | [source](src/WinMim.Native/winmim-shell-behavior.wh.cpp) |
-| WinMim: классические рамки окон | WinMim contributors | 0.1.0 | GPL-3.0 | [source](src/WinMim.Native/winmim-classic-frames.wh.cpp) |
+| WinMim: классические рамки окон | WinMim contributors | 0.3.0 | GPL-3.0 | [source](src/WinMim.Native/winmim-classic-frames.wh.cpp) |
+| Fix Basic Caption Text | aubymori | 1.1.1 | MIT (Windhawk mods contribution policy) | [source](https://github.com/ramensoftware/windhawk-mods/blob/3f11069419fad9103a56cf78b28d293fee6c20cf/mods/fix-basic-caption-text.wh.cpp) |
 
 ## Optional installers
 
@@ -83,6 +84,10 @@ Five original homage icons by ke2083 are included under GPL-3.0, pinned at d1cb9
 ## Original tools and artwork
 
 The system-native Windows Forms interface, remaining WPF utilities, transaction engine, Mines game, gadgets, media player, Alt+Tab implementation and generated taskbar texture are original WinMim code. No Revert8Plus visual resource packs or proprietary StartIsBack binaries are included.
+
+## XP private resources
+
+Only XP metadata and preparation tools are included. The separately obtained Luna style, Microsoft XP icons/cursors/wallpaper/sounds and private resource libraries are not bundled or relicensed. The Luna10 author page lists CC BY-NC 3.0; the older eXPerience community mirror is not authenticated as an author release. The optional separate Open-Shell 4.4.198 XP menu skin adaptation changes text configuration only; Open-Shell remains MIT. See docs/XP-IMPLEMENTATION.md, content/xp/pack-reference.json and tools/adapt_xp_menu_skin.py.
 
 ## Included classic taskbar runtime
 

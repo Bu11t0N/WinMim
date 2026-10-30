@@ -7,7 +7,7 @@ using Microsoft.Win32;
 namespace AeroForge.Core;
 
 [SupportedOSPlatform("windows")]
-public sealed class DesktopBackend(string root) : IChangeBackend
+public sealed class DesktopBackend(string root,bool preserveStyleMetrics=false) : IChangeBackend
 {
     private readonly WindowsBackend filesAndRegistry = new(root, allowDesktopSettings: true);
     public void Validate(Change change)
@@ -15,6 +15,7 @@ public sealed class DesktopBackend(string root) : IChangeBackend
         switch (change.Kind)
         {
             case ChangeKind.ClassicAppearance:
+            case ChangeKind.XpAppearance:
                 if(change.Target!="Windows.ClassicAppearance")throw new InvalidDataException("Invalid Classic appearance target");
                 if(change.Value!=null)_=ClassicAppearance.Parse(change.Value);
                 break;
@@ -50,7 +51,7 @@ public sealed class DesktopBackend(string root) : IChangeBackend
     public ValueState Read(Change change)
     {
         Validate(change);
-        if(change.Kind==ChangeKind.ClassicAppearance)return new(){Exists=true,Kind="ClassicAppearance",Value=ClassicAppearance.Serialize(ClassicAppearance.Read())};
+        if(change.Kind is ChangeKind.ClassicAppearance or ChangeKind.XpAppearance)return new(){Exists=true,Kind="ClassicAppearance",Value=ClassicAppearance.Serialize(change.Kind==ChangeKind.XpAppearance?XpAppearance.ReadPhysical():ClassicAppearance.Read())};
         if(change.Kind==ChangeKind.RegistryKey)
         {
             using var key=Registry.CurrentUser.OpenSubKey(change.Target[5..]);
@@ -63,6 +64,7 @@ public sealed class DesktopBackend(string root) : IChangeBackend
         }
         if (change.Kind == ChangeKind.VisualStyle)
         {
+            if(preserveStyleMetrics)RefreshProcessThemeCache();
             var path = new StringBuilder(32768); var color = new StringBuilder(256); var size = new StringBuilder(256);
             Marshal.ThrowExceptionForHR(GetCurrentThemeName(path,path.Capacity,color,color.Capacity,size,size.Capacity));
             return new() { Exists=true,Kind="VisualStyle",Value=new VisualStyleState(path.ToString(),color.ToString(),size.ToString()).Encode() };
@@ -78,8 +80,12 @@ public sealed class DesktopBackend(string root) : IChangeBackend
     public void Write(Change change, ValueState state)
     {
         Validate(change);
-        if(change.Kind==ChangeKind.ClassicAppearance)
-        {if(!state.Exists||state.Kind!="ClassicAppearance")throw new InvalidDataException("Invalid Classic snapshot");ClassicAppearance.Write(ClassicAppearance.Parse(state.Value!));return;}
+        if(change.Kind is ChangeKind.ClassicAppearance or ChangeKind.XpAppearance)
+        {
+            if(!state.Exists||state.Kind!="ClassicAppearance")throw new InvalidDataException("Invalid Classic snapshot");
+            var appearance=ClassicAppearance.Parse(state.Value!);
+            if(change.Kind==ChangeKind.XpAppearance)XpAppearance.WritePhysical(appearance);else ClassicAppearance.Write(appearance);return;
+        }
         if(change.Kind==ChangeKind.RegistryKey)
         {
             if(state.Exists)
@@ -116,10 +122,19 @@ public sealed class DesktopBackend(string root) : IChangeBackend
             // rollback and repeat application retain the independently journalled value.
             var colorization=new Change { Kind=ChangeKind.Registry,Target=DesktopRegistryPolicy.Dwm,ValueName="EnableWindowColorization" };
             var beforeColorization=filesAndRegistry.Read(colorization);
+            var beforeAppearance=preserveStyleMetrics?XpAppearance.ReadPhysical():null;
             int result;
             try { result=SetSystemVisualStyle(style.Path,style.Color,style.Size,0); }
-            finally { filesAndRegistry.Write(colorization,beforeColorization); }
+            finally
+            {
+                filesAndRegistry.Write(colorization,beforeColorization);
+                // XP journals metrics/colors separately. A style operation must
+                // not reset restored user metrics while unwinding that journal.
+                if(beforeAppearance!=null)XpAppearance.WritePhysical(beforeAppearance);
+            }
             if (result < 0) throw new InvalidOperationException($"Windows отклонила визуальный стиль (0x{result:X8}). Проверьте установленный SecureUxTheme и перезагрузите Windows.");
+            if(preserveStyleMetrics && Read(change).Value!=state.Value)
+                throw new IOException("Windows не сохранила выбранный стиль. Ожидалось: "+state.Value+"; получено: "+Read(change).Value);
             return;
         }
         if (change.Kind == ChangeKind.Wallpaper)
@@ -139,6 +154,20 @@ public sealed class DesktopBackend(string root) : IChangeBackend
         SendMessageTimeout(new IntPtr(0xFFFF),0x31A,UIntPtr.Zero,null,2,1000,out _);
         SendMessageTimeout(new IntPtr(0xFFFF),0x320,UIntPtr.Zero,null,2,1000,out _);
     }
+    private static void RefreshProcessThemeCache()
+    {
+        // A CLI/worker without a window never receives WM_THEMECHANGED. UxTheme
+        // can then report the old process-local theme after a successful #65.
+        // Let a stock window process that notification synchronously before
+        // reading state; no permanent window, message loop or helper process.
+        IntPtr window=CreateWindowExW(0,"STATIC","",0,0,0,0,0,IntPtr.Zero,IntPtr.Zero,IntPtr.Zero,IntPtr.Zero);
+        if(window==IntPtr.Zero)throw new Win32Exception();
+        try{SendMessageW(window,0x031A,IntPtr.Zero,IntPtr.Zero);}
+        finally{DestroyWindow(window);}
+    }
+    [DllImport("user32.dll",CharSet=CharSet.Unicode,SetLastError=true)]private static extern IntPtr CreateWindowExW(uint exStyle,string className,string title,uint style,int x,int y,int width,int height,IntPtr parent,IntPtr menu,IntPtr instance,IntPtr parameter);
+    [DllImport("user32.dll")]private static extern IntPtr SendMessageW(IntPtr window,uint message,IntPtr wParam,IntPtr lParam);
+    [DllImport("user32.dll")]private static extern bool DestroyWindow(IntPtr window);
     [StructLayout(LayoutKind.Sequential)] private struct AppBarData
     { public uint Size; public IntPtr Window; public uint Callback; public uint Edge; public int Left,Top,Right,Bottom; public IntPtr Parameter; }
     [DllImport("shell32.dll",ExactSpelling=true)] private static extern UIntPtr SHAppBarMessage(uint message,ref AppBarData data);
