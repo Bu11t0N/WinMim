@@ -62,7 +62,7 @@
       "name": "Open-Shell",
       "version": "4.4.198",
       "license": "MIT",
-      "description": "Классическое меню «Пуск». Устанавливается официальным установщиком отдельно; AeroForge не удаляет его при откате профиля.",
+      "description": "РљР»Р°СЃСЃРёС‡РµСЃРєРѕРµ РјРµРЅСЋ В«РџСѓСЃРєВ». РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚СЃСЏ РѕС„РёС†РёР°Р»СЊРЅС‹Рј СѓСЃС‚Р°РЅРѕРІС‰РёРєРѕРј РѕС‚РґРµР»СЊРЅРѕ; AeroForge РЅРµ СѓРґР°Р»СЏРµС‚ РµРіРѕ РїСЂРё РѕС‚РєР°С‚Рµ РїСЂРѕС„РёР»СЏ.",
       "sourceUrl": "https://github.com/Open-Shell/Open-Shell-Menu",
       "downloadUrl": "https://github.com/Open-Shell/Open-Shell-Menu/releases/download/v4.4.198/OpenShellSetup_4_4_198.exe",
       "sha256": "a4d2d4459de55b5e962ba2a14f7bb794170511649138173dfa72949837b48c3f",
@@ -73,7 +73,7 @@
       "name": "SecureUxTheme",
       "version": "4.0.0",
       "license": "LGPL-2.1",
-      "description": "Подключение сторонних визуальных стилей. Изменения установщика управляются средствами Windows Installer.",
+      "description": "РџРѕРґРєР»СЋС‡РµРЅРёРµ СЃС‚РѕСЂРѕРЅРЅРёС… РІРёР·СѓР°Р»СЊРЅС‹С… СЃС‚РёР»РµР№. РР·РјРµРЅРµРЅРёСЏ СѓСЃС‚Р°РЅРѕРІС‰РёРєР° СѓРїСЂР°РІР»СЏСЋС‚СЃСЏ СЃСЂРµРґСЃС‚РІР°РјРё Windows Installer.",
       "sourceUrl": "https://github.com/namazso/SecureUxTheme",
       "downloadUrl": "https://github.com/namazso/SecureUxTheme/releases/download/v4.0.0/SecureUxTheme_x64.msi",
       "sha256": "af6ab67e0a283a0138b827b6731d5bb1f4ffc59e6d905f1c41567eb3305a9537",
@@ -84,7 +84,7 @@
       "name": "OpenGlass",
       "version": "3.0.2.3749",
       "license": "GPL-3.0",
-      "description": "Прозрачность и рамки Aero. Совместимость конкретной ревизии Windows проверяется отдельно.",
+      "description": "РџСЂРѕР·СЂР°С‡РЅРѕСЃС‚СЊ Рё СЂР°РјРєРё Aero. РЎРѕРІРјРµСЃС‚РёРјРѕСЃС‚СЊ РєРѕРЅРєСЂРµС‚РЅРѕР№ СЂРµРІРёР·РёРё Windows РїСЂРѕРІРµСЂСЏРµС‚СЃСЏ РѕС‚РґРµР»СЊРЅРѕ.",
       "sourceUrl": "https://github.com/ALTaleX531/OpenGlass",
       "downloadUrl": "https://github.com/ALTaleX531/OpenGlass/releases/download/v3.0.2.3749/OpenGlassSetup.Signed.exe",
       "sha256": "191553cf594af2459631a8d00a48ffe0375868210f5e84c60ff75a668529405f",
@@ -95,5 +95,17 @@
     "url": "https://msdl.microsoft.com/download/symbols/display.dll/5632D659c3000/display.dll",
     "sha256": "a2624a5e908fc9b99edf89a1aaeee0c70dd10ed3142d1f922f308ad35993d30c",
     "bundled": false
+  },
+  "classicRuntime": {
+    "version": "v1.22.122",
+    "commit": "cff7a787c35c5f3e1db67a22a93721b911313fae",
+    "url": "https://github.com/dremin/RetroBar/releases/download/v1.22.122/RetroBar.Portable.zip",
+    "archiveSha256": "6ab0d0972535e5efedc13c83403b52883edb06881d2d6aa18bf8af379bc7a128",
+    "sourceArchiveSha256": "78277995c2562e82b536e0af35252955b342559b39c8c0d03cf91e246a8dfbaf",
+    "files": {
+      "RetroBar.exe": "bf3fda3e31a1839482bd3ec355cd9fffebf27d3ce378a8c0f890670e24af7d1a",
+      "License.txt": "3413530d8a5a30ad46de082ea70ff0e2195565499393d5156635a4787f80d215"
+    },
+    "license": "Apache-2.0; bundled BSD-3-Clause notices retained"
   }
 }

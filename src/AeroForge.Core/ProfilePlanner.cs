@@ -86,7 +86,7 @@ public sealed class ProfilePlanner(ContentStore store, Catalog catalog)
         // Controllers and guest integration must remain available for recovery.
         var controllers=module.Id=="winmim-classic-frames"?new[]{"AeroForge.exe","AeroForge.Cli.exe","AeroForge.VmSmoke.exe"}:new[]{"WinMim.exe","WinMim.UiProbe.exe","AeroForge.exe","AeroForge.Cli.exe","AeroForge.VmSmoke.exe"};
         var excludes=module.Excludes.Concat(controllers).Concat(new[]{"vmtoolsd.exe","vm3dservice.exe","VGAuthService.exe","vmwaretray.exe","vmwareuser.exe",
-            "dwm.exe","winlogon.exe","consent.exe","LogonUI.exe","csrss.exe","smss.exe","services.exe","lsass.exe","svchost.exe","fontdrvhost.exe","smartscreen.exe","RuntimeBroker.exe"}).Distinct(StringComparer.OrdinalIgnoreCase);
+            "RetroBar.exe","dwm.exe","winlogon.exe","consent.exe","LogonUI.exe","csrss.exe","smss.exe","services.exe","lsass.exe","svchost.exe","fontdrvhost.exe","smartscreen.exe","RuntimeBroker.exe"}).Distinct(StringComparer.OrdinalIgnoreCase);
         var includes=module.Includes;
         var lines = new List<string> { "[Mod]", "LibraryFileName=" + (dll ?? "missing.dll"),
             "Disabled=" + (enabled ? "0" : "1"), "LoggingEnabled=0", "DebugLoggingEnabled=0",

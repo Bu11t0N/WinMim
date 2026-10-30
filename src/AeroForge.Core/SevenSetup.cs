@@ -45,7 +45,7 @@ public sealed class SevenSetup
     public SetupCheck[] Check()
     {
         var result=new List<SetupCheck>();
-        if(Classic95Setup.IsActive)result.Add(new("Windows 95",false,"Сначала верните оформление Windows 95."));
+        if(Classic95Setup.IsActive)result.Add(new("Классическое оформление",false,"Сначала верните предыдущее оформление."));
         try { DesktopController.EnsureLab(); result.Add(new("Windows",true,"Тестовая Windows 10 x64, обычный пользователь")); }
         catch(Exception error){result.Add(new("Windows",false,error.Message));}
         var errors=store.VerifyAll(catalog);

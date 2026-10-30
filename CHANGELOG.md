@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-30 — Working classic and partial XP profiles
+
+- Added explicit apply/restore for NT 4.0, 98/SE, Me, 2000 and partial XP alongside Windows 95. Profiles now select real palettes, fonts, menus and pinned RetroBar taskbars; XP includes a Luna menu and blue taskbar with classic window frames.
+- Added isolated runtime ownership, per-field RetroBar settings recovery and serialization of classic desktop operations. Atomic JSON writes now tolerate short reader locks.
+- Windows 1.x–3.x and NT 3.x remain outside this implementation. Shared icons and incomplete historical surfaces are labeled in the interface and documentation.
+
 ## 2026-10-30 — Classic95 UI, original icons and journal memory
 
 Moved interactive classic apply/restore off the UI thread. Added process-local classic rendering and disabled modern taskbar hover previews for the Classic95 preset. Added a verified importer for private original Windows 95 icons; Microsoft resource binaries are not distributed. Recovery lists now avoid loading binary backups, with about 83% lower managed allocations in the documented synthetic comparison. Real UI cycle tests complement the earlier console/reboot checks. See docs/CLASSIC95-RELIABILITY-20261030.md.

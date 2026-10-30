@@ -8,4 +8,6 @@ Captured on October 30, 2026 (Europe/Moscow), using the application built from c
 | [windows-95.png](windows-95.png) | Experimental Classic95 profile applied; Open-Shell Start menu expanded. The optional original Windows 95 icon pack is present in the lab. |
 | [windows-7.png](windows-7.png) | Windows 7 lab desktop integration applied; Open-Shell Start menu expanded. The selected catalog row does not apply this desktop; the separate Windows 7 lab coordinator does. |
 
-These are examples of the current developer preview, not a claim of complete historical fidelity. Other catalog targets do not yet provide complete desktop conversions.
+The later classic-family captures (`windows-nt4.png`, `windows-98.png`, `windows-98se.png`, `windows-me.png`, `windows-2000.png`, `windows-xp.png`) were taken on the same date at 1440×900 from the initial working profiles in the source revision containing those images. WinMim and the corresponding Open-Shell menu are open; RetroBar supplies the taskbars. XP still has classic window frames. They are direct guest captures, without compositing.
+
+These are examples of the current developer preview, not a claim of complete historical fidelity. Vista and the modern catalog targets do not yet provide complete desktop conversions.

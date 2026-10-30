@@ -83,3 +83,7 @@ Five original homage icons by ke2083 are included under GPL-3.0, pinned at d1cb9
 ## Original tools and artwork
 
 The system-native Windows Forms interface, remaining WPF utilities, transaction engine, Mines game, gadgets, media player, Alt+Tab implementation and generated taskbar texture are original WinMim code. No Revert8Plus visual resource packs or proprietary StartIsBack binaries are included.
+
+## Included classic taskbar runtime
+
+Unmodified RetroBar v1.22.122 (x64, .NET 10), Apache-2.0. Its License.txt, including bundled dependency notices, is retained in content/classic-runtime/retrobar. Source: https://github.com/dremin/RetroBar/tree/cff7a787c35c5f3e1db67a22a93721b911313fae. The pinned source archive is vendor/sources/retrobar-source.zip; source preparation is in tools/fetch_classic_runtime.py. RetroBar runs as a separate process.

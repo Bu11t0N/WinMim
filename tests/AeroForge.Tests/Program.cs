@@ -63,9 +63,9 @@ Test("Classic session ACL keeps original grants and never runs on the developmen
     }
 });
 
-Test("selection of all eleven targets remains side-effect free", () =>
+Test("selection of all targets remains side-effect free", () =>
 {
-    string[] ids=["windows-95","windows-98","windows-me","windows-2000","windows-xp","windows-vista","windows-7","windows-8","windows-81","windows-10","windows-11"];
+    string[] ids=["windows-95","windows-nt4","windows-98","windows-98se","windows-me","windows-2000","windows-xp","windows-vista","windows-7","windows-8","windows-81","windows-10","windows-11"];
     Assert(AppearanceCatalog.Targets.Select(t=>t.Id).SequenceEqual(ids));
     foreach(var id in ids)
     {
@@ -76,6 +76,60 @@ Test("selection of all eleven targets remains side-effect free", () =>
     Throws(()=>AppearanceCatalog.Select("../windows-7"));
 });
 
+Test("all classic and XP targets build distinct real plans", () =>
+{
+    string content=Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,"../../../../../content"));
+    var before=ClassicAppearance.Read();var snapshots=new Dictionary<string,ClassicAppearanceState>();
+    foreach(var theme in ClassicThemes.All){
+        Assert(AppearanceCatalog.Select(theme.Id).Target.Available);
+        var plan=Classic95Profile.Build(content,NewState(),before,target:theme.Id);
+        Assert(ClassicThemes.FromReceipt(plan.ProfileId)==theme.Id);
+        var backend=new DesktopBackend(NewState());foreach(var c in plan.Changes)backend.Validate(c);
+        Assert(plan.Changes.Select(c=>c.Identity).Distinct().Count()==plan.Changes.Count);
+        Assert(plan.Changes.Any(c=>c.ValueName=="MenuCaption"&&c.Value==theme.Name));
+        snapshots[theme.Id]=ClassicAppearance.Parse(plan.Changes.Single(c=>c.Kind==ChangeKind.ClassicAppearance).Value!);
+        Assert((theme.Id!="windows-95")==plan.Changes.Any(c=>c.Kind==ChangeKind.File&&c.Target.EndsWith("RetroBar.exe")));
+        if(theme.Id!="windows-95")Assert(plan.Changes.Any(c=>c.Target=="QuickLaunch/Проводник.lnk"));
+    }
+    Assert(!snapshots["windows-95"].Gradient && snapshots["windows-98"].Gradient);
+    Assert(!snapshots["windows-95"].Colors.SequenceEqual(snapshots["windows-2000"].Colors));
+    Assert(snapshots["windows-95"].Metrics!=snapshots["windows-me"].Metrics);
+    var xp=Classic95Profile.Build(content,NewState(),before,target:"windows-xp");
+    Assert(xp.Changes.Any(c=>c.ValueName=="SkinC2"&&c.Value=="Windows XP Luna"));
+    Assert(xp.Changes.Any(c=>c.ValueName=="MenuStyle"&&c.Value=="Classic2"));
+    Throws(()=>ClassicThemes.Get("windows-31"));Throws(()=>ClassicThemes.Get("../windows-xp"));
+});
+Test("RetroBar JSON field journal preserves upstream defaults and restores original fields", () =>
+{
+    string root=NewState();Directory.CreateDirectory(root);string path=Path.Combine(root,"settings.json");
+    File.WriteAllText(path,"{\"Theme\":\"Original\",\"Unrelated\":42}");
+    var backend=new RetroBarSettingsBackend(path);var manager=new TransactionManager(backend,NewState());
+    var plan=RetroBarSettingsBackend.Plan(ClassicThemes.Get("windows-xp"),Path.Combine(root,"QuickLaunch"));
+    var receipt=manager.Apply(plan);var node=System.Text.Json.Nodes.JsonNode.Parse(File.ReadAllText(path))!;
+    node["RuntimeDefault"]=true;File.WriteAllText(path,node.ToJsonString());
+    Assert(manager.Rollback(receipt.FilePath).Status=="RolledBack");
+    node=System.Text.Json.Nodes.JsonNode.Parse(File.ReadAllText(path))!;
+    Assert(node["Theme"]!.GetValue<string>()=="Original"&&node["Unrelated"]!.GetValue<int>()==42&&node["RuntimeDefault"]!.GetValue<bool>());
+    Assert(node["CheckForUpdates"]==null);
+    Throws(()=>backend.Validate(FileChange("../Theme","true")));
+});
+Test("RetroBar modified user preference is retained on rollback", () =>
+{
+    string path=Path.Combine(NewState(),"settings.json");var backend=new RetroBarSettingsBackend(path);var manager=new TransactionManager(backend,NewState());
+    var receipt=manager.Apply(RetroBarSettingsBackend.Plan(ClassicThemes.Get("windows-98"),NewState()));
+    var node=System.Text.Json.Nodes.JsonNode.Parse(File.ReadAllText(path))!;node["Theme"]="User theme";File.WriteAllText(path,node.ToJsonString());
+    var preserve=RetroBarSettingsBackend.Fields.Select(key=>new Change{Kind=ChangeKind.File,Target=key}.Identity).ToHashSet();
+    Assert(manager.Rollback(receipt.FilePath,preserveUserChanges:preserve).Status=="RolledBack");
+    Assert(System.Text.Json.Nodes.JsonNode.Parse(File.ReadAllText(path))!["Theme"]!.GetValue<string>()=="User theme");
+});
+Test("atomic JSON writes tolerate a short external reader lock", () =>
+{
+    string path=Path.Combine(NewState(),"state.json");JsonFile.Write(path,new{value=1});
+    var read=new FileStream(path,FileMode.Open,FileAccess.Read,FileShare.Read);
+    var release=Task.Run(async()=>{await Task.Delay(100);read.Dispose();});
+    JsonFile.Write(path,new{value=2});release.GetAwaiter().GetResult();
+    Assert(System.Text.Json.JsonDocument.Parse(File.ReadAllText(path)).RootElement.GetProperty("value").GetInt32()==2);
+});
 Test("sound scheme allows only its named event values", () =>
 {
     foreach(var path in SevenSounds.EventPaths)

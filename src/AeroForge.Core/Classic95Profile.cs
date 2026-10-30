@@ -9,22 +9,23 @@ public static class Classic95Profile
     public static bool HasOriginalIcons=>Directory.Exists(PrivateIcons);
     public const string ColorsKey=@"HKCU\Control Panel\Colors",MetricsKey=@"HKCU\Control Panel\Desktop\WindowMetrics";
     private static readonly string[] MetricNames=["CaptionFont","SmCaptionFont","MenuFont","StatusFont","MessageFont","IconFont","BorderWidth","PaddedBorderWidth","ScrollWidth","ScrollHeight","CaptionWidth","CaptionHeight","SmCaptionWidth","SmCaptionHeight","MenuWidth","MenuHeight"];
-    private static readonly string[] ShellNames=["MenuCaption","SkinOptionsC1","MenuItems1","RecentPrograms","PinnedPrograms","PinnedItemsPath","SmallIconSize","SkinC1","SkinVariationC1","SearchBox","TaskbarTexture","MenuStyle","EnableStartButton","MouseClick","WinKey","CustomTaskbar","TaskbarLook","TaskbarOpacity","TaskbarColor","TaskbarTextColor","StartButtonText","StartButtonIcon","StartButtonIconSize","StartButtonType","StartButtonPath","StartButtonSize","SkipMetro","StartScreenShortcut","RecentMetroApps","GlassOverride","EnableGlass"];
+    private static readonly string[] ShellNames=["MenuCaption","SkinOptionsC1","MenuItems1","RecentPrograms","PinnedPrograms","PinnedItemsPath","SmallIconSize","SkinC1","SkinVariationC1","SearchBox","TaskbarTexture","MenuStyle","EnableStartButton","MouseClick","WinKey","CustomTaskbar","TaskbarLook","TaskbarOpacity","TaskbarColor","TaskbarTextColor","StartButtonText","StartButtonIcon","StartButtonIconSize","StartButtonType","StartButtonPath","StartButtonSize","SkipMetro","StartScreenShortcut","RecentMetroApps","GlassOverride","EnableGlass","SkinC2","SkinOptionsC2","SkinVariationC2","MenuItems2"];
     public static bool Allows(Change change)=>change.Kind==ChangeKind.Registry &&
         (change.Target==ColorsKey && ClassicAppearance.ColorNames.Contains(change.ValueName)
         ||change.Target==MetricsKey && MetricNames.Contains(change.ValueName)
         ||change.Target==DesktopRegistryPolicy.Shell && ShellNames.Contains(change.ValueName)
         ||change.Target==DesktopRegistryPolicy.Advanced && new[]{"TaskbarGlomLevel","MMTaskbarGlomLevel","TaskbarSmallIcons","ListviewShadow","ShowTaskViewButton","TaskbarSizeMove","DisablePreviewDesktop"}.Contains(change.ValueName)
         ||change.Target==DesktopRegistryPolicy.Computer && change.ValueName=="LocalizedString");
-    public static Plan Build(string content,string root,ClassicAppearanceState original,string? privateIcons=null)
+    public static Plan Build(string content,string root,ClassicAppearanceState original,string? privateIcons=null,string target="windows-95")
     {
-        var desired=ClassicAppearance.Desired(original);
-        var plan=new Plan{ProfileId="desktop-windows95",ProfileName="Windows 95 — экспериментальный профиль",Exclusive=true};
-        void Set(string key,string name,string value,string kind="String")=>plan.Changes.Add(new(){Kind=ChangeKind.Registry,Target=key,ValueName=name,ValueKind=kind,Value=value,Description="Windows 95: "+name});
+        var theme=ClassicThemes.Get(target);
+        var desired=ClassicAppearance.Desired(original,target);
+        var plan=new Plan{ProfileId=target=="windows-95"?"desktop-windows95":"desktop-"+target,ProfileName=theme.Name+" — экспериментальный профиль",Exclusive=true};
+        void Set(string key,string name,string value,string kind="String")=>plan.Changes.Add(new(){Kind=ChangeKind.Registry,Target=key,ValueName=name,ValueKind=kind,Value=value,Description=theme.Name+": "+name});
         for(int i=0;i<ClassicAppearance.ColorNames.Length;i++)Set(ColorsKey,ClassicAppearance.ColorNames[i],ClassicAppearance.RgbText(desired.Colors[i]));
         plan.Changes.AddRange(ClassicAppearance.PersistentMetrics(desired));
         foreach(var (name,value) in new[]{("MenuStyle","Classic1"),("SkinC1","Classic Skin"),("SkinVariationC1",""),("SearchBox","Hide"),("TaskbarLook","Opaque"),("TaskbarTexture",""),("StartButtonType","ClasicButton"),("StartButtonText","Пуск"),("StartButtonIcon",@"%SystemRoot%\System32\slui.exe, 2"),("StartButtonPath",""),("MouseClick","ClassicMenu"),("WinKey","ClassicMenu")})Set(DesktopRegistryPolicy.Shell,name,value);
-        Set(DesktopRegistryPolicy.Shell,"MenuCaption","Windows 95");
+        Set(DesktopRegistryPolicy.Shell,"MenuCaption",theme.Name);
         Set(DesktopRegistryPolicy.Shell,"RecentPrograms","0","DWord");
         Set(DesktopRegistryPolicy.Shell,"PinnedPrograms","PinnedItems");
         Set(DesktopRegistryPolicy.Shell,"PinnedItemsPath",SafePath.Under(root,"EmptyPinned"));
@@ -41,6 +42,17 @@ public static class Classic95Profile
             "HelpItem.Command=help","HelpItem.Label=Справка","HelpItem.Icon=imageres.dll,99",
             "RunItem.Command=run","RunItem.Label=Выполнить…","RunItem.Icon=shell32.dll,328",
             "ShutdownItem.Command=shutdown_box","ShutdownItem.Label=Завершение работы…","ShutdownItem.Icon=shell32.dll,329"];
+        if(theme.QuickLaunch)
+            menu=menu.Select(line=>line.StartsWith("Items=")?line.Replace("DocumentsMenu, SettingsMenu","DocumentsMenu, FavoritesItem, SettingsMenu"):line)
+                .Concat(new[]{"FavoritesItem.Command=favorites","FavoritesItem.Label=Избранное"}).ToArray();
+        if(theme.Xp)
+            menu=menu.Where(line=>!line.StartsWith("Items=")).Concat(new[]{
+                "Items=COLUMN_PADDING, ProgramsMenu, SEPARATOR, RunItem, COLUMN_BREAK, UserDocumentsItem, UserPicturesItem, UserMusicItem, ComputerItem, SettingsMenu, FindMenu, HelpItem, SEPARATOR, LogOffItem, ShutdownItem",
+                "UserDocumentsItem.Command=user_documents","UserDocumentsItem.Label=Мои документы",
+                "UserPicturesItem.Command=user_pictures","UserPicturesItem.Label=Мои рисунки",
+                "UserMusicItem.Command=user_music","UserMusicItem.Label=Моя музыка",
+                "ComputerItem.Command=computer","ComputerItem.Label=Мой компьютер",
+                "LogOffItem.Command=logoff","LogOffItem.Label=Выход из системы…"}).ToArray();
         string iconDirectory=privateIcons??PrivateIcons;
         bool originals=Directory.Exists(iconDirectory);
         var manifest=JsonFile.Read<AssetManifest>(SafePath.Under(content,originals?"classic95/original-reference.json":"classic95/sources.json"));
@@ -56,8 +68,12 @@ public static class Classic95Profile
             foreach(string clsid in new[]{"{26EE0668-A00A-44D7-9371-BEB064C98683}","{21EC2020-3AEA-1069-A2DD-08002B30309D}","{5399E694-6CE5-4D6C-8FCE-1D8870FDCBA0}"})
                 foreach(string prefix in new[]{@"HKCU\Software\Classes\CLSID\",@"HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\CLSID\"})Set(prefix+clsid+@"\DefaultIcon","",SafePath.Under(root,"Assets/"+icons["settings"])+",0");
         }
-        Set(DesktopRegistryPolicy.Shell,"MenuItems1",System.Text.Json.JsonSerializer.Serialize(menu),"MultiString");
-        foreach(var (name,value) in new[]{("EnableStartButton",1),("CustomTaskbar",1),("TaskbarOpacity",100),("TaskbarColor",0xC0C0C0),("TaskbarTextColor",0),("StartButtonSize",0),("StartButtonIconSize",16),("SkipMetro",1),("StartScreenShortcut",0),("RecentMetroApps",0),("GlassOverride",1),("EnableGlass",0)})Set(DesktopRegistryPolicy.Shell,name,value.ToString(CultureInfo.InvariantCulture),"DWord");
+        Set(DesktopRegistryPolicy.Shell,theme.Xp?"MenuItems2":"MenuItems1",System.Text.Json.JsonSerializer.Serialize(menu),"MultiString");
+        if(theme.Xp){
+            plan.Changes.Single(c=>c.Target==DesktopRegistryPolicy.Shell&&c.ValueName=="MenuStyle").Value="Classic2";
+            Set(DesktopRegistryPolicy.Shell,"SkinC2","Windows XP Luna");Set(DesktopRegistryPolicy.Shell,"SkinVariationC2","");
+        }
+        foreach(var (name,value) in new[]{("EnableStartButton",target=="windows-95"?1:0),("CustomTaskbar",target=="windows-95"?1:0),("TaskbarOpacity",100),("TaskbarColor",theme.Face),("TaskbarTextColor",0),("StartButtonSize",0),("StartButtonIconSize",16),("SkipMetro",1),("StartScreenShortcut",0),("RecentMetroApps",0),("GlassOverride",1),("EnableGlass",0)})Set(DesktopRegistryPolicy.Shell,name,value.ToString(CultureInfo.InvariantCulture),"DWord");
         foreach(var (name,value) in new[]{("TaskbarGlomLevel",2),("MMTaskbarGlomLevel",2),("TaskbarSmallIcons",1),("ListviewShadow",0),("ShowTaskViewButton",0),("TaskbarSizeMove",0),("DisablePreviewDesktop",1)})Set(DesktopRegistryPolicy.Advanced,name,value.ToString(CultureInfo.InvariantCulture),"DWord");
         Set(DesktopRegistryPolicy.Computer,"LocalizedString","Мой компьютер");
         foreach(var asset in manifest.Files)
@@ -70,9 +86,17 @@ public static class Classic95Profile
         }
         foreach(var (clsid,file,name) in new[]{("{20D04FE0-3AEA-1069-A2D8-08002B30309D}",icons["computer"],""),("{59031A47-3F72-44A7-89C5-5595FE6B30EE}",icons["documents"],""),("{F02C1A0D-BE21-4350-88B0-7367FC96EF3C}",icons["network"],""),("{645FF040-5081-101B-9F08-00AA002F954E}",icons["recycle-empty"],"empty"),("{645FF040-5081-101B-9F08-00AA002F954E}",icons["recycle-full"],"full")})
             foreach(var prefix in new[]{@"HKCU\Software\Classes\CLSID\",@"HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\CLSID\"})Set(prefix+clsid+@"\DefaultIcon",name,SafePath.Under(root,"Assets/"+file)+",0");
-        plan.Changes.Add(new(){Kind=ChangeKind.Wallpaper,Target="Windows.Wallpaper",ValueKind="Wallpaper",Value="",Description="Однотонный бирюзовый рабочий стол"});
-        plan.Changes.Add(new(){Kind=ChangeKind.ClassicAppearance,Target="Windows.ClassicAppearance",ValueKind="ClassicAppearance",Value=ClassicAppearance.Serialize(desired),Description="Палитра, системные шрифты и метрики Windows 95"});
+        plan.Changes.Add(new(){Kind=ChangeKind.Wallpaper,Target="Windows.Wallpaper",ValueKind="Wallpaper",Value="",Description="Фон рабочего стола "+theme.Name});
+        plan.Changes.Add(new(){Kind=ChangeKind.ClassicAppearance,Target="Windows.ClassicAppearance",ValueKind="ClassicAppearance",Value=ClassicAppearance.Serialize(desired),Description="Палитра, системные шрифты и метрики "+theme.Name});
         plan.Changes.Add(new(){Kind=ChangeKind.File,Target="classic-appearance.json",Content=System.Text.Encoding.UTF8.GetBytes(ClassicAppearance.Serialize(desired)),Description="Состояние Classic для возобновления"});
+        if(target!="windows-95"){
+            RetroBarHost.AddFiles(plan,content);
+            string system=Environment.GetFolderPath(Environment.SpecialFolder.System);
+            foreach(var (label,file) in new[]{("Проводник","explorer.exe"),("Блокнот","notepad.exe")}){
+                string executable=Path.Combine(file=="explorer.exe"?Environment.GetFolderPath(Environment.SpecialFolder.Windows):system,file);
+                if(File.Exists(executable))plan.Changes.Add(new(){Kind=ChangeKind.File,Target="QuickLaunch/"+label+".lnk",Content=DesktopShortcuts.Create(executable),Description="Быстрый запуск: "+label});
+            }
+        }
         return plan;
     }
     private sealed class AssetManifest{public Asset[] Files{get;set;}=[];public Dictionary<string,string> Icons{get;set;}=[];}

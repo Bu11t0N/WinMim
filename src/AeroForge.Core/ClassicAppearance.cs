@@ -19,12 +19,20 @@ public static class ClassicAppearance
         var icon=new LogFont();if(!Font(0x1F,(uint)Marshal.SizeOf<LogFont>(),ref icon,0))throw new Win32Exception();
         return new(ColorIndices.Select(GetSysColor).ToArray(),Encode(metrics),Encode(icon),Bool(0x1008),Bool(0x1022));
     }
-    public static ClassicAppearanceState Desired(ClassicAppearanceState current)
+    public static ClassicAppearanceState Desired(ClassicAppearanceState current,string target="windows-95")
     {
-        var m=Decode<Ncm>(current.Metrics);var font=new LogFont{Height=-11,Weight=400,CharSet=1,Quality=3,Pitch=0,Face="MS Sans Serif"};
+        var theme=ClassicThemes.Get(target);
+        var m=Decode<Ncm>(current.Metrics);var font=new LogFont{Height=-11,Weight=400,CharSet=1,Quality=3,Pitch=0,Face=theme.Font};
         m.Border=1;m.ScrollWidth=16;m.ScrollHeight=16;m.CaptionWidth=18;m.CaptionHeight=18;m.SmallCaptionWidth=15;m.SmallCaptionHeight=15;m.MenuWidth=18;m.MenuHeight=18;m.PaddedBorder=0;
         m.CaptionFont=font;m.CaptionFont.Weight=700;m.SmallCaptionFont=font;m.SmallCaptionFont.Weight=700;m.MenuFont=font;m.StatusFont=font;m.MessageFont=font;
-        return new((int[])Colors95.Clone(),Encode(m),Encode(font),false,false);
+        var colors=(int[])Colors95.Clone();
+        void Color(string name,int color)=>colors[Array.IndexOf(ColorNames,name)]=color;
+        Color("Background",theme.Background);
+        foreach(string name in new[]{"ButtonFace","Menu","MenuBar","ActiveBorder","InactiveBorder","Scrollbar"})Color(name,theme.Face);
+        Color("Hilight",theme.Highlight);Color("MenuHilight",theme.Highlight);
+        if(theme.Gradient){Color("GradientActiveTitle",Rgb(16,132,208));Color("GradientInactiveTitle",Rgb(181,181,181));}
+        if(theme.Xp){Color("ActiveTitle",Rgb(0,84,227));Color("GradientActiveTitle",Rgb(61,149,255));Color("InactiveTitle",Rgb(122,150,223));}
+        return new(colors,Encode(m),Encode(font),theme.Gradient,false);
     }
     // Windows may derive caption-button width from the calling process's active
     // visual style. The persistent CaptionWidth preference has its own registry

@@ -10,6 +10,15 @@ try
     string root = Get("--root", Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "AeroForge", "Host"));
     string state = Get("--state", Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "AeroForge", "State"));
     string command = args.FirstOrDefault() ?? "help";
+    if(command is "classic-apply" or "classic-restore" or "classic-inspect")
+    {
+        if(command=="classic-inspect"){Console.WriteLine(JsonSerializer.Serialize(new{active=Classic95Setup.ActiveTarget,targets=ClassicThemes.All},JsonFile.Options));return 0;}
+        if(!args.Contains("--accept-experimental"))throw new InvalidOperationException("Classic requires --accept-experimental");
+        var setup=new Classic95Setup(content);
+        if(command=="classic-apply")Console.WriteLine(JsonSerializer.Serialize(await setup.ApplyThemeAsync(Get("--target","windows-95"),new Progress<string>(Console.Error.WriteLine)),JsonFile.Options));
+        else await setup.RestoreAsync(new Progress<string>(Console.Error.WriteLine));
+        return 0;
+    }
     if(command is "windows95-apply" or "windows95-restore" or "windows95-inspect")
     {
         if(command=="windows95-inspect"){Console.WriteLine(JsonSerializer.Serialize(new{active=Classic95Setup.IsActive,appearance=ClassicAppearance.Read()},JsonFile.Options));return 0;}

@@ -10,6 +10,7 @@ __pycache__/
 *.pyc
 content/modules/
 content/runtime/
+content/classic-runtime/
 vendor/sources/*.zip
 docs/evidence/
 docs/NEXT-SESSION.md

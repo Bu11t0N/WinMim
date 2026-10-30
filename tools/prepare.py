@@ -172,7 +172,8 @@ def prepare(toolchain=None,installer=None,seven_zip=None):
     from own_modules import register
     register(catalog)
     dump(CONTENT/'catalog.json',catalog)
-    dump(ROOT/'third-party.lock.json',{'windhawk':{'version':WH_VERSION,'url':WH_URL,'sha256':WH_SHA,'sourceArchiveSha256':sha(source_archive)},'mods':{'commit':COMMIT,'files':{m['id']:m['sourceSha256'] for m in mods}},'optionalDependencies':deps})
+    from fetch_classic_runtime import LOCK as classic_runtime
+    dump(ROOT/'third-party.lock.json',{'windhawk':{'version':WH_VERSION,'url':WH_URL,'sha256':WH_SHA,'sourceArchiveSha256':sha(source_archive)},'mods':{'commit':COMMIT,'files':{m['id']:m['sourceSha256'] for m in mods}},'optionalDependencies':deps,'classicRuntime':classic_runtime})
     dump(cache/'toolchain.json',{'root':str(toolchain.resolve()),'engine':str(engine.resolve())})
     print(f'Prepared {len(mods)} sources and {len(files)} runtime files. No program was installed or started.',flush=True)
 

@@ -1,7 +1,7 @@
 namespace AeroForge.Core;
 
 // Presentation targets are deliberately separate from executable shell profiles.
-// Selecting any target, including Seven, is currently a side-effect-free placeholder.
+// Selection is side-effect free; available targets are applied explicitly.
 public sealed record AppearanceTarget(string Id, string Name, string Family, bool Available=false);
 public sealed record AppearanceSelection(AppearanceTarget Target)
 {
@@ -13,10 +13,12 @@ public static class AppearanceCatalog
 {
     public static IReadOnlyList<AppearanceTarget> Targets { get; } = Array.AsReadOnly(new[] {
         new AppearanceTarget("windows-95","Windows 95","Классические Windows",true),
-        new AppearanceTarget("windows-98","Windows 98","Классические Windows"),
-        new AppearanceTarget("windows-me","Windows Me","Классические Windows"),
-        new AppearanceTarget("windows-2000","Windows 2000","Классические Windows"),
-        new AppearanceTarget("windows-xp","Windows XP","Luna"),
+        new AppearanceTarget("windows-nt4","Windows NT 4.0","Классические Windows",true),
+        new AppearanceTarget("windows-98","Windows 98","Классические Windows",true),
+        new AppearanceTarget("windows-98se","Windows 98 SE","Классические Windows",true),
+        new AppearanceTarget("windows-me","Windows Me","Классические Windows",true),
+        new AppearanceTarget("windows-2000","Windows 2000","Классические Windows",true),
+        new AppearanceTarget("windows-xp","Windows XP","Luna (частично)",true),
         new AppearanceTarget("windows-vista","Windows Vista","Aero"),
         new AppearanceTarget("windows-7","Windows 7","Aero"),
         new AppearanceTarget("windows-8","Windows 8","Modern"),

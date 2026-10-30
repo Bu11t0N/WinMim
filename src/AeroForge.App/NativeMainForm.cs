@@ -75,22 +75,22 @@ public sealed class NativeMainForm : F.Form
     {
         var page=Page("Оформления");var top=Flow(true);
         top.Controls.Add(Label("Во что превратить Windows"));
-        top.Controls.Add(Label("Цель WinMim — воспроизвести оболочку, программы и системные диалоги выбранной версии. Windows 95 доступна для испытаний в ВМ. Остальные варианты пока служат выбором направления."));
+        top.Controls.Add(Label("Классические оформления и XP доступны для применения в подготовленной Windows 10 LTSC 2021. Это первые рабочие версии: часть ресурсов и системных окон ещё отличается от оригинала."));
         top.Controls.Add(Label("Рабочий профиль Windows 7 для подготовленной ВМ вынесен на отдельную вкладку «Windows 7 (стенд)»."));
-        top.Controls.Add(Label(Classic95Profile.HasOriginalIcons?"Windows 95: подключены оригинальные значки из образа системы. Остальные поверхности ещё проходят доработку.":"Windows 95: набор значков пока временный и отличается от оригинальных ресурсов Microsoft."));
+        top.Controls.Add(Label("XP: панель и меню Luna, пока классические рамки. Классические профили используют общий набор значков; оригинальные ресурсы каждой версии будут уточняться отдельно."));
         var bottom=Flow(true);bottom.Dock=F.DockStyle.Bottom;bottom.Controls.Add(targetDetail);
         var action=Button("Выбрать оформление");bottom.Controls.Add(action);
         page.Controls.Add(targets);page.Controls.Add(bottom);page.Controls.Add(top);
         var apply95=Button("Применить Windows 95");var restore95=Button("Вернуть предыдущее оформление");bottom.Controls.Add(apply95);bottom.Controls.Add(restore95);
         apply95.Enabled=false;restore95.Enabled=Environment.MachineName=="AEROFORGE-LAB"&&Classic95Setup.IsActive;
-        apply95.Click+=async(_,_)=>{await Run(async(token,p)=>{await Task.Run(()=>new Classic95Setup(MainWindow.FindContent()).ApplyAsync(p,token));status.Text="Windows 95 применена. Для обновления уже открытых окон перезапустите их.";});restore95.Enabled=Environment.MachineName=="AEROFORGE-LAB"&&Classic95Setup.IsActive;};
+        apply95.Click+=async(_,_)=>{if(targets.SelectedItems.Count==0)return;var target=(AppearanceTarget)targets.SelectedItems[0].Tag!;await Run(async(token,p)=>{await Task.Run(()=>new Classic95Setup(MainWindow.FindContent()).ApplyThemeAsync(target.Id,p,token));status.Text=target.Name+" применена. Для обновления уже открытых окон перезапустите их.";});restore95.Enabled=Environment.MachineName=="AEROFORGE-LAB"&&Classic95Setup.IsActive;};
         restore95.Click+=async(_,_)=>{await Run(async(_,p)=>{await Task.Run(()=>new Classic95Setup(MainWindow.FindContent()).RestoreAsync(p));status.Text="Предыдущее оформление возвращено.";});restore95.Enabled=Environment.MachineName=="AEROFORGE-LAB"&&Classic95Setup.IsActive;};
         foreach(var target in AppearanceCatalog.Targets)Row(targets,target,target.Name,target.Family,target.Available?"Экспериментальный профиль":"Заглушка — не применяется");
         void SelectTarget()
-        {if(targets.SelectedItems.Count==0)return;var choice=AppearanceCatalog.Select(((AppearanceTarget)targets.SelectedItems[0].Tag!).Id);targetDetail.Text=choice.Target.Name+": "+choice.Status+". Выбор не меняет систему.";apply95.Enabled=choice.Target.Id=="windows-95"&&Environment.MachineName=="AEROFORGE-LAB";status.Text=targetDetail.Text;}
+        {if(targets.SelectedItems.Count==0)return;var choice=AppearanceCatalog.Select(((AppearanceTarget)targets.SelectedItems[0].Tag!).Id);targetDetail.Text=choice.Target.Name+": "+choice.Status+". "+(choice.Target.Available?ClassicThemes.Get(choice.Target.Id).Detail:"");apply95.Text="Применить "+choice.Target.Name;apply95.Enabled=choice.Target.Available&&Environment.MachineName=="AEROFORGE-LAB";status.Text=targetDetail.Text;}
         targets.SelectedIndexChanged+=(_,_)=>SelectTarget();action.Click+=(_,_)=>SelectTarget();
-        targets.DoubleClick+=(_,_)=>SelectTarget();targets.Items[Classic95Setup.IsActive?0:6].Selected=true;
-        action.AccessibleDescription="Только выбирает заглушку. Не устанавливает тему и не запускает модули.";
+        targets.DoubleClick+=(_,_)=>SelectTarget();var active=Classic95Setup.ActiveTarget??"windows-7";foreach(F.ListViewItem row in targets.Items)if(((AppearanceTarget)row.Tag!).Id==active)row.Selected=true;
+        action.AccessibleDescription="Только выбирает оформление. Для изменения системы нажмите отдельную кнопку применения.";
     }
     private void SevenPage()
     {

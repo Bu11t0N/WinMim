@@ -17,14 +17,15 @@ Tested on **Windows 10 IoT Enterprise LTSC 2021, x64, build 19044**. Full deskto
 | Target appearance | Current implementation |
 | --- | --- |
 | Windows 95 | Experimental native classic rendering, palette and metrics, Open-Shell menu, desktop icons and Explorer/taskbar modules. Apply/restore and controlled resume/restore after reboot tested; normal startup still requires elevation. |
+| Windows NT 4.0, 98, 98 SE, Me, 2000 | Working initial profiles: native classic frames, per-profile palette/fonts, classic Start menu, RetroBar taskbar and Quick Launch where appropriate. Icons are currently shared; full historical fidelity is pending. |
+| Windows XP | Working initial profile: blue XP taskbar and Open-Shell Luna menu, Tahoma and XP-like colors. Window frames remain classic; resources are not yet a complete XP set. |
 | Windows 7 | Experimental desktop coordinator, Explorer behavior, taskbar properties, icons and optional components. Some required visual resources are external and are not in this repository. |
 | Windows Vista | Module preset; complete desktop conversion is pending. |
-| Windows 98, Me, 2000, 8, 8.1, 10, 11 | Catalog entries and future targets. Selecting them does not apply a theme. |
-| Windows XP | Existing placeholder; implementation is deferred and excluded from the current classic-theme plan. |
+| Windows 8, 8.1, 10, 11 | Catalog entries and future targets. Selecting them does not apply a theme. |
 
 Long term, WinMim will support multiple target appearances on Windows 10 and Windows 11. This is a roadmap, not a compatibility claim. Windows 11 integration is not validated yet.
 
-The next planned appearance family is [classic Windows before XP](docs/CLASSIC-PRE-XP-PLAN.md), starting from the existing Windows 95 foundation. These are target appearances for a modern host, not supported host operating systems.
+Classic appearances and XP now have [initial implementations](docs/CLASSIC-FAMILY-20261030.md), starting from the Windows 95 foundation. These are target appearances for a modern host, not supported host operating systems. Windows 1.x–3.x and NT 3.x are not implemented.
 
 ## Screenshots
 
@@ -42,7 +43,7 @@ Actual captures of the developer preview, taken on October 30, 2026. The applica
 
 ![Windows 7 appearance applied to Windows 10 LTSC, with WinMim and the Windows 7-style Start menu open](assets/screenshots/windows-7.png)
 
-Windows 95 and Windows 7 are the two desktop integrations currently demonstrated. The other target appearances are catalog entries or incomplete presets; they do not yet have a complete theme to demonstrate. The Windows 7 desktop uses its dedicated setup workflow; selecting the Windows 7 catalog row alone does not apply it.
+The Windows 7 desktop uses its dedicated setup workflow; selecting the Windows 7 catalog row alone does not apply it. Classic/XP targets have an explicit Apply button and a shared restore action. See the [classic-family screenshots and implementation notes](docs/CLASSIC-FAMILY-20261030.md) for the newer profiles.
 
 ## Features
 
@@ -52,6 +53,7 @@ Windows 95 and Windows 7 are the two desktop integrations currently demonstrated
 - A pinned Windhawk runtime and module collection: 39 catalog modules and 56 compiled x86/x64 module DLLs in the prepared build.
 - A Windows 7 desktop coordinator for Open-Shell, visual styles, Aero Glass, desktop resources and classic shell behavior.
 - A Windows 95 profile with native classic drawing, compact menus, a teal desktop and 3D taskbar controls.
+- NT 4.0, 98/SE, Me, 2000 and partial XP profiles with pinned RetroBar taskbars and Open-Shell menus, explicit switching and restore.
 - Standalone Mines, notes, memory/clock gadgets, a local media player and window switcher.
 - A CLI for diagnostics, verification, planning, staging and recovery.
 
@@ -78,6 +80,8 @@ python -m pip install -r requirements-dev.txt
 
 The first build downloads the pinned official Windhawk offline package, verifies its SHA-256, extracts its compiler/runtime using 7-Zip, and compiles the module sources. The installer is not executed. Generated runtime files, native DLLs, build output and caches are excluded from Git.
 
+It also prepares the pinned RetroBar runtime for the classic/XP profiles. To prepare just that component, run `python tools/fetch_classic_runtime.py`. It is bundled in the portable archive, with its notices and source reference.
+
 For later C# changes, after native preparation:
 
 ```powershell
@@ -101,7 +105,7 @@ Internal `AeroForge` namespaces and state directory names are retained for compa
 .\build\cli\AeroForge.Cli.exe plan --content .\content --profile seven
 ```
 
-Launching the control panel alone does not apply a profile. Inspect the plan before using the explicit apply/start actions. Full Windows 7 and Windows 95 integration currently requires a prepared test environment and separately obtained dependencies; it is not a general installer.
+Launching the control panel alone does not apply a profile. Inspect the plan before using the explicit apply/start actions. Full desktop integration currently requires a prepared test environment and Open-Shell; Windows 7 also needs separately obtained visual resources. This is not a general installer.
 
 Validation after native preparation:
 
@@ -112,7 +116,7 @@ python tools/verify_native.py
 .\tools\smoke.ps1 -ScratchDirectory C:\Temp\WinMim-New-Smoke-Directory
 ```
 
-Choose a new, nonexistent scratch directory. The smoke check stages and rolls back files there without starting the engine or applying a system theme. The current local baseline is **56 Core tests, 9 Python tests and 56 verified native DLLs**. Compilation and automated tests do not establish visual fidelity or compatibility after reboot.
+Choose a new, nonexistent scratch directory. The smoke check stages and rolls back files there without starting the engine or applying a system theme. The current local baseline is **60 Core tests, 9 Python tests and 56 verified native DLLs**. Compilation and automated tests do not establish visual fidelity or compatibility after reboot.
 
 ## Recovery and limitations
 

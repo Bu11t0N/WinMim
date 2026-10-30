@@ -14,7 +14,7 @@ public static class JsonFile
     };
     public static T Read<T>(string path)
     {
-        using var stream=File.OpenRead(path);
+        using var stream=new FileStream(path,FileMode.Open,FileAccess.Read,FileShare.ReadWrite|FileShare.Delete);
         return JsonSerializer.Deserialize<T>(stream,Options) ?? throw new InvalidDataException("Empty JSON: "+path);
     }
     public static void Write<T>(string path, T value)
@@ -25,7 +25,12 @@ public static class JsonFile
         {
             using (var file = new FileStream(temp, FileMode.CreateNew, FileAccess.Write, FileShare.None))
             { JsonSerializer.Serialize(file, value, Options); file.Flush(true); }
-            File.Move(temp, path, true);
+            for(int attempt=0;;attempt++)
+            {
+                try{File.Move(temp,path,true);break;}
+                catch(IOException ex)when(attempt<40 && (ex.HResult&0xffff) is 5 or 32 or 33){Thread.Sleep(50);}
+                catch(UnauthorizedAccessException)when(attempt<40 && File.Exists(path)){Thread.Sleep(50);}
+            }
         }
         finally { if (File.Exists(temp)) File.Delete(temp); }
     }

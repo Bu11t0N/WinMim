@@ -984,6 +984,30 @@
           "content": "3a50e2ce7754a2da6d4bc7c0d58b75724d099ba59cf7985e97b99d3bf1313038"
         }
       ]
+    },
+    {
+      "type": "application",
+      "name": "RetroBar",
+      "version": "1.22.122",
+      "licenses": [
+        {
+          "license": {
+            "id": "Apache-2.0"
+          }
+        }
+      ],
+      "externalReferences": [
+        {
+          "type": "vcs",
+          "url": "https://github.com/dremin/RetroBar/tree/cff7a787c35c5f3e1db67a22a93721b911313fae"
+        }
+      ],
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "bf3fda3e31a1839482bd3ec355cd9fffebf27d3ce378a8c0f890670e24af7d1a"
+        }
+      ]
     }
   ]
 }

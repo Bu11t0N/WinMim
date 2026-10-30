@@ -9,6 +9,8 @@ try {
     $env:DOTNET_GENERATE_ASPNET_CERTIFICATE = 'false'
     $env:DOTNET_SKIP_FIRST_TIME_EXPERIENCE = '1'
     if ($PrepareNative) {
+        & python (Join-Path $PSScriptRoot 'fetch_classic_runtime.py')
+        if ($LASTEXITCODE -ne 0) { throw 'Classic runtime preparation failed' }
         & python (Join-Path $PSScriptRoot 'prepare.py')
         if ($LASTEXITCODE -ne 0) { throw 'Native dependency preparation failed' }
         & python (Join-Path $PSScriptRoot 'build_modules.py')
