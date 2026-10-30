@@ -128,6 +128,32 @@ public sealed class ShellHost(string hostRoot, Catalog catalog)
         if (IsRunning()) throw new IOException("Движок ещё работает. Завершите его через значок Windhawk и повторите операцию.");
         new WindowsBackend(root).CleanupRetiredModules();
     }
+    public Task StopDesktopAsync()=>WithDesktopStoppedAsync(StopAsync);
+    public async Task WithDesktopStoppedAsync(Func<Task> action)
+    {
+        // Some upstream Explorer modules leave a window subclass behind when
+        // unloaded (notably Aero Tray's Customize link). End the owned lab
+        // Explorer processes before unloading their DLLs. Keep Windows' shell
+        // auto-restart from racing unload AND visual-style rollback, then
+        // bring the desktop back at its final state. This is a transition,
+        // not a persistent process/window polling service.
+        DesktopController.StopExplorer();
+        using var finished=new CancellationTokenSource();
+        var monitor=Task.Run(async()=>
+        {
+            while(true){await Task.Delay(100,finished.Token);DesktopController.StopExplorer();}
+        });
+        try
+        {
+            await action();
+        }
+        finally
+        {
+            finished.Cancel();
+            try{await monitor;}catch(OperationCanceledException)when(finished.IsCancellationRequested){}
+            finally{await DesktopController.RestartExplorerAsync();}
+        }
+    }
     private sealed class ActiveProfile
     { public string Profile { get; set; } = ""; public string[] Modules { get; set; } = []; public string? DisplayProvider { get; set; } }
 }

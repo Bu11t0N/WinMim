@@ -60,19 +60,23 @@ public sealed class Classic95Setup
         if(IsActive)await RestoreCoreAsync(progress);
         var plan=Classic95Profile.Build(content,root,theme.Xp?XpAppearance.ReadPhysical():ClassicAppearance.Read(),target:target);
         Receipt? shellReceipt=null,desktopReceipt=null,panelReceipt=null;
-        progress?.Report("Остановка предыдущего оформления");await host.StopAsync();await StopMenuAsync();
+        progress?.Report("Остановка предыдущего оформления");await StopMenuAsync();
         try
         {
+            await host.WithDesktopStoppedAsync(async()=>
+            {
+            await host.StopAsync();
             progress?.Report(theme.Xp?"Возврат доступа к визуальным стилям Luna":"Включение штатной классической отрисовки");await switchSession(theme.Xp);
             if(theme.Xp)EnsureThemedSession();
             token.ThrowIfCancellationRequested();progress?.Report("Подготовка классического Проводника и панели задач");
             shellReceipt=shellTransactions.Apply(modulePlan,progress,token);
-            // Luna is a basic style. Disable DWM non-client rendering before
-            // changing the style, while retaining themed controls and DWM.
-            if(theme.Xp){host.Start();await host.WaitForExplorerAsync(TimeSpan.FromSeconds(45),token);}
+            // No Explorer may consume intermediate theme/cache state during
+            // apply or an immediate transaction rollback. Start its host only
+            // after all desktop settings have reached their committed state.
             desktopReceipt=desktopTransactions.Apply(plan,progress,token,allowProfileUpdate:true);
             if(target!="windows-95")panelReceipt=panelTransactions.Apply(RetroBarSettingsBackend.Plan(theme,Path.Combine(root,"QuickLaunch")),progress,token);
-            progress?.Report("Перезапуск оболочки "+theme.Name);host.Start();await DesktopController.RestartExplorerAsync();
+            progress?.Report("Перезапуск оболочки "+theme.Name);host.Start();
+            });
             if(theme.Xp)await host.WaitForExplorerAsync(TimeSpan.FromSeconds(45),token);
             StartMenu();if(target!="windows-95")await RetroBarHost.StartAsync(root);
             DesktopIconOverrides.Refresh();if(theme.Xp)XpDesktopResources.RefreshCursors();return desktopReceipt;
@@ -81,8 +85,10 @@ public sealed class Classic95Setup
         {
             var recoveryErrors=new List<Exception>();
             if(original is ApplyException failure && failure.Receipt.Status!="RolledBack")recoveryErrors.Add(failure);
-            await host.StopAsync();
             await RetroBarHost.StopAsync(root);
+            await host.WithDesktopStoppedAsync(async()=>
+            {
+            await host.StopAsync();
             void Undo(TransactionManager manager,Receipt? receipt)
             {
                 if(receipt==null)return;
@@ -91,7 +97,9 @@ public sealed class Classic95Setup
             }
             Undo(panelTransactions,panelReceipt);Undo(desktopTransactions,desktopReceipt);Undo(shellTransactions,shellReceipt);
             try{await switchSession(true);}catch(Exception error){recoveryErrors.Add(error);}
-            if(recoveryErrors.Count==0){host.Start();await DesktopController.RestartExplorerAsync();StartMenu();}
+            if(recoveryErrors.Count==0)host.Start();
+            });
+            if(recoveryErrors.Count==0)StartMenu();
             if(recoveryErrors.Count!=0)throw new AggregateException("Применение прервано; проверьте журналы восстановления.",new[]{original}.Concat(recoveryErrors));
             throw;
         }
@@ -119,7 +127,10 @@ public sealed class Classic95Setup
     private async Task RestoreCoreAsync(IProgress<string>? progress)
     {
         bool xp=ActiveTarget=="windows-xp";
-        Guard();await RetroBarHost.StopAsync(root);await host.StopAsync();await StopMenuAsync();
+        Guard();await RetroBarHost.StopAsync(root);await StopMenuAsync();
+        await host.WithDesktopStoppedAsync(async()=>
+        {
+        await host.StopAsync();
         foreach(var receipt in desktopTransactions.History(false).Where(r=>r.Status!="RolledBack"))
         {var result=desktopTransactions.Rollback(receipt.FilePath,progress);if(result.Status!="RolledBack")throw new IOException("Чужие изменения сохранены; часть оформления требует проверки журнала.");}
         foreach(var receipt in shellTransactions.History(false).TakeWhile(r=>r.ProfileId is "windows95" or "windowsxp"))
@@ -127,7 +138,6 @@ public sealed class Classic95Setup
         await switchSession(true);
         ClassicAppearance.NotifyThemeChanged();
         if(xp)XpDesktopResources.RefreshCursors();
-        host.Start();await DesktopController.RestartExplorerAsync();StartMenu();DesktopIconOverrides.Refresh();
         foreach(var receipt in panelTransactions.History(false).Where(r=>r.Status!="RolledBack"))
         {
             // RetroBar's user preferences remain user-owned; restore only fields
@@ -135,6 +145,9 @@ public sealed class Classic95Setup
             var preserve=RetroBarSettingsBackend.Fields.Select(key=>new Change{Kind=ChangeKind.File,Target=key}.Identity).ToHashSet();
             panelTransactions.Rollback(receipt.FilePath,progress,preserve);
         }
+        host.Start();
+        });
+        StartMenu();DesktopIconOverrides.Refresh();
     }
     public async Task ResumeAsync()
     {

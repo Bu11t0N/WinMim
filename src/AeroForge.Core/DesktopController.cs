@@ -75,18 +75,33 @@ public sealed class DesktopController
     }
     public static async Task RestartExplorerAsync()
     {
+        StopExplorer();
+        int session=Process.GetCurrentProcess().SessionId;
+        string executable=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows),"explorer.exe");
+        await Task.Delay(3000);
+        bool started=Process.GetProcessesByName("explorer").Any(p=>{using(p)return p.SessionId==session;});
+        if(!started)Process.Start(new ProcessStartInfo(executable){UseShellExecute=true})?.Dispose();
+    }
+    internal static void StopExplorer()
+    {
         EnsureLab();
         int session=Process.GetCurrentProcess().SessionId;
         string executable=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows),"explorer.exe");
         foreach(var process in Process.GetProcessesByName("explorer"))
         {
             using(process)
+            try
+            {
+                if(process.HasExited)continue;
                 if(process.SessionId==session && string.Equals(WindowsProcessInfo.ImagePath(process.Id),executable,StringComparison.OrdinalIgnoreCase))
+                {
                     process.Kill();
+                    if(!process.WaitForExit(2000))throw new IOException("Explorer ещё завершается; выгрузка модулей отложена.");
+                }
+            }
+            catch(InvalidOperationException)when(process.HasExited){}
+            catch(System.ComponentModel.Win32Exception)when(process.HasExited){}
         }
-        await Task.Delay(3000);
-        bool started=Process.GetProcessesByName("explorer").Any(p=>{using(p)return p.SessionId==session;});
-        if(!started)Process.Start(new ProcessStartInfo(executable){UseShellExecute=true})?.Dispose();
     }
     private static void RefreshShell(string shell,IProgress<string>? progress)
     {
