@@ -1425,7 +1425,7 @@
       "license": "GPL-3.0",
       "sourceUrl": "src/WinMim.Native/winmim-classic-frames.wh.cpp",
       "sourcePath": "src/WinMim.Native/winmim-classic-frames.wh.cpp",
-      "sourceSha256": "3a50e2ce7754a2da6d4bc7c0d58b75724d099ba59cf7985e97b99d3bf1313038",
+      "sourceSha256": "084f65d90af2f21137b8a355276d6738adca3f95ec4c61f0fe4aa4c83498b15c",
       "includes": [
         "*"
       ],
@@ -1446,14 +1446,14 @@
       "status": "built",
       "binaries": [
         {
-          "path": "modules/32/aeroforge-winmim-classic-frames_0.1.0-3a50e2ce77.dll",
-          "target": "Data/Engine/Mods/32/aeroforge-winmim-classic-frames_0.1.0-3a50e2ce77.dll",
-          "sha256": "18ee7a22b6327df2ee8961094efad3931bbba36230170389661c43547f8c0f7b"
+          "path": "modules/32/aeroforge-winmim-classic-frames_0.1.0-084f65d90a.dll",
+          "target": "Data/Engine/Mods/32/aeroforge-winmim-classic-frames_0.1.0-084f65d90a.dll",
+          "sha256": "68ccd37bedc9a39196fd3ed0d952128ed6758444d0adc3e5293d44fdf85cae04"
         },
         {
-          "path": "modules/64/aeroforge-winmim-classic-frames_0.1.0-3a50e2ce77.dll",
-          "target": "Data/Engine/Mods/64/aeroforge-winmim-classic-frames_0.1.0-3a50e2ce77.dll",
-          "sha256": "03f5b3232bb4dde7bd5c9175df074dc2f0fd34fb1eb1d919fca36ba2d108ddc3"
+          "path": "modules/64/aeroforge-winmim-classic-frames_0.1.0-084f65d90a.dll",
+          "target": "Data/Engine/Mods/64/aeroforge-winmim-classic-frames_0.1.0-084f65d90a.dll",
+          "sha256": "aafe060e6fd5ae24f339825e0939bb2f3c1e94310c06e78d280eb5005ecc608c"
         }
       ],
       "compilerOptions": "-ldwmapi -luxtheme"
@@ -1597,6 +1597,43 @@
         "taskbar-thumbnails": {
           "mode": "listOnClick",
           "noTooltips": "0"
+        }
+      }
+    },
+    {
+      "id": "windows2000",
+      "name": "Windows 2000 (стенд)",
+      "accent": "#3A6EA6",
+      "description": "Классическая сессия и Explorer с панелью Open-Shell; RetroBar владеет панелью задач.",
+      "modules": [
+        "winmim-shell-behavior",
+        "winmim-classic-frames",
+        "aerexplorer",
+        "classic-theme-explorer-lite",
+        "classic-theme-transparency-fix",
+        "syslistview32-enabler",
+        "remove-command-bar",
+        "classic-uwp-fix",
+        "eradicate-immersive-menus",
+        "legacy-file-copy",
+        "old-this-pc-commands",
+        "msg-box-font-fix"
+      ],
+      "settings": {
+        "aerexplorer": {
+          "noribbon": "1",
+          "hidetitle": "0",
+          "detailspane": "0",
+          "smalladdress": "1",
+          "aerotravel": "0",
+          "npst": "default",
+          "navbarglass": "0"
+        },
+        "classic-theme-transparency-fix": {
+          "removeDialogTransparency": "1"
+        },
+        "winmim-classic-frames": {
+          "clientEdges": "1"
         }
       }
     }

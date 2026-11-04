@@ -40,11 +40,13 @@ public sealed class Classic95Setup
         string shell=ShellPath;if(!File.Exists(shell))throw new FileNotFoundException("Нужен установленный Open-Shell.");
         // Validate assets before restoring a working profile. Then recapture the
         // restored baseline, so every new theme returns to the same original.
-        _=Classic95Profile.Build(content,root,ClassicAppearance.Read(),target:target);
+        var preflight=Classic95Profile.Build(content,root,ClassicAppearance.Read(),target:target);
+        if(preflight.Blockers.Count!=0)throw new InvalidOperationException(string.Join("; ",preflight.Blockers));
+        if(target=="windows-2000")Windows2000Explorer.EnsureInstalled();
+        var modulePlan=new ProfilePlanner(store,catalog).Build(target=="windows-2000"?"windows2000":"windows95",autostart:true,hostExecutable:host.Executable,resumeLauncher:ProfilePlanner.FindController());
+        if(modulePlan.Blockers.Count!=0)throw new InvalidOperationException(string.Join("; ",modulePlan.Blockers));
         if(IsActive)await RestoreCoreAsync(progress);
         var plan=Classic95Profile.Build(content,root,ClassicAppearance.Read(),target:target);
-        var modulePlan=new ProfilePlanner(store,catalog).Build("windows95",autostart:true,hostExecutable:host.Executable,resumeLauncher:ProfilePlanner.FindController());
-        if(modulePlan.Blockers.Count!=0)throw new InvalidOperationException(string.Join("; ",modulePlan.Blockers));
         Receipt? shellReceipt=null,desktopReceipt=null,panelReceipt=null;
         progress?.Report("Остановка предыдущего оформления");await host.StopAsync();await StopMenuAsync();
         try
@@ -56,7 +58,7 @@ public sealed class Classic95Setup
             if(target!="windows-95")panelReceipt=panelTransactions.Apply(RetroBarSettingsBackend.Plan(theme,Path.Combine(root,"QuickLaunch")),progress,token);
             progress?.Report("Перезапуск оболочки "+theme.Name);host.Start();await DesktopController.RestartExplorerAsync();
             StartMenu();if(target!="windows-95")await RetroBarHost.StartAsync(root);
-            DesktopIconOverrides.Refresh();return desktopReceipt;
+            DesktopIconOverrides.Refresh();if(target=="windows-2000")Windows2000Resources.RefreshCursors();return desktopReceipt;
         }
         catch
         {
@@ -66,21 +68,21 @@ public sealed class Classic95Setup
             if(desktopReceipt!=null)desktopTransactions.Rollback(desktopReceipt.FilePath,progress);
             if(shellReceipt!=null)shellTransactions.Rollback(shellReceipt.FilePath,progress);
             await switchSession(true);
-            host.Start();await DesktopController.RestartExplorerAsync();StartMenu();throw;
+            StartRestoredHost();await DesktopController.RestartExplorerAsync();StartMenu();if(target=="windows-2000")Windows2000Resources.RefreshCursors();throw;
         }
     }
     public async Task RestoreAsync(IProgress<string>? progress=null)
     {Guard();using var operation=await ClassicOperationLock.AcquireAsync(Data);await RestoreCoreAsync(progress);}
     private async Task RestoreCoreAsync(IProgress<string>? progress)
     {
-        Guard();await RetroBarHost.StopAsync(root);await host.StopAsync();await StopMenuAsync();
+        Guard();bool w2000=ActiveTarget=="windows-2000";await RetroBarHost.StopAsync(root);await host.StopAsync();await StopMenuAsync();
         foreach(var receipt in desktopTransactions.History(false).Where(r=>r.Status!="RolledBack"))
         {var result=desktopTransactions.Rollback(receipt.FilePath,progress);if(result.Status!="RolledBack")throw new IOException("Чужие изменения сохранены; часть оформления требует проверки журнала.");}
-        foreach(var receipt in shellTransactions.History(false).TakeWhile(r=>r.ProfileId=="windows95"))
+        foreach(var receipt in shellTransactions.History(false).TakeWhile(r=>r.ProfileId is "windows95" or "windows2000"))
             if(receipt.Status!="RolledBack"){var result=shellTransactions.Rollback(receipt.FilePath,progress);if(result.Status!="RolledBack")throw new IOException("Модули изменены после применения; их изменения сохранены.");}
         await switchSession(true);
         ClassicAppearance.NotifyThemeChanged();
-        host.Start();await DesktopController.RestartExplorerAsync();StartMenu();DesktopIconOverrides.Refresh();
+        StartRestoredHost();await DesktopController.RestartExplorerAsync();StartMenu();DesktopIconOverrides.Refresh();if(w2000)Windows2000Resources.RefreshCursors();
         foreach(var receipt in panelTransactions.History(false).Where(r=>r.Status!="RolledBack"))
         {
             // RetroBar's user preferences remain user-owned; restore only fields
@@ -102,6 +104,9 @@ public sealed class Classic95Setup
         if(ActiveTarget is string target && target!="windows-95")await RetroBarHost.StartAsync(root);
     }
     private static string ShellPath=>Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles),"Open-Shell","StartMenu.exe");
+    // A clean Windows baseline has no managed host to restart. A previous Seven
+    // or classic installation still restarts from its restored active profile.
+    private void StartRestoredHost(){if(File.Exists(Path.Combine(Data,"Host","active-profile.json")))host.Start();}
     private static async Task StopMenuAsync()
     {
         using var process=Process.Start(new ProcessStartInfo(ShellPath,"-exit"){UseShellExecute=false,CreateNoWindow=true});
