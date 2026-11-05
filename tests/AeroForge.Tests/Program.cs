@@ -51,6 +51,19 @@ Test("Open-Shell acknowledgement restores exact original value and preserves for
         Assert(backend.Read(change).Fingerprint==foreign.Fingerprint);
     }
 });
+Test("resume refuses missing or edited installed assets without rewriting them", () =>
+{
+    var backend=new MemoryBackend();var manager=new TransactionManager(backend,NewState());
+    var change=FileChange("Assets2000/test.ico","pinned resource");
+    var receipt=manager.Apply(PlanOf(change));
+    Classic95Setup.ValidateResumeFiles(receipt,backend);
+    backend.Write(change,new(){Exists=true,Kind="File",Bytes=Encoding.UTF8.GetBytes("user edit")});
+    Throws(()=>Classic95Setup.ValidateResumeFiles(receipt,backend));
+    Assert(Encoding.UTF8.GetString(backend.Read(change).Bytes!)=="user edit");
+    backend.Write(change,new());
+    Throws(()=>Classic95Setup.ValidateResumeFiles(receipt,backend));
+    Assert(!backend.Read(change).Exists);
+});
 Test("Classic colors and assets build a native profile without critical process modules", () =>
 {
     Assert(ClassicAppearance.ColorIndices.Length==ClassicAppearance.Colors95.Length);

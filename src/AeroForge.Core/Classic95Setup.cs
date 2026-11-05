@@ -95,6 +95,10 @@ public sealed class Classic95Setup
     {
         Guard();using var operation=await ClassicOperationLock.AcquireAsync(Data);if(!IsActive)return;
         var receipt=desktopTransactions.History().First(r=>r.Status=="Applied");
+        if(ActiveTarget=="windows-2000"){
+            Windows2000Explorer.EnsureInstalled();
+            ValidateResumeFiles(receipt,new DesktopBackend(root));
+        }
         var saved=receipt.Entries.Single(e=>e.Change.Kind==ChangeKind.File&&e.Change.Target=="classic-appearance.json");
         var backend=new WindowsBackend(root);if(backend.Read(saved.Change).Fingerprint!=saved.ExpectedAfter)throw new IOException("Сохранённая палитра Classic изменена.");
         var appearance=ClassicAppearance.Parse(File.ReadAllText(SafePath.Under(root,"classic-appearance.json")));
@@ -102,6 +106,12 @@ public sealed class Classic95Setup
         if(!dacl.Contains("(D;;LC;;;IU)",StringComparison.Ordinal))await switchSession(false);
         ClassicAppearance.Write(appearance);
         if(ActiveTarget is string target && target!="windows-95")await RetroBarHost.StartAsync(root);
+    }
+    public static void ValidateResumeFiles(Receipt receipt,IChangeBackend backend)
+    {
+        foreach(var entry in receipt.Entries.Where(e=>e.Change.Kind==ChangeKind.File))
+            if(backend.Read(entry.Change).Fingerprint!=entry.ExpectedAfter)
+                throw new IOException("Файл оформления изменён или отсутствует; возобновление остановлено: "+entry.Change.Target);
     }
     private static string ShellPath=>Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles),"Open-Shell","StartMenu.exe");
     // A clean Windows baseline has no managed host to restart. A previous Seven

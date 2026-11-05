@@ -44,3 +44,11 @@ Sources: [W2KTheme post](https://t.me/daneo03/1432), [video](https://www.youtube
 Review the shared changes in `Classic95Setup`, `DesktopBackend`, `Transactions`, the appended operation kind, and the default-disabled option in the classic frame observer. XP should keep its own strategy; do not replace its worktree or transplant this branch wholesale over its changes. Regenerate the module catalog using `tools/own_modules.py` when resolving catalog conflicts. Keep all private binaries/resources and guest credentials outside Git.
 
 Rebuild the application/CLI and the targeted native module, verify content hashes, then deploy to the isolated clone. The public manifest is metadata, not an included Microsoft resource pack. `tools/import_windows2000_assets.py --help` describes the local importer. Restore via the existing classic restore lifecycle; preserve conflict reports instead of forcing registry values or deleting journals.
+
+## Continuation verification — 2026-11-05
+
+The previously pending baseline → 2000 → repeated 2000 → 95 → 2000 → baseline cycle completed in the isolated guest. All four steps passed the native palette/metrics and panel-count assertions; the final baseline comparison passed. Recorded apply times: 9.442 s, 17.862 s, 16.537 s, 17.577 s. A subsequent single application for visual inspection took 8.529 s.
+
+Resume now validates the pinned Classic Explorer dependency and every installed desktop-plan file before changing the session appearance. Missing/edited files stop resume without rewriting them. Regression coverage verifies both missing and modified files. Current checks: 63 Core tests, 12 Python tests, solution build, and 56 native DLL verifications passed.
+
+The final source corrections were deployed. Visual inspection still showed Quick Access and round native navigation buttons: those discrepancies are **not fixed** by the current configuration. The remote desktop CLI stopped returning matching request responses during the new Start check; that input is not counted as verified. Original-media comparison, complete dialogs, video/source review, 125% DPI, controls lifecycle, logoff/cold resume and performance measurements remain open. Full Windows 2000 acceptance is not claimed.
