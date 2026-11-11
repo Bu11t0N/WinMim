@@ -1,5 +1,15 @@
 # Windows 2000: implementation checkpoint
 
+## Publication status — 2026-11-11 (WIP)
+
+This publication preserves the implementation checkpoints of November 4–5 for coordinator review. It does not complete the Windows 2000 task. The November 5 continuation section below supersedes earlier pending-cycle and deployment statements: the transition cycle passed, while Quick Access and round native navigation buttons remained visible after deployment.
+
+Outstanding acceptance work includes Explorer fidelity and remaining commands, 125% DPI, logoff/logon and cold resume, client-edge restoration in x86/x64 applications, system/power dialogs, original-media comparison, full video/source coverage and idle CPU/RAM measurements. The first-run Start correction is still unverified. XP/Seven integration and the cancellation/error matrix remain unverified. Do not infer these results from the successful transition cycle or DLL loading.
+
+Publication review covered both unpublished implementation commits and all 23 unique changed file versions. No credentials, private logs, guest captures, Microsoft archives, ICO/CUR/WAV payloads, compiled DLLs/EXEs or VM images are included. The private-resource reference is metadata only and grants no redistribution rights. The original local implementation branch is preserved; publication uses a separate branch. Main and the XP worktree are unchanged.
+
+Checks rerun for publication without starting a VM: solution build (0 errors, 43 warnings), 12 Python tests, native verification of 56 locally prepared DLLs, and `git diff --check`. The 63 Core tests and guest evidence below are historical November 5 results, not new runtime checks. Local prepared dependencies are not included in this source-only publication and are needed to reproduce the build/content checks. No remote CI result is claimed.
+
 This is an intermediate implementation, **not acceptance of the full Windows 2000 mode**. Work was shortened at the user's request. Integration belongs to the coordinator; this branch has not been merged into main.
 
 ## Implemented
