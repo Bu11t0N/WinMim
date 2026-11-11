@@ -1,0 +1,23 @@
+# Luna10 получена: окончательное дополнение 03.11.2026
+
+После ручного входа пользователя проверена авторизованная страница. Первая устаревшая ссылка дала ошибку недоступности файла; обновление страницы и штатная Free download успешно загрузили оригинал. Сессионные ссылки/токены не сохранены в отчете.
+
+Источник: https://www.deviantart.com/vaporvance/art/Luna10-907548273
+
+Файл `luna10_by_vaporvance_df0bwq9.zip`, 9924467 байт, SHA-256 `ae21b6f335daa89f9a545c8425d1f36a6cefe2b75a65f16a1f0a18af90095905`. Версия **2.1.5 подтверждена вложенным changelog**. Архив содержит 38 файлов, семь `.theme` и семь `.msstyles`, `shellstyle.dll`, en-US `shellstyle.dll.mui` и original MUI, обои, пять кнопок StartIsBack++, AWM REG presets, WindowMetrics install/restore и два руководства. Установщиков BasicThemer/ClassicExplorer и исходников их реализации внутри нет. Ничего не установлено или исполнено.
+
+**Конкретные зависимости по BASIC Installation guide:** Windows10 1903–22H2; SecureUxTheme либо UltraUXThemePatcher; Open-Shell либо Retro-Shell-XP с внешним XML; отдельный ClassicExplorer из https://winclassic.net/thread/2045/ephemeralviolettes-classicexplorer-classic-throbber-extensio с предварительными VC runtimes. Важные Windhawk-моды: UIFILE Override, Basic Themer, DWM Unextend Frames. Это точнее прежнего предположения о необходимости отдельного BasicThemer2/6 EXE: руководство пакета называет именно мод Windhawk, без закрепленной версии. Рекомендованы Classic Explorer Treeview, Classic File Picker dialog, Fix Basic Caption Text, Classic Menus, Eradicate Immersive Menus, Aerexplorer. Версии/совместимость этих внешних компонентов отдельно не проверены.
+
+Автор предлагает отключить все опции OldNewExplorer либо удалить его; для панели/Start допускает StartIsBack++ или RetroBar + Open-Shell/Retro-Shell-XP. У WinMim уже есть второй путь. Копирование Themes и импорт WindowMetrics описывают историческую установку, не готовую безопасную операцию WinMim. Restore REG — предустановленные значения автора, не резервная копия исходного состояния пользователя. Нужно собственное журналирование. Завершение установки — Explorer restart.
+
+Рекомендованный конфиг Aerexplorer в руководстве включает alwayscpl=1, smalladdress=1, tbst=seven, dropdownwidth=19, refreshwidth=25, oldsearch=1, noribbon=1, listview=1, colheaders=0, npst=vista, nopins=1, navbarglass=0, nocomposition=0, hidetitle=0, noup=1, aerotravel=0, detailspane=0, classicgrouping=1, nopcfolders=1, vistasearchplaceholder=0. Это авторский конфиг, без нашего runtime-теста.
+
+**Show More Tasks (optional):** руководство использует HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes, выбор CLSID по CanonicalName, подраздел TasksItemsSelected, значение по умолчанию `Windows.rename;Windows.MoveToBrowser;Windows.Copy;Windows.email;Windows.Delete`. При существующем списке предлагает дописать команды. Предлагаемое присвоение владения ключом и ручное удаление добавленного текста не дают полного rollback ACL/значения. WinMim должен сохранять существование ключа, тип/значение и ACL, проверять реальные команды по типам папок; почтовая команда зависит от обработчика. Это конкретный механизм дополнительных действий, но не доказательство работоспособности всей Common Tasks на RU/19044. FindeXer не требуется этим руководством.
+
+Changelog2.1.5 отмечает уточнение анимаций Common Tasks и category pages Control Panel; 2.1.4 — попытку исправить падения Control Panel. Поэтому проверить категории панели управления, Admin tools, выделение разных типов файлов и 100/125% DPI отдельно. Пакет содержит только en-US MUI, готовая RU локализация не подтверждена. Ограничение 96DPI со страницы остается актуальным ограничением автора, не снимается наличием семи вариантов.
+
+readme требует предварительно уведомить автора при использовании частей темы; credits отдельно называют Microsoft и angelbruni. Наличие исходных msstyles/MUI не дает автоматического разрешения публичной поставки. Автору не писали.
+
+**Следующая задача XP-исполнителя:** открыть локальный архив и руководство; сопоставить собственные SecureUxTheme/RetroBar/Open-Shell адаптеры с тремя важными Windhawk-модами и отдельным ClassicExplorer. Изолированно проверить controls/non-client/Explorer, не смешивая classic-frames и visual styles. Код и ВМ здесь не изменялись. Блокировка ручным входом снята, неполученных целевых архивов больше нет.
+
+Приватный оригинал сохранен локально. Полный манифест: `luna10-files.json`. Большой ZIP остается вне компактного отчета; сохранен на компьютере. Предыдущие абзацы отчетов о необходимости входа — историческое состояние, замененное этим дополнением.
