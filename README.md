@@ -161,3 +161,5 @@ Original WinMim code is licensed under **GPL-3.0**. Upstream modules and compone
 WinMim builds on work by the Windhawk community, Open-Shell, SecureUxTheme, OpenGlass and the authors of the included classic homage artwork. The project icon was supplied by the maintainer.
 
 Revert8Plus is a behavioral reference. Its installer, proprietary components and extracted Windows resource packs are not included. Optional private lab assets are not relicensed as WinMim source. Windows names and trademarks belong to Microsoft; WinMim is an independent project.
+
+Current preservation checkpoints, owners and merge gates: [work register, 2026-11-11](docs/WORK-REGISTER-20261111.md).
