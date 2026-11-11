@@ -1,0 +1,465 @@
+{
+  "schemaVersion": 1,
+  "source": "Windows 2000 resource candidates: trapd00r collection plus W2KTheme toolbar; fidelity to original media not yet certified.",
+  "license": "Microsoft artwork; private test assets only. No redistribution permission established.",
+  "archiveSha256": "ef24cad8d997556ef69e1be3541c23b491c21bb07a7f679bfd6fa08fbda87509",
+  "files": [
+    {
+      "name": "w2k-my_computer.ico",
+      "size": 10134,
+      "sha256": "b2f18bd8910174d94889b305db2ecca7468921d43094a0f10617952b6750ce03",
+      "source": "https://raw.githubusercontent.com/trapd00r/win95-winxp_icons/728a866ad59a54fd4082dbe000e1e62e50bd90e9/icons/w2k-my_computer.ico",
+      "input": "icons/w2k-my_computer.ico",
+      "roles": [
+        "computer"
+      ]
+    },
+    {
+      "name": "w2k-documents.ico",
+      "size": 10134,
+      "sha256": "cf594027be7c464e079f4ba91e856e0750e46e5a8c701d199e5ec118f3477365",
+      "source": "https://raw.githubusercontent.com/trapd00r/win95-winxp_icons/728a866ad59a54fd4082dbe000e1e62e50bd90e9/icons/w2k-documents.ico",
+      "input": "icons/w2k-documents.ico",
+      "roles": [
+        "documents"
+      ]
+    },
+    {
+      "name": "w2k_network_neighborhood.ico",
+      "size": 23286,
+      "sha256": "bfdbd2fa80c6888ed875b208d769bfe1cb7f003a878f565700239a085afdbf4e",
+      "source": "https://raw.githubusercontent.com/trapd00r/win95-winxp_icons/728a866ad59a54fd4082dbe000e1e62e50bd90e9/icons/w2k_network_neighborhood.ico",
+      "input": "icons/w2k_network_neighborhood.ico",
+      "roles": [
+        "network"
+      ]
+    },
+    {
+      "name": "w2k_recycle_bin_empty.ico",
+      "size": 18861,
+      "sha256": "18f44eed2b0fc7c910b5376c9d42331a9cffc92f495abbcadc1f81a7600f2caa",
+      "source": "https://raw.githubusercontent.com/trapd00r/win95-winxp_icons/728a866ad59a54fd4082dbe000e1e62e50bd90e9/icons/w2k_recycle_bin_empty.ico",
+      "input": "icons/w2k_recycle_bin_empty.ico",
+      "roles": [
+        "recycle-empty"
+      ]
+    },
+    {
+      "name": "w2k_recycle_bin_full.ico",
+      "size": 20804,
+      "sha256": "77e674377916b75359bb333c5844bb3c16a0a825dabd49137f363c8dc54defea",
+      "source": "https://raw.githubusercontent.com/trapd00r/win95-winxp_icons/728a866ad59a54fd4082dbe000e1e62e50bd90e9/icons/w2k_recycle_bin_full.ico",
+      "input": "icons/w2k_recycle_bin_full.ico",
+      "roles": [
+        "recycle-full"
+      ]
+    },
+    {
+      "name": "w2k-programs.ico",
+      "size": 10134,
+      "sha256": "dff00c65c2e5b4c2716ab4a2bb918085cb915e45d277eac587b9b59d1ffd5451",
+      "source": "https://raw.githubusercontent.com/trapd00r/win95-winxp_icons/728a866ad59a54fd4082dbe000e1e62e50bd90e9/icons/w2k-programs.ico",
+      "input": "icons/w2k-programs.ico",
+      "roles": [
+        "programs"
+      ]
+    },
+    {
+      "name": "w2k-settings.ico",
+      "size": 10134,
+      "sha256": "1cc11a8a547840875615ca3ff0d1eb97a11499be46754700b5a3c0a517b819ea",
+      "source": "https://raw.githubusercontent.com/trapd00r/win95-winxp_icons/728a866ad59a54fd4082dbe000e1e62e50bd90e9/icons/w2k-settings.ico",
+      "input": "icons/w2k-settings.ico",
+      "roles": [
+        "settings"
+      ]
+    },
+    {
+      "name": "w2k_search.ico",
+      "size": 10134,
+      "sha256": "1e915b43a57130e749a482f042745140560a2adac53f418ac670d9b215946455",
+      "source": "https://raw.githubusercontent.com/trapd00r/win95-winxp_icons/728a866ad59a54fd4082dbe000e1e62e50bd90e9/icons/w2k_search.ico",
+      "input": "icons/w2k_search.ico",
+      "roles": [
+        "search"
+      ]
+    },
+    {
+      "name": "w2k-help.ico",
+      "size": 10134,
+      "sha256": "3be89a9a9b734c22bee02df3b72685f3114e332a3808883c66493c96da0dacca",
+      "source": "https://raw.githubusercontent.com/trapd00r/win95-winxp_icons/728a866ad59a54fd4082dbe000e1e62e50bd90e9/icons/w2k-help.ico",
+      "input": "icons/w2k-help.ico",
+      "roles": [
+        "help"
+      ]
+    },
+    {
+      "name": "w2k_run.ico",
+      "size": 10134,
+      "sha256": "d277c71b4ebbdbc083f6f81b7b2b51822209befcd33ddfc07730d8276eb65b1c",
+      "source": "https://raw.githubusercontent.com/trapd00r/win95-winxp_icons/728a866ad59a54fd4082dbe000e1e62e50bd90e9/icons/w2k_run.ico",
+      "input": "icons/w2k_run.ico",
+      "roles": [
+        "run"
+      ]
+    },
+    {
+      "name": "w2k_shutdown.ico",
+      "size": 10134,
+      "sha256": "6debe66dd595b248af66726f713ca08cadcb1856e8038a16fcfc1b016b2e5f2e",
+      "source": "https://raw.githubusercontent.com/trapd00r/win95-winxp_icons/728a866ad59a54fd4082dbe000e1e62e50bd90e9/icons/w2k_shutdown.ico",
+      "input": "icons/w2k_shutdown.ico",
+      "roles": [
+        "shutdown"
+      ]
+    },
+    {
+      "name": "w2k-printers.ico",
+      "size": 1078,
+      "sha256": "f85b66aff5781c29f7a029220ebf2f12c4ec8dbfde0b0eba391dd7b07f44c851",
+      "source": "https://raw.githubusercontent.com/trapd00r/win95-winxp_icons/728a866ad59a54fd4082dbe000e1e62e50bd90e9/icons/w2k-printers.ico",
+      "input": "icons/w2k-printers.ico",
+      "roles": [
+        "printers"
+      ]
+    },
+    {
+      "name": "w2k_start.ico",
+      "size": 1078,
+      "sha256": "b63257f50ee33560ace803f994463634f9f0b868f376848599a314eb3ce2731a",
+      "source": "https://raw.githubusercontent.com/trapd00r/win95-winxp_icons/728a866ad59a54fd4082dbe000e1e62e50bd90e9/icons/w2k_start.ico",
+      "input": "icons/w2k_start.ico",
+      "roles": [
+        "start"
+      ]
+    },
+    {
+      "name": "w2k_folder_closed.ico",
+      "size": 10134,
+      "sha256": "5c0b7b9e6aa1bf3d37aafea2b8341bc2d02a89325e4708b02ad6800495f91744",
+      "source": "https://raw.githubusercontent.com/trapd00r/win95-winxp_icons/728a866ad59a54fd4082dbe000e1e62e50bd90e9/icons/w2k_folder_closed.ico",
+      "input": "icons/w2k_folder_closed.ico",
+      "roles": [
+        "folder"
+      ]
+    },
+    {
+      "name": "w2k_folder_open.ico",
+      "size": 10134,
+      "sha256": "7aa4f12cd047789f54fea028627723f27bedfb79b3f9ed431011eee0dc810be7",
+      "source": "https://raw.githubusercontent.com/trapd00r/win95-winxp_icons/728a866ad59a54fd4082dbe000e1e62e50bd90e9/icons/w2k_folder_open.ico",
+      "input": "icons/w2k_folder_open.ico",
+      "roles": [
+        "folder-open"
+      ]
+    },
+    {
+      "name": "w2k_hard_drive.ico",
+      "size": 13346,
+      "sha256": "265b88db8fb28eb34d6b49e7cda00ef20dfb9d47cad91db7c997fd7e0601c153",
+      "source": "https://raw.githubusercontent.com/trapd00r/win95-winxp_icons/728a866ad59a54fd4082dbe000e1e62e50bd90e9/icons/w2k_hard_drive.ico",
+      "input": "icons/w2k_hard_drive.ico",
+      "roles": [
+        "drive"
+      ]
+    },
+    {
+      "name": "w2k_cd-rom_drive.ico",
+      "size": 19406,
+      "sha256": "feb500a45f187cb9c386bf22fffc13425fa400334abf54b83f5330f43aebcac2",
+      "source": "https://raw.githubusercontent.com/trapd00r/win95-winxp_icons/728a866ad59a54fd4082dbe000e1e62e50bd90e9/icons/w2k_cd-rom_drive.ico",
+      "input": "icons/w2k_cd-rom_drive.ico",
+      "roles": [
+        "cdrom"
+      ]
+    },
+    {
+      "name": "w2k-default_document.ico",
+      "size": 1078,
+      "sha256": "b4dbc05f77125b3b003dfe8c8485f38717dc1cc62a5aec541185e11ed5866550",
+      "source": "https://raw.githubusercontent.com/trapd00r/win95-winxp_icons/728a866ad59a54fd4082dbe000e1e62e50bd90e9/icons/w2k-default_document.ico",
+      "input": "icons/w2k-default_document.ico",
+      "roles": [
+        "document"
+      ]
+    },
+    {
+      "name": "toolbar-back.ico",
+      "size": 5974,
+      "sha256": "0b34993bdc86ca51e0c66ebb1c409b15a121c7834b9f988194f4d6a3df79e258",
+      "source": "https://t.me/daneo03/1432",
+      "input": "w2k/1. Copy to C/win98buttons/Back.ico",
+      "roles": [
+        "toolbar/back"
+      ]
+    },
+    {
+      "name": "toolbar-back-disabled.ico",
+      "size": 1262,
+      "sha256": "730246f1b9715ab1c4b011d556a1d337cbc15209093b3825ce83f39d5864bcbd",
+      "source": "https://t.me/daneo03/1432",
+      "input": "w2k/1. Copy to C/win98buttons/Disabled/Back.ico",
+      "roles": [
+        "toolbar/back/disabled"
+      ]
+    },
+    {
+      "name": "toolbar-forward.ico",
+      "size": 5974,
+      "sha256": "da4c86bb9d6d49595c5fb75f63c97e8a09133d7395790ab6f61378c7b1694038",
+      "source": "https://t.me/daneo03/1432",
+      "input": "w2k/1. Copy to C/win98buttons/Forward.ico",
+      "roles": [
+        "toolbar/forward"
+      ]
+    },
+    {
+      "name": "toolbar-forward-disabled.ico",
+      "size": 1262,
+      "sha256": "a3199aa2bc25a4bd438c41d90da59c99a3cfdbaa6f796f6b8ce48ea5ae090639",
+      "source": "https://t.me/daneo03/1432",
+      "input": "w2k/1. Copy to C/win98buttons/Disabled/Forward.ico",
+      "roles": [
+        "toolbar/forward/disabled"
+      ]
+    },
+    {
+      "name": "toolbar-up.ico",
+      "size": 5854,
+      "sha256": "d3eb3a02e160033978a31468d1b036cfe2a4a07b3103c06f5954a8cdf4b16623",
+      "source": "https://t.me/daneo03/1432",
+      "input": "w2k/1. Copy to C/win98buttons/Up.ico",
+      "roles": [
+        "toolbar/up"
+      ]
+    },
+    {
+      "name": "toolbar-up-disabled.ico",
+      "size": 822,
+      "sha256": "150e265d3da5c26caf2e046d72b68c15fa06303e72873e6423ae1d12194e128b",
+      "source": "https://t.me/daneo03/1432",
+      "input": "w2k/1. Copy to C/win98buttons/Disabled/Up.ico",
+      "roles": [
+        "toolbar/up/disabled"
+      ]
+    },
+    {
+      "name": "toolbar-nav_pane.ico",
+      "size": 5974,
+      "sha256": "277c6778b89151711c7ad3c1dfe9f20e9c3376fd6d55f8da67d9d7ca4fff2b1d",
+      "source": "https://t.me/daneo03/1432",
+      "input": "w2k/1. Copy to C/win98buttons/Folders.ico",
+      "roles": [
+        "toolbar/nav_pane"
+      ]
+    },
+    {
+      "name": "toolbar-nav_pane-disabled.ico",
+      "size": 1262,
+      "sha256": "ae0743498d018bc282498d96162e478e38fe6e99ac2da5c42b7d0661e11d55a4",
+      "source": "https://t.me/daneo03/1432",
+      "input": "w2k/1. Copy to C/win98buttons/Disabled/Folders.ico",
+      "roles": [
+        "toolbar/nav_pane/disabled"
+      ]
+    },
+    {
+      "name": "toolbar-cut.ico",
+      "size": 5974,
+      "sha256": "840428fd7ca5364b73d9dd6c1fb029b7d6fd70e07e3410de51737051c7fce557",
+      "source": "https://t.me/daneo03/1432",
+      "input": "w2k/1. Copy to C/win98buttons/Cut.ico",
+      "roles": [
+        "toolbar/cut"
+      ]
+    },
+    {
+      "name": "toolbar-copy.ico",
+      "size": 5974,
+      "sha256": "d102a1168a77b1a95da5a731fe8eddb2842dc1ff270e9df163da9dfc5d3e260c",
+      "source": "https://t.me/daneo03/1432",
+      "input": "w2k/1. Copy to C/win98buttons/Copy.ico",
+      "roles": [
+        "toolbar/copy"
+      ]
+    },
+    {
+      "name": "toolbar-paste.ico",
+      "size": 5974,
+      "sha256": "ee752e02f8e3c422d91fc4b197c8d53fd3400145452a44b20029a1c9bdbb7a55",
+      "source": "https://t.me/daneo03/1432",
+      "input": "w2k/1. Copy to C/win98buttons/Paste.ico",
+      "roles": [
+        "toolbar/paste"
+      ]
+    },
+    {
+      "name": "toolbar-delete.ico",
+      "size": 5974,
+      "sha256": "6e6e83eafc731914241b2b13679975abbbea9f63bb5069e976de4e7915b90085",
+      "source": "https://t.me/daneo03/1432",
+      "input": "w2k/1. Copy to C/win98buttons/Delete.ico",
+      "roles": [
+        "toolbar/delete"
+      ]
+    },
+    {
+      "name": "toolbar-views.ico",
+      "size": 5974,
+      "sha256": "accd50aed5b231ff1933c9b12a0d542b1df488c8edde68b85ac61a440be31c38",
+      "source": "https://t.me/daneo03/1432",
+      "input": "w2k/1. Copy to C/win98buttons/View.ico",
+      "roles": [
+        "toolbar/views"
+      ]
+    },
+    {
+      "name": "sound-ding.wav",
+      "size": 80856,
+      "sha256": "47a423798ff67d9c00f1607f470573d80653b7581475fa850a557c46b06a104a",
+      "source": "https://t.me/daneo03/1432",
+      "input": "w2k/12. Extras/Sounds and CPL/Win2K Sounds/ding.wav",
+      "roles": [
+        "sound/.Default/.Default"
+      ]
+    },
+    {
+      "name": "sound-chimes.wav",
+      "size": 55776,
+      "sha256": "31c85c00b252ce9fbee39cf6f0b2bc2039950c91ebdc9a5524ba159eed165f29",
+      "source": "https://t.me/daneo03/1432",
+      "input": "w2k/12. Extras/Sounds and CPL/Win2K Sounds/chimes.wav",
+      "roles": [
+        "sound/.Default/SystemAsterisk"
+      ]
+    },
+    {
+      "name": "sound-chord.wav",
+      "size": 97016,
+      "sha256": "ee94302491c85b010d55c48058142420ec356467b88ec43131fc0d0b0600c259",
+      "source": "https://t.me/daneo03/1432",
+      "input": "w2k/12. Extras/Sounds and CPL/Win2K Sounds/chord.wav",
+      "roles": [
+        "sound/.Default/SystemExclamation",
+        "sound/.Default/SystemHand"
+      ]
+    },
+    {
+      "name": "sound-notify.wav",
+      "size": 119384,
+      "sha256": "160e0fa1d103850311bd16f74dd448b2b93ff690e10bc8ddc866d03e1aa8825b",
+      "source": "https://t.me/daneo03/1432",
+      "input": "w2k/12. Extras/Sounds and CPL/Win2K Sounds/notify.wav",
+      "roles": [
+        "sound/.Default/SystemNotification"
+      ]
+    },
+    {
+      "name": "sound-recycle.wav",
+      "size": 25434,
+      "sha256": "94b978244f9184b6792271c48fb3372dcc35f11c3d826c663c5973336acae010",
+      "source": "https://t.me/daneo03/1432",
+      "input": "w2k/12. Extras/Sounds and CPL/Win2K Sounds/recycle.wav",
+      "roles": [
+        "sound/.Default/EmptyRecycleBin"
+      ]
+    },
+    {
+      "name": "sound-start.wav",
+      "size": 1192,
+      "sha256": "eff8f5a74d7499b0991ff42e7963927ad37a17d63ef13ee784b849cae2808ada",
+      "source": "https://t.me/daneo03/1432",
+      "input": "w2k/12. Extras/Sounds and CPL/Win2K Sounds/start.wav",
+      "roles": [
+        "sound/Explorer/Navigating"
+      ]
+    },
+    {
+      "name": "cursor-default.cur",
+      "size": 326,
+      "sha256": "3708d2269d84847038348329a2b2b046d4dbac155c2f454e93d4c0b3a3fe7efb",
+      "source": "https://t.me/daneo03/1432",
+      "input": "w2k/12. Extras/Cursors from Win98/default.cur",
+      "roles": [
+        "cursor/Arrow"
+      ]
+    },
+    {
+      "name": "cursor-help.cur",
+      "size": 326,
+      "sha256": "7c3dd88990619903fd84a42051723bedb647447317012c6d9890bd5e900edeea",
+      "source": "https://t.me/daneo03/1432",
+      "input": "w2k/12. Extras/Cursors from Win98/help.cur",
+      "roles": [
+        "cursor/Help"
+      ]
+    },
+    {
+      "name": "cursor-wait.cur",
+      "size": 326,
+      "sha256": "287abec5fc400acb9ca29dd038e70d67b567f5ac7c4f171593522ab617b37f09",
+      "source": "https://t.me/daneo03/1432",
+      "input": "w2k/12. Extras/Cursors from Win98/wait.cur",
+      "roles": [
+        "cursor/Wait"
+      ]
+    },
+    {
+      "name": "cursor-loading.cur",
+      "size": 326,
+      "sha256": "6ddba7452a2c3abb9aca3e454ed63e9a1e3c25e98cf759f4df53de017d7a9299",
+      "source": "https://t.me/daneo03/1432",
+      "input": "w2k/12. Extras/Cursors from Win98/loading.cur",
+      "roles": [
+        "cursor/AppStarting"
+      ]
+    }
+  ],
+  "icons": {
+    "computer": "w2k-my_computer.ico",
+    "documents": "w2k-documents.ico",
+    "network": "w2k_network_neighborhood.ico",
+    "recycle-empty": "w2k_recycle_bin_empty.ico",
+    "recycle-full": "w2k_recycle_bin_full.ico",
+    "programs": "w2k-programs.ico",
+    "settings": "w2k-settings.ico",
+    "search": "w2k_search.ico",
+    "help": "w2k-help.ico",
+    "run": "w2k_run.ico",
+    "shutdown": "w2k_shutdown.ico",
+    "printers": "w2k-printers.ico",
+    "start": "w2k_start.ico",
+    "folder": "w2k_folder_closed.ico",
+    "folder-open": "w2k_folder_open.ico",
+    "drive": "w2k_hard_drive.ico",
+    "cdrom": "w2k_cd-rom_drive.ico",
+    "document": "w2k-default_document.ico",
+    "toolbar/back": "toolbar-back.ico",
+    "toolbar/back/disabled": "toolbar-back-disabled.ico",
+    "toolbar/forward": "toolbar-forward.ico",
+    "toolbar/forward/disabled": "toolbar-forward-disabled.ico",
+    "toolbar/up": "toolbar-up.ico",
+    "toolbar/up/disabled": "toolbar-up-disabled.ico",
+    "toolbar/nav_pane": "toolbar-nav_pane.ico",
+    "toolbar/nav_pane/disabled": "toolbar-nav_pane-disabled.ico",
+    "toolbar/cut": "toolbar-cut.ico",
+    "toolbar/copy": "toolbar-copy.ico",
+    "toolbar/paste": "toolbar-paste.ico",
+    "toolbar/delete": "toolbar-delete.ico",
+    "toolbar/views": "toolbar-views.ico"
+  },
+  "resources": {
+    "sound/.Default/.Default": "sound-ding.wav",
+    "sound/.Default/SystemAsterisk": "sound-chimes.wav",
+    "sound/.Default/SystemExclamation": "sound-chord.wav",
+    "sound/.Default/SystemHand": "sound-chord.wav",
+    "sound/.Default/SystemNotification": "sound-notify.wav",
+    "sound/.Default/EmptyRecycleBin": "sound-recycle.wav",
+    "sound/Explorer/Navigating": "sound-start.wav",
+    "cursor/Arrow": "cursor-default.cur",
+    "cursor/Help": "cursor-help.cur",
+    "cursor/Wait": "cursor-wait.cur",
+    "cursor/AppStarting": "cursor-loading.cur"
+  }
+}

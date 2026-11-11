@@ -19,6 +19,7 @@ public interface IChangeBackend
     void Validate(Change change);
     ValueState Read(Change change);
     void Write(Change change, ValueState state);
+    bool MatchesApplied(Change change, ValueState current, string expected) => current.Fingerprint == expected;
 }
 public sealed class JournalEntry
 {
@@ -107,14 +108,14 @@ public sealed class TransactionManager(IChangeBackend backend, string journalRoo
             bool same = active.ProfileId == plan.ProfileId && active.Entries.Count == plan.Changes.Count
                 && active.Entries.Zip(plan.Changes).All(pair => pair.First.Change.Identity == pair.Second.Identity
                     && pair.First.ExpectedAfter == ValueState.Desired(pair.Second).Fingerprint
-                    && backend.Read(pair.Second).Fingerprint == pair.First.ExpectedAfter);
+                    && backend.MatchesApplied(pair.Second,backend.Read(pair.Second),pair.First.ExpectedAfter));
             if (same) return active;
             // A small preferences layer does not relinquish ownership of settings
             // in older layers. Compare the latest expected value for every target.
             var owned=history.Where(r=>r.Status=="Applied").TakeWhile(r=>r.ProfileId==active.ProfileId)
                 .SelectMany(r=>ReadReceipt(r.FilePath).Entries).GroupBy(entry=>entry.Change.Identity).Select(group=>group.First());
             if (!allowProfileUpdate || active.ProfileId != plan.ProfileId
-                || owned.Any(entry => !plan.AdoptUserPreferences.Contains(entry.Change.Identity) && backend.Read(entry.Change).Fingerprint != entry.ExpectedAfter))
+                || owned.Any(entry => !plan.AdoptUserPreferences.Contains(entry.Change.Identity) && !backend.MatchesApplied(entry.Change,backend.Read(entry.Change),entry.ExpectedAfter)))
                 throw new InvalidOperationException("Оформление уже применено или изменено после применения. Сначала верните его настройки; чужие изменения будут сохранены.");
             // Append an update layer; never replace the original undo snapshot.
         }
@@ -139,7 +140,7 @@ public sealed class TransactionManager(IChangeBackend backend, string journalRoo
                 receipt.Entries.Add(entry);
                 Save(receipt); // The Pending entry is recoverable even if the process dies immediately after Write.
                 if(entry.Before.Fingerprint!=desired.Fingerprint)backend.Write(c, desired);
-                if (backend.Read(c).Fingerprint != desired.Fingerprint)
+                if (!backend.MatchesApplied(c,backend.Read(c),desired.Fingerprint))
                     throw new IOException("Read-after-write verification failed: " + c.Target);
                 entry.State = "Applied"; Save(receipt);
             }
@@ -176,10 +177,11 @@ public sealed class TransactionManager(IChangeBackend backend, string journalRoo
             try
             {
                 progress?.Report("Восстановление: " + entry.Change.Description);
-                string current = backend.Read(entry.Change).Fingerprint;
+                var currentState = backend.Read(entry.Change);
+                string current = currentState.Fingerprint;
                 if (current != entry.Before.Fingerprint)
                 {
-                    if (current != entry.ExpectedAfter)
+                    if (!backend.MatchesApplied(entry.Change,currentState,entry.ExpectedAfter))
                     {
                         if(preserveUserChanges?.Contains(entry.Change.Identity)==true)
                         {entry.State="Preserved";entry.Error=null;Save(receipt);continue;}

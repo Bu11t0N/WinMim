@@ -13,6 +13,57 @@ Change FileChange(string name, string value) => new() { Kind = ChangeKind.File, 
 Plan PlanOf(params Change[] changes) => new() { ProfileId = "test", Changes = changes.ToList() };
 string NewState() => Path.Combine(scratch, Guid.NewGuid().ToString("N"));
 
+Test("Windows 2000 Explorer owns toolbar and preserves text address navigation", () =>
+{
+    string content=Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,"../../../../../content"));
+    var store=new ContentStore(content);var catalog=store.Load();
+    var shell=new ProfilePlanner(store,catalog).Build("windows2000");
+    Assert(shell.Blockers.Count==0,string.Join("; ",shell.Blockers));
+    Assert(!shell.Modules.Contains("disable-navigation-bar") && !shell.Modules.Contains("classic-taskbar-buttons-lite"));
+    var plan=Classic95Profile.Build(content,NewState(),ClassicAppearance.Read(),target:"windows-2000");
+    Assert(plan.Changes.Single(c=>c.ValueName=="DisableBreadcrumbs").Value=="1");
+    Assert(plan.Changes.Single(c=>c.ValueName=="TreeItemSpacing").Value=="-2");
+    Assert(plan.Changes.Single(c=>c.ValueName=="ToolbarItems").Value!.Contains("PropertiesItem.Command=properties"));
+    Assert(!Windows2000Explorer.Toolbar(NewState()).Any(l=>l.StartsWith("CutItem.IconDisabled=")));
+    var backend=new DesktopBackend(NewState());foreach(var c in plan.Changes)backend.Validate(c);
+    Assert(plan.Changes.Select(c=>c.Identity).Distinct().Count()==plan.Changes.Count);
+    Throws(()=>backend.Validate(new(){Kind=ChangeKind.ExplorerToolbarRequest,Target=Windows2000Explorer.Key,ValueName="Other",ValueKind="DWord",Value="0"}));
+});
+Test("Open-Shell acknowledgement restores exact original value and preserves foreign changes", () =>
+{
+    var change=new Change{Kind=ChangeKind.ExplorerToolbarRequest,Target=Windows2000Explorer.Key,ValueName="ShowedToolbar",ValueKind="DWord",Value="0"};
+    foreach(string? original in new string?[]{null,"0","1","7"})
+    {
+        var backend=new MemoryBackend{AcceptToolbarAcknowledgement=true};
+        var before=new ValueState{Exists=original!=null,Kind="DWord",Value=original};backend.Write(change,before);
+        var manager=new TransactionManager(backend,NewState());var plan=PlanOf(change);plan.Exclusive=true;
+        var receipt=manager.Apply(plan);
+        backend.Write(change,new(){Exists=true,Kind="DWord",Value="1"});
+        Assert(manager.Apply(plan).Id==receipt.Id);
+        Assert(manager.Rollback(receipt.FilePath).Status=="RolledBack");
+        Assert(backend.Read(change).Fingerprint==before.Fingerprint);
+    }
+    foreach(var foreign in new[]{new ValueState{Exists=true,Kind="DWord",Value="7"},new ValueState{Exists=true,Kind="String",Value="1"}})
+    {
+        var backend=new MemoryBackend{AcceptToolbarAcknowledgement=true};var manager=new TransactionManager(backend,NewState());
+        var receipt=manager.Apply(PlanOf(change));backend.Write(change,foreign);
+        Assert(manager.Rollback(receipt.FilePath).Status=="RollbackIncomplete");
+        Assert(backend.Read(change).Fingerprint==foreign.Fingerprint);
+    }
+});
+Test("resume refuses missing or edited installed assets without rewriting them", () =>
+{
+    var backend=new MemoryBackend();var manager=new TransactionManager(backend,NewState());
+    var change=FileChange("Assets2000/test.ico","pinned resource");
+    var receipt=manager.Apply(PlanOf(change));
+    Classic95Setup.ValidateResumeFiles(receipt,backend);
+    backend.Write(change,new(){Exists=true,Kind="File",Bytes=Encoding.UTF8.GetBytes("user edit")});
+    Throws(()=>Classic95Setup.ValidateResumeFiles(receipt,backend));
+    Assert(Encoding.UTF8.GetString(backend.Read(change).Bytes!)=="user edit");
+    backend.Write(change,new());
+    Throws(()=>Classic95Setup.ValidateResumeFiles(receipt,backend));
+    Assert(!backend.Read(change).Exists);
+});
 Test("Classic colors and assets build a native profile without critical process modules", () =>
 {
     Assert(ClassicAppearance.ColorIndices.Length==ClassicAppearance.Colors95.Length);
@@ -86,7 +137,7 @@ Test("all classic and XP targets build distinct real plans", () =>
         Assert(ClassicThemes.FromReceipt(plan.ProfileId)==theme.Id);
         var backend=new DesktopBackend(NewState());foreach(var c in plan.Changes)backend.Validate(c);
         Assert(plan.Changes.Select(c=>c.Identity).Distinct().Count()==plan.Changes.Count);
-        Assert(plan.Changes.Any(c=>c.ValueName=="MenuCaption"&&c.Value==theme.Name));
+        Assert(plan.Changes.Any(c=>c.ValueName=="MenuCaption"&&c.Value==(theme.Id=="windows-2000"?"Windows 2000 Professional":theme.Name)));
         snapshots[theme.Id]=ClassicAppearance.Parse(plan.Changes.Single(c=>c.Kind==ChangeKind.ClassicAppearance).Value!);
         Assert((theme.Id!="windows-95")==plan.Changes.Any(c=>c.Kind==ChangeKind.File&&c.Target.EndsWith("RetroBar.exe")));
         if(theme.Id!="windows-95")Assert(plan.Changes.Any(c=>c.Target=="QuickLaunch/Проводник.lnk"));
@@ -627,6 +678,8 @@ return failed == 0 ? 0 : 1;
 
 sealed class MemoryBackend : IChangeBackend
 {
+    public bool AcceptToolbarAcknowledgement { get; set; }
+    public bool MatchesApplied(Change c,ValueState current,string expected) => current.Fingerprint==expected || AcceptToolbarAcknowledgement && Windows2000Explorer.IsAcknowledgedRequest(c,current,expected);
     public Dictionary<string, ValueState> Values { get; } = [];
     public string? FailAfterWrite { get; set; }
     public Action? OnWrite { get; set; }

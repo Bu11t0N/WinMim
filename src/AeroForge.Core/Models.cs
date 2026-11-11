@@ -107,7 +107,7 @@ public sealed class HostInfo
     public bool KnownBase => IsWindows && Architecture == "X64" && Build is >= 19041 and <= 19045;
     public string Summary => $"{Os} · {Build}.{Revision} · {Architecture}";
 }
-public enum ChangeKind { File, Registry, VisualStyle, Wallpaper, TaskbarState, RegistryKey, ThemeSection, ClassicAppearance }
+public enum ChangeKind { File, Registry, VisualStyle, Wallpaper, TaskbarState, RegistryKey, ThemeSection, ClassicAppearance, ExplorerToolbarRequest }
 public sealed class Change
 {
     public ChangeKind Kind { get; set; }

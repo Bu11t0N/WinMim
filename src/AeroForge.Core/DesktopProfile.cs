@@ -35,7 +35,7 @@ public static class DesktopRegistryPolicy
     };
     private static HashSet<string> Names(string text) => new(text.Split(' '), StringComparer.OrdinalIgnoreCase);
     public static bool Allows(Change change) => change.Kind == ChangeKind.Registry
-        && (Allowed.TryGetValue(change.Target, out var names) && names.Contains(change.ValueName) || DesktopIconOverrides.Allows(change) || SevenSounds.Allows(change) || Classic95Profile.Allows(change));
+        && (Allowed.TryGetValue(change.Target, out var names) && names.Contains(change.ValueName) || DesktopIconOverrides.Allows(change) || SevenSounds.Allows(change) || Classic95Profile.Allows(change) || Windows2000Explorer.Allows(change) || Windows2000Resources.Allows(change));
 }
 
 public sealed record VisualStyleState(string Path, string Color = "NormalColor", string Size = "NormalSize")

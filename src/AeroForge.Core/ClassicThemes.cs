@@ -2,7 +2,7 @@ namespace AeroForge.Core;
 
 public sealed record ClassicTheme(string Id,string Name,string Taskbar,string Font,int Background,int Face,int Highlight,bool Gradient,bool QuickLaunch,bool Xp=false)
 {
-    public string Detail=>Xp?"Панель и меню Luna; пока классические рамки и общий набор значков":"Классические окна, палитра, меню и панель; ресурсы ещё уточняются";
+    public string Detail=>Id=="windows-2000"?"Отдельные личные ресурсы 2000, Explorer Open-Shell и классические окна; точность и диалоги ещё проверяются":Xp?"Панель и меню Luna; пока классические рамки и общий набор значков":"Классические окна, палитра, меню и панель; ресурсы ещё уточняются";
 }
 public static class ClassicThemes
 {

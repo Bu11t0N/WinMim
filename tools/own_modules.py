@@ -44,3 +44,12 @@ def register(catalog):
     if all(any(m['id']==id for m in catalog['modules']) for id in classic95):
         catalog['profiles']=[p for p in catalog['profiles'] if p['id']!='windows95']+[{'id':'windows95','name':'Windows 95 (стенд)','accent':'#008080','description':'Классическая отрисовка, системные метрики и исправления Explorer. Требуется отдельно включённый ClassicSession.','modules':classic95,'settings':{'aerexplorer':{'noribbon':'1','hidetitle':'0','detailspane':'0'},'classic-theme-transparency-fix':{'removeDialogTransparency':'1'}}}]
         catalog['profiles'][-1]['settings']['taskbar-thumbnails']={'mode':'listOnClick','noTooltips':'0'}
+        # The Open-Shell toolbar owns file commands and the text address adapter.
+        # Keep AeroExplorer only for ribbon removal, not address-bar restyling;
+        # disable-navigation-bar would remove the address adapter entirely.
+        w2000=[name for name in classic95 if name not in ('disable-navigation-bar','classic-taskbar-buttons-lite','taskbar-thumbnails')]
+        catalog['profiles']=[p for p in catalog['profiles'] if p['id']!='windows2000']+[{
+            'id':'windows2000','name':'Windows 2000 (стенд)','accent':'#3A6EA6',
+            'description':'Классическая сессия и Explorer с панелью Open-Shell; RetroBar владеет панелью задач.',
+            'modules':w2000,'settings':{'aerexplorer':{'noribbon':'1','hidetitle':'0','detailspane':'0','smalladdress':'1','aerotravel':'0','npst':'default','navbarglass':'0'},
+                'classic-theme-transparency-fix':{'removeDialogTransparency':'1'},'winmim-classic-frames':{'clientEdges':'1'}}}]

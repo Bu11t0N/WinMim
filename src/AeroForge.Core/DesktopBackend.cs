@@ -14,6 +14,9 @@ public sealed class DesktopBackend(string root) : IChangeBackend
     {
         switch (change.Kind)
         {
+            case ChangeKind.ExplorerToolbarRequest:
+                Windows2000Explorer.ValidateToolbarRequest(change);
+                break;
             case ChangeKind.ClassicAppearance:
                 if(change.Target!="Windows.ClassicAppearance")throw new InvalidDataException("Invalid Classic appearance target");
                 if(change.Value!=null)_=ClassicAppearance.Parse(change.Value);
@@ -50,6 +53,7 @@ public sealed class DesktopBackend(string root) : IChangeBackend
     public ValueState Read(Change change)
     {
         Validate(change);
+        if(change.Kind==ChangeKind.ExplorerToolbarRequest)return filesAndRegistry.Read(Windows2000Explorer.ToolbarRegistryChange());
         if(change.Kind==ChangeKind.ClassicAppearance)return new(){Exists=true,Kind="ClassicAppearance",Value=ClassicAppearance.Serialize(ClassicAppearance.Read())};
         if(change.Kind==ChangeKind.RegistryKey)
         {
@@ -78,6 +82,7 @@ public sealed class DesktopBackend(string root) : IChangeBackend
     public void Write(Change change, ValueState state)
     {
         Validate(change);
+        if(change.Kind==ChangeKind.ExplorerToolbarRequest){filesAndRegistry.Write(Windows2000Explorer.ToolbarRegistryChange(),state);return;}
         if(change.Kind==ChangeKind.ClassicAppearance)
         {if(!state.Exists||state.Kind!="ClassicAppearance")throw new InvalidDataException("Invalid Classic snapshot");ClassicAppearance.Write(ClassicAppearance.Parse(state.Value!));return;}
         if(change.Kind==ChangeKind.RegistryKey)
@@ -131,6 +136,8 @@ public sealed class DesktopBackend(string root) : IChangeBackend
         }
         filesAndRegistry.Write(change,state);
     }
+    public bool MatchesApplied(Change change,ValueState current,string expected) =>
+        current.Fingerprint==expected || Windows2000Explorer.IsAcknowledgedRequest(change,current,expected);
     public static void NotifySettingsChanged()
     {
         // Broadcast application configuration changes; no mouse/keyboard automation.
