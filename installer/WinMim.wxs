@@ -5,7 +5,11 @@
            Scope="perMachine">
     <MajorUpgrade DowngradeErrorMessage="A newer version of WinMim Preview is already installed." />
     <MediaTemplate EmbedCab="yes" />
-    <Launch Condition="Installed OR (VersionNT64 AND WindowsBuild &gt;= 10240)"
+    <Property Id="WINMIMWINDOWSMAJOR" Secure="yes">
+      <RegistrySearch Root="HKLM" Key="SOFTWARE\Microsoft\Windows NT\CurrentVersion"
+                      Name="CurrentMajorVersionNumber" Type="raw" Bitness="always64" />
+    </Property>
+    <Launch Condition="Installed OR (VersionNT64 AND WINMIMWINDOWSMAJOR)"
             Message="WinMim requires 64-bit Windows 10 or later." />
     <Property Id="ARPURLINFOABOUT" Value="https://github.com/Bu11t0N/WinMim" />
     <StandardDirectory Id="ProgramFiles64Folder">
