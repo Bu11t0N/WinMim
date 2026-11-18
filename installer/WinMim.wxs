@@ -1,0 +1,34 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+     xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
+  <Package Name="WinMim Preview" Manufacturer="WinMim contributors"
+           Version="$(var.Version)" UpgradeCode="{FB77EEDA-1925-4838-8EEF-A3E609BD779E}"
+           Scope="perMachine">
+    <MajorUpgrade DowngradeErrorMessage="A newer version of WinMim Preview is already installed." />
+    <MediaTemplate EmbedCab="yes" />
+    <Launch Condition="Installed OR (VersionNT64 AND WindowsBuild &gt;= 10240)"
+            Message="WinMim requires 64-bit Windows 10 or later." />
+    <Property Id="ARPURLINFOABOUT" Value="https://github.com/Bu11t0N/WinMim" />
+    <StandardDirectory Id="ProgramFiles64Folder">
+      <Directory Id="INSTALLFOLDER" Name="WinMim" />
+    </StandardDirectory>
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Directory Id="WINMIMMENU" Name="WinMim Preview">
+        <Component Id="StartShortcuts" Guid="{65CB9602-0DA4-494B-891E-AF4FAF5B0D2F}">
+          <Shortcut Id="WinMimShortcut" Name="WinMim Preview" Target="[INSTALLFOLDER]WinMim.exe"
+                    WorkingDirectory="INSTALLFOLDER" />
+          <Shortcut Id="WinMimFilesShortcut" Name="WinMim Files" Target="[INSTALLFOLDER]WinMim.exe"
+                    Arguments="--retro-files" WorkingDirectory="INSTALLFOLDER" />
+          <RemoveFolder Id="RemoveWinMimMenu" On="uninstall" />
+          <RegistryValue Root="HKLM" Key="Software\WinMim" Name="PreviewInstalled"
+                         Type="integer" Value="1" KeyPath="yes" />
+        </Component>
+      </Directory>
+    </StandardDirectory>
+    <Feature Id="WinMim" Title="WinMim Preview" Level="1">
+      <ComponentRef Id="StartShortcuts" />
+      <Files Directory="INSTALLFOLDER" Include="$(var.Payload)\**" />
+    </Feature>
+    <ui:WixUI Id="WixUI_Minimal" />
+    <WixVariable Id="WixUILicenseRtf" Value="$(var.LicenseRtf)" />
+  </Package>
+</Wix>

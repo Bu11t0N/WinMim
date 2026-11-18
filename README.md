@@ -105,7 +105,14 @@ Internal `AeroForge` namespaces and state directory names are retained for compa
 .\build\cli\AeroForge.Cli.exe plan --content .\content --profile seven
 ```
 
-Launching the control panel alone does not apply a profile. Inspect the plan before using the explicit apply/start actions. Full desktop integration currently requires a prepared test environment and Open-Shell; Windows 7 also needs separately obtained visual resources. This is not a general installer.
+Launching the control panel alone does not apply a profile. Inspect the plan before using the explicit apply/start actions. Full desktop integration currently requires a prepared test environment and Open-Shell; Windows 7 also needs separately obtained visual resources.
+
+### Preview MSI
+
+The x64 MSI installs WinMim under Program Files and adds **WinMim Preview** and **WinMim Files** to Start. Install the x64 .NET 10 Desktop Runtime first. The installer requires administrator rights. Run WinMim from Start under your ordinary user account. The XP profile requires the prepared Windows 10 LTSC 2021 lab, Open-Shell, SecureUxTheme and the separately supplied private pack described in [XP implementation](docs/XP-IMPLEMENTATION.md). Installation leaves the current desktop theme in place. Restore your active WinMim profile before uninstalling.
+
+After preparing the native components with `tools/build.ps1 -PrepareNative`, run `tools/build-installer.ps1 -Wix <path-to-wix.exe> -UiExtension <path-to-WixToolset.UI.wixext.dll>` with WiX 6.0.2 and its matching UI extension. The Validate workflow builds and uploads the MSI as the `WinMim-Preview-x64` artifact.
+
 
 Validation after native preparation:
 

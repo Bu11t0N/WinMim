@@ -80,6 +80,14 @@ public sealed class NativeMainForm : F.Form
         top.Controls.Add(Label("XP использует отдельный личный пакет Luna Blue. Для остальных классических профилей точность ресурсов ещё уточняется. Перед применением XP программа проверяет наличие пакета."));
         var bottom=Flow(true);bottom.Dock=F.DockStyle.Bottom;bottom.Controls.Add(targetDetail);
         var action=Button("Выбрать оформление");bottom.Controls.Add(action);
+        var retroFiles = Button("Открыть файловый менеджер WinMim");
+        retroFiles.Visible = false;
+        retroFiles.Click += (_, _) =>
+        {
+            using var browser = new RetroFileBrowser(null);
+            browser.ShowDialog(this);
+        };
+        bottom.Controls.Add(retroFiles);
         page.Controls.Add(targets);page.Controls.Add(bottom);page.Controls.Add(top);
         var apply95=Button("Применить Windows 95");var restore95=Button("Вернуть предыдущее оформление");bottom.Controls.Add(apply95);bottom.Controls.Add(restore95);
         apply95.Enabled=false;restore95.Enabled=Environment.MachineName=="AEROFORGE-LAB"&&Classic95Setup.IsActive;
@@ -87,7 +95,7 @@ public sealed class NativeMainForm : F.Form
         restore95.Click+=async(_,_)=>{await Run(async(_,p)=>{await Task.Run(()=>new Classic95Setup(MainWindow.FindContent()).RestoreAsync(p));status.Text="Предыдущее оформление возвращено.";});restore95.Enabled=Environment.MachineName=="AEROFORGE-LAB"&&Classic95Setup.IsActive;};
         foreach(var target in AppearanceCatalog.Targets)Row(targets,target,target.Name,target.Family,target.Available?"Экспериментальный профиль":"Заглушка — не применяется");
         void SelectTarget()
-        {if(targets.SelectedItems.Count==0)return;var choice=AppearanceCatalog.Select(((AppearanceTarget)targets.SelectedItems[0].Tag!).Id);targetDetail.Text=choice.Target.Name+": "+choice.Status+". "+(choice.Target.Available?ClassicThemes.Get(choice.Target.Id).Detail:"");apply95.Text="Применить "+choice.Target.Name;apply95.Enabled=choice.Target.Available&&Environment.MachineName=="AEROFORGE-LAB";status.Text=targetDetail.Text;}
+        {if(targets.SelectedItems.Count==0)return;var choice=AppearanceCatalog.Select(((AppearanceTarget)targets.SelectedItems[0].Tag!).Id);targetDetail.Text=choice.Target.Name+": "+choice.Status+". "+(choice.Target.Available?ClassicThemes.Get(choice.Target.Id).Detail:"");retroFiles.Visible=choice.Target.Id=="windows-xp";apply95.Text="Применить "+choice.Target.Name;apply95.Enabled=choice.Target.Available&&Environment.MachineName=="AEROFORGE-LAB";status.Text=targetDetail.Text;}
         targets.SelectedIndexChanged+=(_,_)=>SelectTarget();action.Click+=(_,_)=>SelectTarget();
         targets.DoubleClick+=(_,_)=>SelectTarget();var active=Classic95Setup.ActiveTarget??"windows-7";foreach(F.ListViewItem row in targets.Items)if(((AppearanceTarget)row.Tag!).Id==active)row.Selected=true;
         action.AccessibleDescription="Только выбирает оформление. Для изменения системы нажмите отдельную кнопку применения.";

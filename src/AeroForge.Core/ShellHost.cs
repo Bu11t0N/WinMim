@@ -151,7 +151,7 @@ public sealed class ShellHost(string hostRoot, Catalog catalog)
         {
             finished.Cancel();
             try{await monitor;}catch(OperationCanceledException)when(finished.IsCancellationRequested){}
-            finally{await DesktopController.RestartExplorerAsync();}
+            finally{await DesktopController.EnsureExplorerStartedAsync();}
         }
     }
     private sealed class ActiveProfile

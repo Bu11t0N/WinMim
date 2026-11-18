@@ -35,6 +35,15 @@ public partial class App : Application
                 {Directory.CreateDirectory(root);File.WriteAllText(Path.Combine(root,"resume-error.txt"),error.ToString());Shutdown(1);return;}
                 Shutdown();return;
             }
+            if (e.Args.FirstOrDefault() == "--retro-files")
+            {
+                ShutdownMode = ShutdownMode.OnExplicitShutdown;
+                string? folder = e.Args.Length > 1 ? Path.GetFullPath(e.Args[1]) : null;
+                using var browser = new RetroFileBrowser(folder);
+                System.Windows.Forms.Application.Run(browser);
+                Shutdown();
+                return;
+            }
             if(e.Args.FirstOrDefault()=="--taskbar-properties")
             {ShutdownMode=ShutdownMode.OnExplicitShutdown;using var properties=new NativeTaskbarProperties();System.Windows.Forms.Application.Run(properties);Shutdown();return;}
             if (e.Args.Length == 3 && e.Args[0] == "--render-tool")

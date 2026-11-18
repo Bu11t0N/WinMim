@@ -25,3 +25,25 @@ jobs:
         run: python -m unittest discover -s tests -p 'test_*.py'
       - name: Verify native binaries
         run: python tools/verify_native.py
+      - name: Build WinMim Preview MSI
+        shell: pwsh
+        run: |
+          $wixRoot = Join-Path $env:RUNNER_TEMP 'winmim-wix'
+          New-Item -ItemType Directory -Path $wixRoot -Force | Out-Null
+          $wix = Join-Path $wixRoot 'wix.exe'
+          Push-Location $wixRoot
+          try {
+            dotnet tool install wix --version 6.0.2 --tool-path $wixRoot --source https://api.nuget.org/v3/index.json
+            if ($LASTEXITCODE -ne 0) { throw 'WiX installation failed' }
+            & $wix extension add WixToolset.UI.wixext/6.0.2
+            if ($LASTEXITCODE -ne 0) { throw 'WiX UI extension installation failed' }
+          }
+          finally { Pop-Location }
+          $ui = Join-Path $wixRoot '.wix/extensions/WixToolset.UI.wixext/6.0.2/wixext6/WixToolset.UI.wixext.dll'
+          ./tools/build-installer.ps1 -Wix $wix -UiExtension $ui
+      - name: Upload WinMim Preview MSI
+        uses: actions/upload-artifact@v4
+        with:
+          name: WinMim-Preview-x64
+          path: build/installer/*.msi
+          if-no-files-found: error

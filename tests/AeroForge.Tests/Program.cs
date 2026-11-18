@@ -108,6 +108,11 @@ Test("all classic and XP targets build distinct real plans", () =>
     Assert(!snapshots["windows-95"].Colors.SequenceEqual(snapshots["windows-2000"].Colors));
     Assert(snapshots["windows-95"].Metrics!=snapshots["windows-me"].Metrics);
     var xp=Classic95Profile.Build(content,NewState(),before,privateIcons:fixture.Directory,target:"windows-xp",xpPack:fixture.Pack);
+    foreach(var (name,value) in new[]{("LaunchTo","1"),("AlwaysShowMenus","1"),("ShowStatusBar","1"),("AutoCheckSelect","0")})
+    {
+        var setting=xp.Changes.Single(c=>c.Target==DesktopRegistryPolicy.Advanced&&c.ValueName==name);
+        Assert(setting.ValueKind=="DWord"&&setting.Value==value&&DesktopRegistryPolicy.Allows(setting));
+    }
     Assert(xp.Changes.Any(c=>c.ValueName=="SkinC2"&&c.Value=="Windows XP Luna"));
     Assert(xp.Changes.Any(c=>c.ValueName=="MenuStyle"&&c.Value=="Classic2"));
     Assert(xp.Changes.Single(c=>c.Kind==ChangeKind.Wallpaper).Value==xp.Changes.Single(c=>c.Kind==ChangeKind.Wallpaper).Value!.ToUpperInvariant());

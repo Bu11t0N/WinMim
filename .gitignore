@@ -21,3 +21,4 @@ credentials*.json
 *.vmem
 *.vmss
 *.evtx
+.wix/

@@ -76,6 +76,10 @@ public sealed class DesktopController
     public static async Task RestartExplorerAsync()
     {
         StopExplorer();
+        await EnsureExplorerStartedAsync();
+    }
+    internal static async Task EnsureExplorerStartedAsync()
+    {
         int session=Process.GetCurrentProcess().SessionId;
         string executable=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows),"explorer.exe");
         await Task.Delay(3000);

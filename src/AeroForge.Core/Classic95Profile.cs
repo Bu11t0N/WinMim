@@ -14,7 +14,7 @@ public static class Classic95Profile
         (change.Target==ColorsKey && ClassicAppearance.ColorNames.Contains(change.ValueName)
         ||change.Target==MetricsKey && MetricNames.Contains(change.ValueName)
         ||change.Target==DesktopRegistryPolicy.Shell && ShellNames.Contains(change.ValueName)
-        ||change.Target==DesktopRegistryPolicy.Advanced && new[]{"TaskbarGlomLevel","MMTaskbarGlomLevel","TaskbarSmallIcons","ListviewShadow","ShowTaskViewButton","TaskbarSizeMove","DisablePreviewDesktop"}.Contains(change.ValueName)
+        ||change.Target==DesktopRegistryPolicy.Advanced && new[]{"TaskbarGlomLevel","MMTaskbarGlomLevel","TaskbarSmallIcons","ListviewShadow","LaunchTo","AlwaysShowMenus","AutoCheckSelect","ShowTaskViewButton","TaskbarSizeMove","DisablePreviewDesktop"}.Contains(change.ValueName)
         ||change.Target==DesktopRegistryPolicy.Computer && change.ValueName=="LocalizedString");
     public static Plan Build(string content,string root,ClassicAppearanceState original,string? privateIcons=null,string target="windows-95",XpThemePack? xpPack=null)
     {
@@ -77,6 +77,10 @@ public static class Classic95Profile
         }
         Set(DesktopRegistryPolicy.Shell,theme.Xp?"MenuItems2":"MenuItems1",System.Text.Json.JsonSerializer.Serialize(menu),"MultiString");
         if(theme.Xp){
+            Set(DesktopRegistryPolicy.Advanced,"LaunchTo","1","DWord");
+            Set(DesktopRegistryPolicy.Advanced,"AlwaysShowMenus","1","DWord");
+            Set(DesktopRegistryPolicy.Advanced,"ShowStatusBar","1","DWord");
+            Set(DesktopRegistryPolicy.Advanced,"AutoCheckSelect","0","DWord");
             plan.Changes.Single(c=>c.Target==DesktopRegistryPolicy.Shell&&c.ValueName=="MenuStyle").Value="Classic2";
             Set(DesktopRegistryPolicy.Shell,"SkinC2","Windows XP Luna");Set(DesktopRegistryPolicy.Shell,"SkinVariationC2","");
             if(xp?.Manifest.MenuSkin is string menuSkin)
@@ -113,7 +117,9 @@ public static class Classic95Profile
                 if(File.Exists(executable))
                 {
                     string? icon=theme.Xp?SafePath.Under(root,"Assets/"+icons.GetValueOrDefault(file=="explorer.exe"?"folder-closed":"notepad",icons["programs"])):null;
-                    byte[] shortcut=DesktopShortcuts.Create(executable,iconLocation:icon);
+                    string? browser = theme.Xp && file == "explorer.exe" ? ProfilePlanner.FindController() : null;
+                    byte[] shortcut = DesktopShortcuts.Create(browser ?? executable,
+                        arguments: browser is null ? "" : "--retro-files", iconLocation: icon);
                     plan.Changes.Add(new(){Kind=ChangeKind.File,Target="QuickLaunch/"+label+".lnk",Content=shortcut,Description="Быстрый запуск: "+label});
                     if(theme.Xp)plan.Changes.Add(new(){Kind=ChangeKind.File,Target="Pinned/"+label+".lnk",Content=shortcut,Description="Закреплённая рабочая команда XP: "+label});
                 }
