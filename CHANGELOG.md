@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.3 Preview — 2026-11-19
+
+- Added the Windows x64 MSI and Start menu shortcuts.
+- Added the WinMim file browser to the XP profile. Verified opening from Start, folder navigation, recursive name search, copy, rename and file properties in the Windows 10 LTSC lab.
+- Added a persistent transition record across desktop, shell and taskbar operations, plus an independent recovery entry point for XP and classic profiles. It resumes journal rollback after an interrupted process and reports changes that conflict with the saved state.
+- Desktop theme application remains limited to the lab. XP Explorer navigation and historical fidelity are still under development.
+
 ## 2026-10-30 — Working classic and partial XP profiles
 
 - Added explicit apply/restore for NT 4.0, 98/SE, Me, 2000 and partial XP alongside Windows 95. Profiles now select real palettes, fonts, menus and pinned RetroBar taskbars; XP includes a Luna menu and blue taskbar with classic window frames.

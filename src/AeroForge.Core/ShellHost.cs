@@ -137,21 +137,28 @@ public sealed class ShellHost(string hostRoot, Catalog catalog)
         // auto-restart from racing unload AND visual-style rollback, then
         // bring the desktop back at its final state. This is a transition,
         // not a persistent process/window polling service.
-        DesktopController.StopExplorer();
-        using var finished=new CancellationTokenSource();
-        var monitor=Task.Run(async()=>
-        {
-            while(true){await Task.Delay(100,finished.Token);DesktopController.StopExplorer();}
-        });
+        DesktopController.EnsureLab();
+        using var finished = new CancellationTokenSource();
+        Task monitor = Task.CompletedTask;
         try
         {
+            DesktopController.StopExplorer();
+            monitor = Task.Run(async () =>
+            {
+                while (true)
+                {
+                    await Task.Delay(100, finished.Token);
+                    DesktopController.StopExplorer();
+                }
+            });
             await action();
         }
         finally
         {
             finished.Cancel();
-            try{await monitor;}catch(OperationCanceledException)when(finished.IsCancellationRequested){}
-            finally{await DesktopController.EnsureExplorerStartedAsync();}
+            try { await monitor; }
+            catch (OperationCanceledException) when (finished.IsCancellationRequested) { }
+            finally { await DesktopController.EnsureExplorerStartedAsync(); }
         }
     }
     private sealed class ActiveProfile

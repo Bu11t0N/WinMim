@@ -90,9 +90,9 @@ public sealed class NativeMainForm : F.Form
         bottom.Controls.Add(retroFiles);
         page.Controls.Add(targets);page.Controls.Add(bottom);page.Controls.Add(top);
         var apply95=Button("Применить Windows 95");var restore95=Button("Вернуть предыдущее оформление");bottom.Controls.Add(apply95);bottom.Controls.Add(restore95);
-        apply95.Enabled=false;restore95.Enabled=Environment.MachineName=="AEROFORGE-LAB"&&Classic95Setup.IsActive;
-        apply95.Click+=async(_,_)=>{if(targets.SelectedItems.Count==0)return;var target=(AppearanceTarget)targets.SelectedItems[0].Tag!;await Run(async(token,p)=>{await Task.Run(()=>new Classic95Setup(MainWindow.FindContent()).ApplyThemeAsync(target.Id,p,token));status.Text=target.Name+" применена. Для обновления уже открытых окон перезапустите их.";});restore95.Enabled=Environment.MachineName=="AEROFORGE-LAB"&&Classic95Setup.IsActive;};
-        restore95.Click+=async(_,_)=>{await Run(async(_,p)=>{await Task.Run(()=>new Classic95Setup(MainWindow.FindContent()).RestoreAsync(p));status.Text="Предыдущее оформление возвращено.";});restore95.Enabled=Environment.MachineName=="AEROFORGE-LAB"&&Classic95Setup.IsActive;};
+        apply95.Enabled=false;restore95.Enabled=Environment.MachineName=="AEROFORGE-LAB"&&Classic95Setup.HasRecoveryWork;
+        apply95.Click+=async(_,_)=>{if(targets.SelectedItems.Count==0)return;var target=(AppearanceTarget)targets.SelectedItems[0].Tag!;await Run(async(token,p)=>{await Task.Run(()=>new Classic95Setup(MainWindow.FindContent()).ApplyThemeAsync(target.Id,p,token));status.Text=target.Name+" применена. Для обновления уже открытых окон перезапустите их.";});restore95.Enabled=Environment.MachineName=="AEROFORGE-LAB"&&Classic95Setup.HasRecoveryWork;};
+        restore95.Click+=async(_,_)=>{await Run(async(_,p)=>{await Task.Run(()=>new Classic95Setup(MainWindow.FindContent()).RestoreAsync(p));status.Text="Предыдущее оформление возвращено.";});restore95.Enabled=Environment.MachineName=="AEROFORGE-LAB"&&Classic95Setup.HasRecoveryWork;};
         foreach(var target in AppearanceCatalog.Targets)Row(targets,target,target.Name,target.Family,target.Available?"Экспериментальный профиль":"Заглушка — не применяется");
         void SelectTarget()
         {if(targets.SelectedItems.Count==0)return;var choice=AppearanceCatalog.Select(((AppearanceTarget)targets.SelectedItems[0].Tag!).Id);targetDetail.Text=choice.Target.Name+": "+choice.Status+". "+(choice.Target.Available?ClassicThemes.Get(choice.Target.Id).Detail:"");retroFiles.Visible=choice.Target.Id=="windows-xp";apply95.Text="Применить "+choice.Target.Name;apply95.Enabled=choice.Target.Available&&Environment.MachineName=="AEROFORGE-LAB";status.Text=targetDetail.Text;}
@@ -169,6 +169,14 @@ public sealed class NativeMainForm : F.Form
         var page=Page("Восстановление");var actions=Flow();actions.Dock=F.DockStyle.Bottom;
         var refresh=Button("Обновить");refresh.Click+=(_,_)=>RefreshHistory();actions.Controls.Add(refresh);
         var undo=Button("Откатить выбранный журнал");undo.Click+=async(_,_)=>{if(history.SelectedItems.Count==0||history.SelectedItems[0].Tag is not Receipt receipt)return;await Run(async(_,progress)=>{host.EnsureStopped();var result=await Task.Run(()=>transactions.Rollback(receipt.FilePath,progress));status.Text="Откат: "+result.Status;});};actions.Controls.Add(undo);
+        var classicUndo = Button("Восстановить XP и классические темы");
+        classicUndo.Click += async (_, _) => await Run(async (_, progress) =>
+        {
+            await Task.Run(() => Classic95Setup.ForRecovery(MainWindow.FindContent()).RestoreAsync(progress));
+            status.Text = "Восстановление XP и классических тем завершено.";
+        }, cancellable: false);
+        classicUndo.Enabled = Environment.MachineName == "AEROFORGE-LAB";
+        actions.Controls.Add(classicUndo);
         var desktopUndo=Button("Вернуть оформление");desktopUndo.Click+=async(_,_)=>await Run(async(_,progress)=>{await host.StopAsync();var result=await Task.Run(()=>desktop.Restore(progress));status.Text="Возврат оформления: "+result.Status+". Внешние компоненты остаются установленными.";});actions.Controls.Add(desktopUndo);
         var machineUndo=Button("Вернуть системные настройки Seven");machineUndo.Click+=async(_,_)=>await Run(async(_,_)=>{await new MachineSeven().RestoreElevatedAsync();status.Text="Системные настройки Seven возвращены.";});actions.Controls.Add(machineUndo);
         history.SelectedIndexChanged+=(_,_)=>Try(()=>{if(history.SelectedItems.Count>0 && history.SelectedItems[0].Tag is Receipt r)detail.Text=r.FilePath+Environment.NewLine+r.Error+Environment.NewLine+string.Join(Environment.NewLine,transactions.ReadErrors(r.FilePath));});

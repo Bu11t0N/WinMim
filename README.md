@@ -10,7 +10,7 @@ WinMim is an experimental Windows customization toolkit that aims to recreate th
 
 ## Project status
 
-**Developer preview, version 0.1.0.** WinMim does not yet match Revert8Plus feature for feature, and does not provide an indistinguishable recreation of any Windows release.
+**Developer preview, version 0.1.3.** WinMim does not yet match Revert8Plus feature for feature, and does not provide an indistinguishable recreation of any Windows release.
 
 Tested on **Windows 10 IoT Enterprise LTSC 2021, x64, build 19044**. Full desktop conversion is an experimental developer feature; general-purpose installation is not available yet.
 
@@ -110,6 +110,8 @@ Launching the control panel alone does not apply a profile. Inspect the plan bef
 ### Preview MSI
 
 The x64 MSI installs WinMim under Program Files and adds **WinMim Preview** and **WinMim Files** to Start. Install the x64 .NET 10 Desktop Runtime first. The installer requires administrator rights. Run WinMim from Start under your ordinary user account. The XP profile requires the prepared Windows 10 LTSC 2021 lab, Open-Shell, SecureUxTheme and the separately supplied private pack described in [XP implementation](docs/XP-IMPLEMENTATION.md). Installation leaves the current desktop theme in place. Restore your active WinMim profile before uninstalling.
+
+For XP and the classic profiles, use **Restore XP and classic themes** on the Recovery tab. If the desktop or the main window is unavailable, use **WinMim Restore Classic Desktop** from Start, or run `"C:\Program Files\WinMim\WinMim.exe" --restore-classic` from Task Manager → File → Run new task as the same user. Classic recovery uses the saved journals and can be retried. Return to the previous theme before uninstalling, while the recovery executable is still available. An external edit that conflicts with a journal remains on disk and is reported for review.
 
 After preparing the native components with `tools/build.ps1 -PrepareNative`, run `tools/build-installer.ps1 -Wix <path-to-wix.exe> -UiExtension <path-to-WixToolset.UI.wixext.dll>` with WiX 6.0.2 and its matching UI extension. The Validate workflow builds and uploads the MSI as the `WinMim-Preview-x64` artifact.
 

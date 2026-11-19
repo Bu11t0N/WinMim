@@ -39,7 +39,7 @@ public static class JsonFile
 public sealed class Catalog
 {
     public int SchemaVersion { get; set; } = 1;
-    public string Version { get; set; } = "0.1.0";
+    public string Version { get; set; } = typeof(Catalog).Assembly.GetName().Version!.ToString(3);
     public string SourceCommit { get; set; } = "";
     public List<Module> Modules { get; set; } = [];
     public List<Profile> Profiles { get; set; } = [];

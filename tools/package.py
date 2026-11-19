@@ -103,8 +103,9 @@ SOFTWARE.
         if any(x in ['.git','.cache','bin','obj','build','work','__pycache__'] for x in rel.parts):continue
         if rel.as_posix().startswith(('content/modules/','content/runtime/','content/classic-runtime/','docs/evidence/')) or rel.as_posix()=='docs/NEXT-SESSION.md':continue
         sources.append((p,'WinMim/'+rel.as_posix()))
-    packages=[archive(OUT/'WinMim-0.1.0-portable.zip',portable),archive(OUT/'WinMim-0.1.0-source.zip',sources)]
-    (OUT/'WinMim-0.1.0-checksums.json').write_text(json.dumps(packages,indent=2),encoding='utf-8')
+    version = catalog["version"]
+    packages=[archive(OUT/f'WinMim-{version}-portable.zip',portable),archive(OUT/f'WinMim-{version}-source.zip',sources)]
+    (OUT/f'WinMim-{version}-checksums.json').write_text(json.dumps(packages,indent=2),encoding='utf-8')
     print(json.dumps(packages,indent=2))
 
 if __name__=='__main__':package()

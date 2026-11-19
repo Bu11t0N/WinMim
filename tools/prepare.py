@@ -4,10 +4,12 @@ Requires Python 3.10+, PyYAML 6.0.3 and an existing trusted 7-Zip.
 Downloads are immutable releases; the downloaded installer is parsed only by 7-Zip.
 """
 from pathlib import Path
+from xml.etree import ElementTree
 import argparse,hashlib,json,re,shutil,subprocess,urllib.request,zipfile
 import yaml
 
 ROOT=Path(__file__).resolve().parents[1]
+VERSION=ElementTree.parse(ROOT/'Directory.Build.props').findtext('PropertyGroup/Version')
 COMMIT='3f11069419fad9103a56cf78b28d293fee6c20cf'
 WH_VERSION='1.7.3'
 WH_SHA='4d93016570f982326eebdfc9068e924ff21f6448534ea32672bb4c1d52a8193b'
@@ -65,7 +67,7 @@ def download(url,path,expected=None):
     if path.exists() and (expected is None or sha(path)==expected):return
     tmp=path.with_name(path.name+'.download')
     try:
-        with urllib.request.urlopen(urllib.request.Request(url,headers={'User-Agent':'AeroForge/0.1.0'}),timeout=120) as src,tmp.open('wb') as dst:
+        with urllib.request.urlopen(urllib.request.Request(url,headers={'User-Agent':f'WinMim/{VERSION}'}),timeout=120) as src,tmp.open('wb') as dst:
             shutil.copyfileobj(src,dst,1024*1024)
         if expected and sha(tmp)!=expected:raise ValueError('SHA256 mismatch: '+url)
         tmp.replace(path)
@@ -169,7 +171,7 @@ def prepare(toolchain=None,installer=None,seven_zip=None):
         {'id':'openglass','name':'OpenGlass','version':'3.0.2.3749','license':'GPL-3.0','description':'Прозрачность и рамки Aero. Совместимость конкретной ревизии Windows проверяется отдельно.',
          'sourceUrl':'https://github.com/ALTaleX531/OpenGlass','downloadUrl':'https://github.com/ALTaleX531/OpenGlass/releases/download/v3.0.2.3749/OpenGlassSetup.Signed.exe',
          'sha256':'191553cf594af2459631a8d00a48ffe0375868210f5e84c60ff75a668529405f','fileName':'OpenGlassSetup.Signed.exe'}]
-    catalog={'schemaVersion':1,'version':'0.1.0','sourceCommit':COMMIT,'modules':mods,'profiles':profiles,'runtimeFiles':files,'dependencies':deps}
+    catalog={'schemaVersion':1,'version':VERSION,'sourceCommit':COMMIT,'modules':mods,'profiles':profiles,'runtimeFiles':files,'dependencies':deps}
     from own_modules import register
     register(catalog)
     dump(CONTENT/'catalog.json',catalog)

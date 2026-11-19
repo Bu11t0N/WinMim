@@ -16,6 +16,26 @@ public partial class App : Application
         DispatcherUnhandledException += (_, error) => { MessageBox.Show(error.Exception.Message, "WinMim", MessageBoxButton.OK, MessageBoxImage.Error); error.Handled = true; };
         try
         {
+            if (e.Args.FirstOrDefault() == "--restore-classic")
+            {
+                ShutdownMode = ShutdownMode.OnExplicitShutdown;
+                try
+                {
+                    string content = Path.Combine(AppContext.BaseDirectory, "content");
+                    await Task.Run(() => Classic95Setup.ForRecovery(content).RestoreAsync());
+                    MessageBox.Show("Восстановление завершено.",
+                        "Восстановление WinMim", MessageBoxButton.OK, MessageBoxImage.Information);
+                    Shutdown();
+                }
+                catch (Exception error)
+                {
+                    MessageBox.Show(error is AggregateException failures
+                        ? string.Join(Environment.NewLine, failures.Flatten().InnerExceptions.Select(failure => failure.Message))
+                        : error.Message, "Восстановление WinMim", MessageBoxButton.OK, MessageBoxImage.Error);
+                    Shutdown(1);
+                }
+                return;
+            }
             if(e.Args.FirstOrDefault()=="--resume-shell")
             {
                 ShutdownMode=ShutdownMode.OnExplicitShutdown;
@@ -26,8 +46,9 @@ public partial class App : Application
                     DesktopController.EnsureLab();
                     var catalog=new ContentStore(AeroForge.App.MainWindow.FindContent()).Load();
                     var runtime=new ShellHost(Path.Combine(root,"Host"),catalog);
-                    if(Classic95Setup.IsActive)await new Classic95Setup(AeroForge.App.MainWindow.FindContent()).ResumeAsync();
-                    runtime.Start();
+                    bool startEngine = !Classic95Setup.HasRecoveryWork
+                        || await new Classic95Setup(AeroForge.App.MainWindow.FindContent()).ResumeAsync();
+                    if (startEngine && File.Exists(Path.Combine(root, "Host", "active-profile.json"))) runtime.Start();
                     File.Delete(Path.Combine(root,"resume-error.txt"));
                     JsonFile.Write(Path.Combine(root,"resume-status.json"),new{requestedAt=DateTimeOffset.UtcNow,state="StartRequested",executable=runtime.Executable});
                 }

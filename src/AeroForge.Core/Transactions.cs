@@ -153,6 +153,28 @@ public sealed class TransactionManager(IChangeBackend backend, string journalRoo
             throw new ApplyException("Применение прервано; состояние отката: " + receipt.Status, receipt, ex);
         }
     }
+    // Stop at another owner's latest layer. Older entries can depend on it.
+    public void RollbackOwned(IProgress<string>? progress = null, Func<Receipt,bool>? owns = null,
+        IReadOnlySet<string>? preserveUserChanges = null)
+    {
+        using var transactionLock = Lock();
+        var active = History(false).Where(item => item.Status != "RolledBack").ToArray();
+        if (owns is not null)
+        {
+            int lastOwned = Array.FindLastIndex(active, receipt => owns(receipt));
+            if (lastOwned >= 0 && active.Take(lastOwned + 1).Any(receipt => !owns(receipt)))
+                throw new IOException("Более поздняя операция блокирует возврат. Сначала восстановите её журнал.");
+        }
+        foreach (var receipt in active)
+        {
+            if (owns is not null && !owns(receipt)) return;
+            var result = RestoreReceipt(ReadReceipt(receipt.FilePath), progress, preserveUserChanges);
+            if (result.Status != "RolledBack")
+                throw new IOException("Журнал требует повторного восстановления: " + receipt.ProfileName + " (" + receipt.Id + "). "
+                    + string.Join(" ", result.Entries.Where(entry => entry.Error is not null).Select(entry => entry.Error)));
+        }
+    }
+
     public Receipt Rollback(string receiptPath, IProgress<string>? progress = null,IReadOnlySet<string>? preserveUserChanges=null)
     {
         using var transactionLock = Lock();
@@ -164,6 +186,11 @@ public sealed class TransactionManager(IChangeBackend backend, string journalRoo
         if (receipt.Status == "RolledBack") return receipt;
         var latest = history.FirstOrDefault(r => r.Status != "RolledBack");
         if (latest?.Id != receipt.Id) throw new InvalidOperationException("Сначала откатите более позднюю операцию.");
+        return RestoreReceipt(receipt, progress, preserveUserChanges);
+    }
+
+    private Receipt RestoreReceipt(Receipt receipt, IProgress<string>? progress, IReadOnlySet<string>? preserveUserChanges)
+    {
         foreach (var entry in receipt.Entries) backend.Validate(entry.Change);
         return RollbackInternal(receipt, progress,preserveUserChanges);
     }

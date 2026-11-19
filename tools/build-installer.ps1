@@ -3,11 +3,16 @@ param(
     [string]$Wix = 'wix',
     [string]$UiExtension = 'WixToolset.UI.wixext',
     [string]$Output,
-    [ValidatePattern('^\d+\.\d+\.\d+$')][string]$Version = '0.1.0'
+    [ValidatePattern('^\d+\.\d+\.\d+$')][string]$Version
 )
 
 $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $PSScriptRoot
+if (!$Version) {
+    $projectProperties = [xml](Get-Content -LiteralPath (Join-Path $root 'Directory.Build.props') -Raw)
+    $Version = $projectProperties.Project.PropertyGroup.Version
+}
+if ($Version -notmatch '^\d+\.\d+\.\d+$') { throw 'Invalid MSI version' }
 if (!$Output) { $Output = Join-Path $root "build/installer/WinMim-Preview-$Version-x64.msi" }
 $Output = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($Output)
 $staging = Join-Path $root ('build/installer/staging-' + [Guid]::NewGuid().ToString('N'))

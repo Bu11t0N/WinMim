@@ -14,9 +14,8 @@ try
     {
         if(command=="classic-inspect"){Console.WriteLine(JsonSerializer.Serialize(new{active=Classic95Setup.ActiveTarget,targets=ClassicThemes.All},JsonFile.Options));return 0;}
         if(!args.Contains("--accept-experimental"))throw new InvalidOperationException("Classic requires --accept-experimental");
-        var setup=new Classic95Setup(content);
-        if(command=="classic-apply")Console.WriteLine(JsonSerializer.Serialize(await setup.ApplyThemeAsync(Get("--target","windows-95"),new Progress<string>(Console.Error.WriteLine)),JsonFile.Options));
-        else await setup.RestoreAsync(new Progress<string>(Console.Error.WriteLine));
+        if(command=="classic-apply")Console.WriteLine(JsonSerializer.Serialize(await new Classic95Setup(content).ApplyThemeAsync(Get("--target","windows-95"),new Progress<string>(Console.Error.WriteLine)),JsonFile.Options));
+        else await Classic95Setup.ForRecovery(content).RestoreAsync(new Progress<string>(Console.Error.WriteLine));
         return 0;
     }
     if(command is "windows95-apply" or "windows95-restore" or "windows95-inspect")
@@ -77,7 +76,7 @@ try
     { Console.WriteLine(JsonSerializer.Serialize(WindowsBackend.Inspect(), JsonFile.Options)); return 0; }
     if (command == "help")
     {
-        Console.WriteLine("WinMim CLI 0.1.0\nCommands: seven-check, seven-apply, diagnose, verify, plan, stage, history, rollback\nOptions: --content DIR --root DIR --state DIR --profile seven|vista|basic|classic\n" +
+        Console.WriteLine($"WinMim CLI {typeof(Catalog).Assembly.GetName().Version!.ToString(3)}\nCommands: seven-check, seven-apply, diagnose, verify, plan, stage, history, rollback\nOptions: --content DIR --root DIR --state DIR --profile seven|vista|basic|classic\n" +
             "stage requires --accept-experimental. It prepares files; it does not start the shell host.\nrollback requires --receipt ABSOLUTE_PATH. --modules id,id overrides the profile selection.\n" +
             "Desktop lab: desktop-inspect, desktop-plan, desktop-history, desktop-apply, desktop-restore, desktop-refresh\n" +
             "Shell: shell-status (reads the engine's actual Loaded/Loading/Unloaded metadata)\nTaskbar: taskbar-get, taskbar-set --accept-experimental --preferences FILE\nMachine lab: machine-seven-inspect, machine-seven-apply, machine-seven-restore (apply/restore require elevation and --accept-experimental)\n" +

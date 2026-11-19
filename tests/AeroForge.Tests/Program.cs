@@ -320,6 +320,44 @@ Test("layered profiles must be rolled back newest first", () =>
     Assert(Encoding.UTF8.GetString(backend.Values["a"].Bytes!) == "first");
     manager.Rollback(first.FilePath); Assert(backend.Values.Count == 0);
 });
+Test("recovery leaves an older profile intact and resumes after an interrupted rollback", () =>
+{
+    var backend = new MemoryBackend();
+    string state = NewState();
+    var manager = new TransactionManager(backend, state);
+    var baseline = PlanOf(FileChange("appearance", "original"));
+    baseline.ProfileId = "seven";
+    var earlier = manager.Apply(baseline);
+    var xp = PlanOf(FileChange("appearance", "luna"), FileChange("icons", "xp"));
+    xp.ProfileId = "windowsxp";
+    var interrupted = manager.Apply(xp);
+    interrupted.Status = "RollingBack";
+    JsonFile.Write(interrupted.FilePath, interrupted);
+    backend.FailAfterWrite = "icons";
+
+    bool Owned(Receipt receipt) => receipt.ProfileId == "windowsxp";
+    Throws(() => new TransactionManager(backend, state).RollbackOwned(owns: Owned));
+    Assert(manager.History(false).First().Status == "RollbackIncomplete");
+    new TransactionManager(backend, state).RollbackOwned(owns: Owned);
+    Assert(manager.History(false).First().Status == "RolledBack");
+    Assert(manager.History(false).Single(receipt => receipt.Id == earlier.Id).Status == "Applied");
+    Assert(Encoding.UTF8.GetString(backend.Values["appearance"].Bytes!) == "original");
+    Assert(!backend.Values.ContainsKey("icons"));
+});
+Test("recovery refuses to rewind through a newer profile", () =>
+{
+    var backend = new MemoryBackend();
+    var manager = new TransactionManager(backend, NewState());
+    var classic = PlanOf(FileChange("appearance", "luna"));
+    classic.ProfileId = "windowsxp";
+    manager.Apply(classic);
+    var newer = PlanOf(FileChange("appearance", "custom"));
+    newer.ProfileId = "seven";
+    manager.Apply(newer);
+    Throws(() => manager.RollbackOwned(owns: receipt => receipt.ProfileId == "windowsxp"));
+    Assert(Encoding.UTF8.GetString(backend.Values["appearance"].Bytes!) == "custom");
+    Assert(manager.History(false).All(receipt => receipt.Status == "Applied"));
+});
 Test("duplicate writes and blocked plans cannot be applied", () =>
 {
     var manager = new TransactionManager(new MemoryBackend(), NewState());
