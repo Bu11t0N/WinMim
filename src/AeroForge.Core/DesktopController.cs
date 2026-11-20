@@ -17,10 +17,22 @@ public sealed class DesktopController
     }
     public static void EnsureLab()
     {
-        if (Environment.MachineName!="AEROFORGE-LAB") throw new InvalidOperationException("Оформление пока проверяется только в AEROFORGE-LAB.");
         var info=WindowsBackend.Inspect();
-        if (!info.KnownBase || info.IsAdministrator) throw new InvalidOperationException("Требуется обычный пользователь тестовой Windows 10 x64.");
+        if (!info.KnownBase)
+            throw new InvalidOperationException($"Для стенда требуется Windows 10 x64 (сборки 19041–19045). Обнаружено {info.Architecture}, {info.Build}.{info.Revision}.");
+        if (info.IsAdministrator)
+            throw new InvalidOperationException("Запустите WinMim из обычного сеанса без повышения прав.");
+        if (Environment.MachineName!="AEROFORGE-LAB")
+            throw new InvalidOperationException("Применение и возврат доступны в подготовленной лабораторной ВМ. На обычном ПК эти операции ещё не прошли проверку.");
     }
+    public static string? FindHelper() => new[]
+    {
+        Path.Combine(AppContext.BaseDirectory, "AeroForge.Cli.exe"),
+        Path.Combine(AppContext.BaseDirectory, "cli", "AeroForge.Cli.exe")
+    }.FirstOrDefault(File.Exists);
+
+    public bool HasRecoveryWork => History(false).Any(receipt => receipt.Status != "RolledBack");
+
     public IReadOnlyList<Receipt> History(bool includeEntries=true)=>transactions.History(includeEntries);
     public TaskbarPreferences TaskbarSettings()
     {

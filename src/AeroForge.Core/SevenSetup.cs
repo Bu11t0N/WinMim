@@ -42,23 +42,50 @@ public sealed class SevenSetup
         displayProvider=File.Exists(provider)?provider:null;
     }
 
+    private static bool Owns(Receipt receipt) => receipt.ProfileId == "seven";
+    public bool HasRecoveryWork => desktop.HasRecoveryWork
+        || transactions.History(false).Any(receipt => Owns(receipt) && receipt.Status != "RolledBack");
+
+    public async Task RestoreAsync(IProgress<string>? progress = null)
+    {
+        DesktopController.EnsureLab();
+        using var operation = await ClassicOperationLock.AcquireAsync(Classic95Setup.Data);
+        if (!HasRecoveryWork) return;
+        if (Classic95Setup.HasRecoveryWork)
+            throw new InvalidOperationException("Сначала восстановите XP или классическое оформление.");
+
+        // Preserve the per-user journals if the system settings still need restoration.
+        var machine = new MachineSeven();
+        if (machine.HasRecoveryWork) await machine.RestoreElevatedAsync();
+
+        await host.WithDesktopStoppedAsync(async () =>
+        {
+            await host.StopAsync();
+            transactions.RollbackOwned(progress, Owns);
+        });
+        if (desktop.HasRecoveryWork && desktop.Restore(progress).Status != "RolledBack")
+            throw new IOException("Возврат оформления Windows 7 требует проверки журнала.");
+    }
+
     public SetupCheck[] Check()
     {
         var result=new List<SetupCheck>();
-        if(Classic95Setup.IsActive)result.Add(new("Классическое оформление",false,"Сначала верните предыдущее оформление."));
+        if(Classic95Setup.HasRecoveryWork)result.Add(new("Классическое оформление",false,"Сначала верните предыдущее оформление."));
         try { DesktopController.EnsureLab(); result.Add(new("Windows",true,"Тестовая Windows 10 x64, обычный пользователь")); }
-        catch(Exception error){result.Add(new("Windows",false,error.Message));}
+        catch(InvalidOperationException error){result.Add(new("Windows",false,error.Message));}
+        result.Add(new("Помощник WinMim", DesktopController.FindHelper() != null, "При отсутствии восстановите установку из MSI."));
         var errors=store.VerifyAll(catalog);
         result.Add(new("Модули Seven",errors.Length==0,errors.Length==0?"Контрольные суммы совпадают":string.Join("; ",errors)));
         string shell=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles),"Open-Shell","StartMenu.exe");
-        result.Add(new("Open-Shell",File.Exists(shell),shell));
+        result.Add(new("Open-Shell",File.Exists(shell),"Установите Open-Shell через «Дополнительно → Компоненты»."));
         string system=Environment.GetFolderPath(Environment.SpecialFolder.System);
         bool ux=new[]{"SecureUxTheme4.dll","SecureUxTheme.dll"}.Any(name=>File.Exists(Path.Combine(system,name)));
         result.Add(new("SecureUxTheme",ux,"Проверяется наличие компонента; после его установки требуется перезагрузка"));
         bool glass=false;
         foreach(var process in Process.GetProcessesByName("OpenGlassHost")){using(process)glass=true;}
         result.Add(new("OpenGlass",glass,glass?"Процесс компонента работает":"Компонент не запущен"));
-        result.Add(new("Тема Windows 7",File.Exists(Style)&&File.Exists(Wallpaper)&&Button!=null,Style));
+        result.Add(new("Тема Windows 7", File.Exists(Style) && File.Exists(Wallpaper) && Button != null,
+            "Нужны совместимый визуальный стиль, обои и кнопка меню «Пуск» из разрешённого источника. Этот стендовый профиль ожидает ресурсы Aero10."));
         Plan plan;
         try{plan=new ProfilePlanner(store,catalog).Build("seven",privateIconPack:IconPack,privateDisplayProvider:displayProvider);}
         catch(Exception error){result.Add(new("Пакет значков",false,error.Message));return result.ToArray();}
@@ -75,6 +102,8 @@ public sealed class SevenSetup
 
     public async Task<SevenSetupResult> ApplyAsync(bool restartExplorer,IProgress<string>? progress=null,CancellationToken cancellationToken=default)
     {
+        DesktopController.EnsureLab();
+        using var operation = await ClassicOperationLock.AcquireAsync(Classic95Setup.Data, cancellationToken);
         var blockers=Check().Where(c=>!c.Ready).ToArray();
         if(blockers.Length!=0)throw new InvalidOperationException(string.Join("\n",blockers.Select(c=>c.Name+": "+c.Detail)));
         bool wasRunning=host.IsRunning();

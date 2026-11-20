@@ -18,8 +18,17 @@ public sealed class NativeMainForm : F.Form
     private readonly SevenSetup seven = new(MainWindow.FindContent());
     private readonly F.TabControl tabs = new() { Dock = F.DockStyle.Fill };
     private readonly F.ToolStripStatusLabel status = new() { Spring=true, TextAlign=D.ContentAlignment.MiddleLeft };
-    private readonly F.ListView targets=List("Оформление",260,"Семейство",180,"Состояние",270);
-    private readonly F.Label targetDetail=Label("Выберите оформление. Windows 95 доступна на тестовом стенде; остальные пункты — заглушки.");
+    private readonly F.ListView targets = List("Оформление", 200, "Семейство", 165, "Состояние", 225);
+    private const string NoSelection = "Выберите оформление в списке, чтобы увидеть требования.";
+    private readonly F.TextBox targetDetail = new()
+    {
+        AccessibleName = "Требования выбранного оформления", Dock = F.DockStyle.Fill,
+        Multiline = true, ReadOnly = true, ScrollBars = F.ScrollBars.Vertical, Text = NoSelection
+    };
+    private readonly F.Button applyTheme = Button("&Применить");
+    private readonly F.Button restoreTheme = Button("&Вернуть прежнее оформление");
+    private readonly List<F.TabPage> extraPages = [];
+    private F.Button advanced = null!;
     private readonly F.ListView modules=List("Модуль",280,"Категория",150,"Версия",90,"Статус",200);
     private readonly F.ListView planItems=List("Действие",380,"Назначение",430);
     private readonly F.ListView history=List("Время",175,"Профиль",250,"Состояние",190,"Журнал",230);
@@ -28,9 +37,6 @@ public sealed class NativeMainForm : F.Form
     private readonly F.CheckBox consent=Check("Я ознакомился с планом экспериментальной сборки");
     private readonly F.CheckBox restart=Check("Перезапустить Проводник (окна папок будут закрыты)",true);
     private readonly F.Button apply=Button("Подготовить профиль");
-    private readonly F.Button applySeven=Button("Применить Windows 7 в тестовой ВМ");
-    private readonly F.ListView checks=List("Проверка",180,"Состояние",95,"Подробности",540);
-    private readonly Dictionary<string,F.CheckBox> extras=[];
     private readonly Dictionary<string,string> downloads=[];
     private readonly F.ComboBox profiles=new(){DropDownStyle=F.ComboBoxStyle.DropDownList,Width=240};
     private readonly F.Button cancel=Button("Отменить операцию");
@@ -52,8 +58,10 @@ public sealed class NativeMainForm : F.Form
         host=new(Path.Combine(root,"Host"),catalog);
         transactions=new(new WindowsBackend(Path.Combine(root,"Host")),Path.Combine(root,"State"));
         var strip=new F.StatusStrip();strip.Items.Add(status);Controls.Add(tabs);Controls.Add(cancel);Controls.Add(strip);cancel.Dock=F.DockStyle.Bottom;cancel.Visible=false;
-        status.Text="Готово. Выбор оформления в каталоге не меняет систему.";
-        TargetPage();SevenPage();ModulePage();PlanPage();RecoveryPage();ComponentPage();ToolPage();AboutPage();
+        status.Text="Готово.";
+        TargetPage();ModulePage();PlanPage();RecoveryPage();ComponentPage();ToolPage();AboutPage();
+        extraPages.AddRange(tabs.TabPages.Cast<F.TabPage>().Skip(1));
+        SetAdvanced(false);
         SelectProfile(profile);RefreshHistory();
         FormClosing+=(_,e)=>{if(busy){e.Cancel=true;status.Text="Дождитесь завершения операции.";}};
         Microsoft.Win32.SystemEvents.UserPreferenceChanged+=PreferencesChanged;
@@ -61,7 +69,22 @@ public sealed class NativeMainForm : F.Form
     }
     private void PreferencesChanged(object sender,Microsoft.Win32.UserPreferenceChangedEventArgs e)
     {if(!IsDisposed && IsHandleCreated)BeginInvoke(()=>{Font=D.SystemFonts.MessageBoxFont;PerformLayout();Refresh();});}
-    public void SelectPage(int index)=>tabs.SelectedIndex=Math.Clamp(index,0,tabs.TabCount-1);
+    public void SelectPage(int index)
+    {
+        if (index > 0) SetAdvanced(true);
+        tabs.SelectedIndex = Math.Clamp(index, 0, tabs.TabCount - 1);
+    }
+
+    private void SetAdvanced(bool show)
+    {
+        if (show && tabs.TabCount == 1) tabs.TabPages.AddRange(extraPages.ToArray());
+        if (!show)
+        {
+            tabs.SelectedIndex = 0;
+            foreach (var page in extraPages) tabs.TabPages.Remove(page);
+        }
+        advanced.Text = show ? "С&крыть дополнительные вкладки" : "&Дополнительно";
+    }
     private F.TabPage Page(string caption)
     {var page=new F.TabPage(caption){Padding=new F.Padding(12),UseVisualStyleBackColor=true};tabs.TabPages.Add(page);return page;}
     private static F.Label Label(string text)=>new(){Text=text,AutoSize=true,MaximumSize=new D.Size(780,0),Margin=new F.Padding(3,6,3,9),BackColor=D.Color.Transparent};
@@ -73,55 +96,151 @@ public sealed class NativeMainForm : F.Form
     private static void Row(F.ListView list,object? tag,params string[] values)=>list.Items.Add(new F.ListViewItem(values){Tag=tag});
     private void TargetPage()
     {
-        var page=Page("Оформления");var top=Flow(true);
-        top.Controls.Add(Label("Во что превратить Windows"));
-        top.Controls.Add(Label("Классические оформления и XP доступны для применения в подготовленной Windows 10 LTSC 2021. Это первые рабочие версии: часть ресурсов и системных окон ещё отличается от оригинала."));
-        top.Controls.Add(Label("Рабочий профиль Windows 7 для подготовленной ВМ вынесен на отдельную вкладку «Windows 7 (стенд)»."));
-        top.Controls.Add(Label("XP использует отдельный личный пакет Luna Blue. Для остальных классических профилей точность ресурсов ещё уточняется. Перед применением XP программа проверяет наличие пакета."));
-        var bottom=Flow(true);bottom.Dock=F.DockStyle.Bottom;bottom.Controls.Add(targetDetail);
-        var action=Button("Выбрать оформление");bottom.Controls.Add(action);
-        var retroFiles = Button("Открыть файловый менеджер WinMim");
-        retroFiles.Visible = false;
+        var page = Page("Оформления");
+        var layout = new F.TableLayoutPanel { ColumnCount = 1, Dock = F.DockStyle.Fill };
+        layout.RowStyles.Add(new(F.SizeType.Percent, 100));
+        layout.RowStyles.Add(new(F.SizeType.Absolute, 112));
+        layout.RowStyles.Add(new(F.SizeType.AutoSize));
+        layout.RowStyles.Add(new(F.SizeType.AutoSize));
+        page.Controls.Add(layout);
+
+        targets.AccessibleName = "Список оформлений";
+        layout.Controls.Add(targets, 0, 0);
+        layout.Controls.Add(targetDetail, 0, 1);
+        var actions = Flow();
+        var check = Button("П&роверить требования");
+        advanced = Button("&Дополнительно");
+        advanced.Click += (_, _) => SetAdvanced(tabs.TabCount == 1);
+        actions.Controls.AddRange([applyTheme, restoreTheme, check, advanced]);
+        layout.Controls.Add(actions, 0, 2);
+
+        var options = Flow();
+        var sevenTools = Button("Инструменты Windows &7");
+        sevenTools.Click += (_, _) => SelectPage(5);
+        var sevenComponents = Button("К&омпоненты Windows 7");
+        sevenComponents.Click += (_, _) => SelectPage(4);
+        var retroFiles = Button("&Файловый менеджер WinMim");
         retroFiles.Click += (_, _) =>
         {
             using var browser = new RetroFileBrowser(null);
             browser.ShowDialog(this);
         };
-        bottom.Controls.Add(retroFiles);
-        page.Controls.Add(targets);page.Controls.Add(bottom);page.Controls.Add(top);
-        var apply95=Button("Применить Windows 95");var restore95=Button("Вернуть предыдущее оформление");bottom.Controls.Add(apply95);bottom.Controls.Add(restore95);
-        apply95.Enabled=false;restore95.Enabled=Environment.MachineName=="AEROFORGE-LAB"&&Classic95Setup.HasRecoveryWork;
-        apply95.Click+=async(_,_)=>{if(targets.SelectedItems.Count==0)return;var target=(AppearanceTarget)targets.SelectedItems[0].Tag!;await Run(async(token,p)=>{await Task.Run(()=>new Classic95Setup(MainWindow.FindContent()).ApplyThemeAsync(target.Id,p,token));status.Text=target.Name+" применена. Для обновления уже открытых окон перезапустите их.";});restore95.Enabled=Environment.MachineName=="AEROFORGE-LAB"&&Classic95Setup.HasRecoveryWork;};
-        restore95.Click+=async(_,_)=>{await Run(async(_,p)=>{await Task.Run(()=>new Classic95Setup(MainWindow.FindContent()).RestoreAsync(p));status.Text="Предыдущее оформление возвращено.";});restore95.Enabled=Environment.MachineName=="AEROFORGE-LAB"&&Classic95Setup.HasRecoveryWork;};
-        foreach(var target in AppearanceCatalog.Targets)Row(targets,target,target.Name,target.Family,target.Available?"Экспериментальный профиль":"Заглушка — не применяется");
-        void SelectTarget()
-        {if(targets.SelectedItems.Count==0)return;var choice=AppearanceCatalog.Select(((AppearanceTarget)targets.SelectedItems[0].Tag!).Id);targetDetail.Text=choice.Target.Name+": "+choice.Status+". "+(choice.Target.Available?ClassicThemes.Get(choice.Target.Id).Detail:"");retroFiles.Visible=choice.Target.Id=="windows-xp";apply95.Text="Применить "+choice.Target.Name;apply95.Enabled=choice.Target.Available&&Environment.MachineName=="AEROFORGE-LAB";status.Text=targetDetail.Text;}
-        targets.SelectedIndexChanged+=(_,_)=>SelectTarget();action.Click+=(_,_)=>SelectTarget();
-        targets.DoubleClick+=(_,_)=>SelectTarget();var active=Classic95Setup.ActiveTarget??"windows-7";foreach(F.ListViewItem row in targets.Items)if(((AppearanceTarget)row.Tag!).Id==active)row.Selected=true;
-        action.AccessibleDescription="Только выбирает оформление. Для изменения системы нажмите отдельную кнопку применения.";
-    }
-    private void SevenPage()
-    {
-        var page=Page("Windows 7 (стенд)");var top=Flow(true);
-        top.Controls.Add(Label("Рабочее оформление Windows 7 — экспериментальный стенд Windows 10 LTSC 2021"));
-        top.Controls.Add(Label("Это отдельное действие с реальными изменениями. Применение доступно только в подготовленной ВМ AEROFORGE-LAB. Каталог оформлений систему не меняет."));
-        var bottom=Flow(true);bottom.Dock=F.DockStyle.Bottom;bottom.Controls.Add(restart);
-        var options=Flow();foreach(var component in PrivateExtras.Components)
+        var xpHelp = Button("П&акет XP");
+        xpHelp.Click += (_, _) => F.MessageBox.Show(this,
+            "Используйте только ресурсы, на которые у вас есть права. Соберите личный пакет Luna Blue по инструкции docs/XP-IMPLEMENTATION.md из исходников WinMim. Поместите содержимое подготовленного пакета сюда:"
+            + Environment.NewLine + Environment.NewLine + XpThemePack.UserAssets
+            + Environment.NewLine + Environment.NewLine + "Затем нажмите «Проверить требования». Ресурсы проверяются по SHA-256.",
+            "Личный пакет Windows XP", F.MessageBoxButtons.OK, F.MessageBoxIcon.Information);
+        options.Controls.AddRange([restart, sevenTools, sevenComponents, retroFiles, xpHelp]);
+        layout.Controls.Add(options, 0, 3);
+
+        foreach (var target in AppearanceCatalog.Targets)
+            Row(targets, target, target.Name, target.Family, new AppearanceSelection(target).Status);
+        AppearanceTarget? SelectedTarget() => targets.SelectedItems.Count == 0 ? null : (AppearanceTarget)targets.SelectedItems[0].Tag!;
+        int checkVersion = 0;
+        async Task RefreshTargetAsync()
         {
-            var box=Check(component.Name);box.Enabled=Environment.MachineName=="AEROFORGE-LAB"&&(PrivateExtras.InstallerAvailable(component.Id)||PrivateExtras.IsInstalled(component.Id));
-            box.Checked=box.Enabled;extras[component.Id]=box;options.Controls.Add(box);
+            int version = ++checkVersion;
+            var target = SelectedTarget();
+            applyTheme.Enabled = false;
+            check.Enabled = target?.Available == true;
+            options.Visible = target?.Mode == AppearanceMode.Seven || target?.Id == "windows-xp";
+            restart.Visible = sevenTools.Visible = sevenComponents.Visible = target?.Mode == AppearanceMode.Seven;
+            retroFiles.Visible = xpHelp.Visible = target?.Id == "windows-xp";
+            targetDetail.Text = target == null ? NoSelection : $"{target.Name} — проверка требований…";
+            string recovery = "";
+            try
+            {
+                var mode = RecoveryMode();
+                restoreTheme.Enabled = mode != AppearanceMode.Unavailable;
+                if (restoreTheme.Enabled)
+                    recovery = "Доступен возврат предыдущего оформления." + Environment.NewLine;
+            }
+            catch (Exception error)
+            {
+                restoreTheme.Enabled = false;
+                recovery = "Ошибка чтения журналов. Откройте «Дополнительно → Восстановление»." + Environment.NewLine;
+                status.Text = error.Message;
+            }
+            if (target == null)
+            {
+                targetDetail.Text = recovery + NoSelection;
+                return;
+            }
+            if (!target.Available)
+            {
+                targetDetail.Text = recovery + target.Name + " — оформление пока недоступно.";
+                return;
+            }
+
+            string requirements;
+            bool ready = false;
+            try
+            {
+                requirements = await Task.Run(() => CheckTarget(target));
+                ready = requirements.Length == 0;
+            }
+            catch (Exception error) { requirements = error.Message; }
+            if (IsDisposed || version != checkVersion) return;
+            targetDetail.Text = recovery + target.Name + Environment.NewLine + (ready ? "Требования выполнены. Можно применить оформление." : requirements);
+            applyTheme.Enabled = ready;
         }
-        bottom.Controls.Add(options);var actions=Flow();var check=Button("Проверить компоненты");applySeven.Enabled=false;
-        check.Click+=async(_,_)=>await Run(async(_,progress)=>{var result=await Task.Run(seven.Check);checks.Items.Clear();foreach(var item in result)Row(checks,item,item.Name,item.Ready?"Готово":"Не готово",item.Detail);applySeven.Enabled=result.All(c=>c.Ready);status.Text=applySeven.Enabled?"Проверка пройдена. Можно применить Windows 7.":"Подготовьте недостающие компоненты и повторите проверку.";});
-        applySeven.Click+=async(_,_)=>
+
+        targets.SelectedIndexChanged += async (_, _) => await RefreshTargetAsync();
+        check.Click += async (_, _) => await RefreshTargetAsync();
+        applyTheme.Click += async (_, _) =>
         {
-            // Capture UI input on the UI thread before entering the worker.
-            bool refresh=restart.Checked;string[] requested=extras.Where(p=>p.Value.Checked&&p.Value.Enabled).Select(p=>p.Key).ToArray();
-            await Run(async(token,progress)=>{await PrivateExtras.EnsureInstalledAsync(requested,progress);var result=await Task.Run(()=>seven.ApplyAsync(refresh,progress,token));status.Text="Windows 7 применена. Журнал: "+result.DesktopReceipt;});
+            if (SelectedTarget() is not { } target) return;
+            bool refreshExplorer = restart.Checked;
+            await Run(async (token, progress) =>
+            {
+                await Task.Run(async () =>
+                {
+                    if (target.Mode == AppearanceMode.Seven)
+                        await new SevenSetup(MainWindow.FindContent()).ApplyAsync(refreshExplorer, progress, token);
+                    else
+                        await new Classic95Setup(MainWindow.FindContent()).ApplyThemeAsync(target.Id, progress, token);
+                });
+                status.Text = "Оформление «" + target.Name + "» применено.";
+            });
+            await RefreshTargetAsync();
         };
-        actions.Controls.Add(check);actions.Controls.Add(applySeven);bottom.Controls.Add(actions);
-        page.Controls.Add(checks);page.Controls.Add(bottom);page.Controls.Add(top);
+        restoreTheme.Click += async (_, _) =>
+        {
+            await Run(async (_, progress) =>
+            {
+                await Task.Run(async () =>
+                {
+                    switch (RecoveryMode())
+                    {
+                        case AppearanceMode.Classic: await Classic95Setup.ForRecovery(MainWindow.FindContent()).RestoreAsync(progress); break;
+                        case AppearanceMode.Seven: await seven.RestoreAsync(progress); break;
+                        default: throw new InvalidOperationException("Нет активного оформления для возврата.");
+                    }
+                });
+                status.Text = "Прежнее оформление возвращено.";
+            }, cancellable: false);
+            await RefreshTargetAsync();
+        };
+        page.Enter += async (_, _) => await RefreshTargetAsync();
+        _ = RefreshTargetAsync();
     }
+
+    private AppearanceMode RecoveryMode()
+    {
+        if (Classic95Setup.HasRecoveryWork) return AppearanceMode.Classic;
+        return seven.HasRecoveryWork ? AppearanceMode.Seven : AppearanceMode.Unavailable;
+    }
+
+    private string CheckTarget(AppearanceTarget target)
+    {
+        var checks = target.Mode == AppearanceMode.Seven
+            ? new SevenSetup(MainWindow.FindContent()).Check()
+            : new Classic95Setup(MainWindow.FindContent()).Check(target.Id);
+        return string.Join(Environment.NewLine, checks.Where(check => !check.Ready)
+            .Select(check => check.Name + " — " + check.Detail));
+    }
+
     private void ModulePage()
     {
         var page=Page("Модули");modules.CheckBoxes=true;var top=Flow();
@@ -162,7 +281,7 @@ public sealed class NativeMainForm : F.Form
         plan=new ProfilePlanner(store,catalog).Build(profile.Id,selected,autostart.Checked,host.Executable,privateIconPack:selected.Contains("icon-resource-redirect")?seven.IconPack:null,privateDisplayProvider:seven.DisplayProvider);
         planItems.Items.Clear();foreach(var change in plan.Changes)Row(planItems,change,change.Description,change.Target);
         foreach(var blocker in plan.Blockers)Row(planItems,null,"Блокировка",blocker);foreach(var warning in plan.Warnings)Row(planItems,null,"Замечание",warning);
-        consent.Checked=false;apply.Enabled=plan.Blockers.Count==0;SelectPage(3);status.Text=$"{plan.Modules.Length} модулей; {plan.Changes.Count} операций; {plan.Blockers.Count} блокировок.";
+        consent.Checked=false;apply.Enabled=plan.Blockers.Count==0;SelectPage(2);status.Text=$"{plan.Modules.Length} модулей; {plan.Changes.Count} операций; {plan.Blockers.Count} блокировок.";
     });
     private void RecoveryPage()
     {
@@ -175,7 +294,6 @@ public sealed class NativeMainForm : F.Form
             await Task.Run(() => Classic95Setup.ForRecovery(MainWindow.FindContent()).RestoreAsync(progress));
             status.Text = "Восстановление XP и классических тем завершено.";
         }, cancellable: false);
-        classicUndo.Enabled = Environment.MachineName == "AEROFORGE-LAB";
         actions.Controls.Add(classicUndo);
         var desktopUndo=Button("Вернуть оформление");desktopUndo.Click+=async(_,_)=>await Run(async(_,progress)=>{await host.StopAsync();var result=await Task.Run(()=>desktop.Restore(progress));status.Text="Возврат оформления: "+result.Status+". Внешние компоненты остаются установленными.";});actions.Controls.Add(desktopUndo);
         var machineUndo=Button("Вернуть системные настройки Seven");machineUndo.Click+=async(_,_)=>await Run(async(_,_)=>{await new MachineSeven().RestoreElevatedAsync();status.Text="Системные настройки Seven возвращены.";});actions.Controls.Add(machineUndo);
@@ -267,15 +385,29 @@ public sealed class NativeMainForm : F.Form
     }
     public void Smoke(string file)
     {
-        Show();F.Application.DoEvents();var results=new List<object>();
-        foreach(F.ListViewItem row in targets.Items)
+        Show(); F.Application.DoEvents();
+        if (tabs.TabCount != 1 || targets.SelectedItems.Count != 0 || applyTheme.Enabled || !targetDetail.Text.Contains(NoSelection))
+            throw new InvalidOperationException("Начальный экран должен открываться без выбранного оформления.");
+        var results = new List<object>();
+        foreach (F.ListViewItem row in targets.Items)
         {
-            targets.SelectedItems.Clear();row.Selected=true;F.Application.DoEvents();
-            var choice=AppearanceCatalog.Select(((AppearanceTarget)row.Tag!).Id);
-            if(choice.ChangesSystem||choice.Changes.Count!=0||!targetDetail.Text.Contains(choice.Target.Name))throw new InvalidOperationException("Placeholder changed behavior");
-            results.Add(new{id=choice.Target.Id,name=choice.Target.Name,choice.ChangesSystem,changes=choice.Changes.Count});
+            targets.SelectedItems.Clear();
+            row.Selected = true;
+            F.Application.DoEvents();
+            var choice = AppearanceCatalog.Select(((AppearanceTarget)row.Tag!).Id);
+            if (choice.ChangesSystem || choice.Changes.Count != 0 || !targetDetail.Text.Contains(choice.Target.Name))
+                throw new InvalidOperationException("Выбор оформления должен только обновлять требования.");
+            results.Add(new { id = choice.Target.Id, name = choice.Target.Name, choice.ChangesSystem, changes = choice.Changes.Count });
         }
-        JsonFile.Write(file,new{framework="Windows Forms",visualStyles=F.Application.RenderWithVisualStyles,ownerDraw=targets.OwnerDraw,systemButtons=apply.FlatStyle.ToString(),pages=tabs.TabCount,targets=results});Hide();
+        targets.SelectedItems.Clear();
+        F.Application.DoEvents();
+        if (applyTheme.Enabled || !targetDetail.Text.Contains(NoSelection))
+            throw new InvalidOperationException("Снятие выбора должно отключать применение.");
+        SetAdvanced(true);
+        if (tabs.TabCount != extraPages.Count + 1) throw new InvalidOperationException("Дополнительные вкладки потеряны.");
+        SetAdvanced(false);
+        JsonFile.Write(file, new { framework = "Windows Forms", visualStyles = F.Application.RenderWithVisualStyles, ownerDraw = targets.OwnerDraw, systemButtons = applyTheme.FlatStyle.ToString(), pages = tabs.TabCount, targets = results });
+        Hide();
     }
 }
 

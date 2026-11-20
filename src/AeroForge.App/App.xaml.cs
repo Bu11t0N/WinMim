@@ -16,13 +16,19 @@ public partial class App : Application
         DispatcherUnhandledException += (_, error) => { MessageBox.Show(error.Exception.Message, "WinMim", MessageBoxButton.OK, MessageBoxImage.Error); error.Handled = true; };
         try
         {
-            if (e.Args.FirstOrDefault() == "--restore-classic")
+            if (e.Args.FirstOrDefault() is "--restore-classic" or "--restore-theme")
             {
                 ShutdownMode = ShutdownMode.OnExplicitShutdown;
                 try
                 {
                     string content = Path.Combine(AppContext.BaseDirectory, "content");
-                    await Task.Run(() => Classic95Setup.ForRecovery(content).RestoreAsync());
+                    await Task.Run(async () =>
+                    {
+                        if (e.Args[0] == "--restore-classic" || Classic95Setup.HasRecoveryWork)
+                            await Classic95Setup.ForRecovery(content).RestoreAsync();
+                        if (e.Args[0] == "--restore-theme")
+                            await new SevenSetup(content).RestoreAsync();
+                    });
                     MessageBox.Show("Восстановление завершено.",
                         "Восстановление WinMim", MessageBoxButton.OK, MessageBoxImage.Information);
                     Shutdown();
@@ -100,7 +106,7 @@ public partial class App : Application
             }
             if(e.Args.FirstOrDefault()=="--native-ui-smoke" && e.Args.Length==2)
             {window.Smoke(e.Args[1]);Shutdown();return;}
-            if(e.Args.FirstOrDefault()=="--advanced")window.SelectPage(2);
+            if(e.Args.FirstOrDefault()=="--advanced")window.SelectPage(1);
             System.Windows.Forms.Application.Run(window);
             Shutdown();
         }

@@ -43,7 +43,7 @@ Actual captures of the developer preview, taken on October 30, 2026. The applica
 
 ![Windows 7 appearance applied to Windows 10 LTSC, with WinMim and the Windows 7-style Start menu open](assets/screenshots/windows-7.png)
 
-The Windows 7 desktop uses its dedicated setup workflow; selecting the Windows 7 catalog row alone does not apply it. Classic/XP targets have an explicit Apply button and a shared restore action. See the [classic-family screenshots and implementation notes](docs/CLASSIC-FAMILY-20261030.md) for the newer profiles.
+Select Windows 7 or a Classic/XP profile on the Appearances tab to see its requirements. Use Apply to change the desktop and Return to Previous Appearance to restore it. Windows 7 tools and components appear when that row is selected. Use Advanced for module settings, diagnostics and recovery journals. See the [classic-family screenshots and implementation notes](docs/CLASSIC-FAMILY-20261030.md) for the newer profiles.
 
 ## Features
 
@@ -111,7 +111,7 @@ Launching the control panel alone does not apply a profile. Inspect the plan bef
 
 The x64 MSI installs WinMim under Program Files and adds **WinMim Preview** and **WinMim Files** to Start. Install the x64 .NET 10 Desktop Runtime first. The installer requires administrator rights. Run WinMim from Start under your ordinary user account. The XP profile requires the prepared Windows 10 LTSC 2021 lab, Open-Shell, SecureUxTheme and the separately supplied private pack described in [XP implementation](docs/XP-IMPLEMENTATION.md). Installation leaves the current desktop theme in place. Restore your active WinMim profile before uninstalling.
 
-For XP and the classic profiles, use **Restore XP and classic themes** on the Recovery tab. If the desktop or the main window is unavailable, use **WinMim Restore Classic Desktop** from Start, or run `"C:\Program Files\WinMim\WinMim.exe" --restore-classic` from Task Manager → File → Run new task as the same user. Classic recovery uses the saved journals and can be retried. Return to the previous theme before uninstalling, while the recovery executable is still available. An external edit that conflicts with a journal remains on disk and is reported for review.
+Use the restore button on the Appearances tab. If the main window is unavailable, use **WinMim Restore Desktop** from Start, or run `"C:\Program Files\WinMim\WinMim.exe" --restore-theme` from Task Manager → File → Run new task as the same ordinary user. The recovery command uses the saved journals and can be retried. The legacy `--restore-classic` argument remains available for XP and Classic. Return to the previous theme before uninstalling, while the recovery executable is still available. An external edit that conflicts with a journal remains on disk and is reported for review.
 
 After preparing the native components with `tools/build.ps1 -PrepareNative`, run `tools/build-installer.ps1 -Wix <path-to-wix.exe> -UiExtension <path-to-WixToolset.UI.wixext.dll>` with WiX 6.0.2 and its matching UI extension. The Validate workflow builds and uploads the MSI as the `WinMim-Preview-x64` artifact.
 

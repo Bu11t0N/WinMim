@@ -92,7 +92,7 @@ public sealed class ClassicSession
         var active=transactions.History().FirstOrDefault(r=>r.Status!="RolledBack");
         if(restore&&active==null)return;
         if(!restore&&active?.Status=="Applied"&&backend.Read(backend.Change).Fingerprint==active.Entries.Single().ExpectedAfter)return;
-        string cli=new[]{Path.Combine(AppContext.BaseDirectory,"AeroForge.Cli.exe"),Path.Combine(AppContext.BaseDirectory,"cli","AeroForge.Cli.exe")}.FirstOrDefault(File.Exists)??throw new FileNotFoundException("CLI не найден");
+        string cli=DesktopController.FindHelper()??throw new FileNotFoundException("CLI не найден");
         var start=new ProcessStartInfo(cli){UseShellExecute=true,Verb="runas",WindowStyle=ProcessWindowStyle.Hidden};
         foreach(var argument in new[]{restore?"classic-session-restore":"classic-session-apply","--session",session.ToString(),"--accept-experimental"})start.ArgumentList.Add(argument);
         using var child=Process.Start(start)??throw new IOException("Помощник Classic не запущен");await child.WaitForExitAsync();

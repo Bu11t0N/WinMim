@@ -59,25 +59,67 @@ public sealed class Classic95Setup
         DesktopController.EnsureLab();
         if(WindowsBackend.Inspect().Build!=19044)throw new InvalidOperationException("Классические профили пока испытываются только на LTSC 2021 build 19044.");
     }
+    public SetupCheck[] Check(string target)
+    {
+        var theme = ClassicThemes.Get(target);
+        var results = new List<SetupCheck>();
+        void Verify(string name, Action check)
+        {
+            try { check(); results.Add(new(name, true, "Готово")); }
+            catch (Exception error) { results.Add(new(name, false, error.Message)); }
+        }
+
+        Verify("Windows", Guard);
+        if (results[0].Ready)
+            Verify("Требования оформления", () => Prepare(theme));
+        else
+        {
+            Verify("Open-Shell", RequireOpenShell);
+            if (theme.Xp)
+            {
+                Verify("Пакет Luna Blue", () => XpThemePack.ReadDefault(content));
+                Verify("SecureUxTheme", () => XpRuntime.Check(content));
+            }
+        }
+        return results.ToArray();
+    }
+
+    private static void RequireOpenShell()
+    {
+        if (!File.Exists(ShellPath))
+            throw new FileNotFoundException("Установите Open-Shell через «Дополнительно → Компоненты».");
+    }
+
+    private (Plan Desktop, Plan Modules, XpThemePack? Xp) Prepare(ClassicTheme theme)
+    {
+        if (ReadTransition() is { Phase: not "Applied" })
+            throw new InvalidOperationException("Предыдущая операция прервана. Сначала запустите восстановление оформления.");
+        if (store is null || catalog is null)
+            throw new InvalidOperationException("Каталог WinMim нужен для применения оформления.");
+        if (new DesktopController().HasRecoveryWork)
+            throw new InvalidOperationException("Сначала верните прежнее оформление Windows 7.");
+        if (ClassicSession.ActiveSession < 1 || Process.GetCurrentProcess().SessionId != ClassicSession.ActiveSession)
+            throw new InvalidOperationException("Войдите в активный локальный сеанс Windows.");
+        if (!File.Exists(DesktopController.FindHelper()))
+            throw new FileNotFoundException("Отсутствует помощник WinMim. Восстановите установку из MSI.");
+        RetroBarHost.EnsureNoForeignInstance(root);
+        var errors=store.VerifyAll(catalog);if(errors.Length!=0)throw new InvalidDataException(string.Join("; ",errors));
+        RequireOpenShell();
+        var xp = theme.Xp ? XpThemePack.ReadDefault(content) : null;
+        if (theme.Xp) XpRuntime.Check(content);
+        var preview=Classic95Profile.Build(content,root,theme.Xp?XpAppearance.ReadPhysical():ClassicAppearance.Read(),target:theme.Id,xpPack:xp);
+        string? iconPack = xp?.IconPackDirectory;
+        var modulePlan=new ProfilePlanner(store,catalog).Build(theme.ShellProfile,autostart:true,hostExecutable:host.Executable,resumeLauncher:ProfilePlanner.FindController(),privateIconPack:iconPack);
+        if(modulePlan.Blockers.Count!=0)throw new InvalidOperationException(string.Join("; ",modulePlan.Blockers));
+        return (preview, modulePlan, xp);
+    }
+
     public async Task<Receipt> ApplyAsync(IProgress<string>? progress=null,CancellationToken token=default)
         =>await ApplyThemeAsync("windows-95",progress,token);
     public async Task<Receipt> ApplyThemeAsync(string target,IProgress<string>? progress=null,CancellationToken token=default)
     {
         Guard();var theme=ClassicThemes.Get(target);using var operation=await ClassicOperationLock.AcquireAsync(Data,token);
-        if (ReadTransition() is { Phase: not "Applied" })
-            throw new InvalidOperationException("Предыдущая операция прервана. Сначала запустите восстановление оформления.");
-        if (store is null || catalog is null)
-            throw new InvalidOperationException("Каталог WinMim нужен для применения оформления.");
-        RetroBarHost.EnsureNoForeignInstance(root);
-        var errors=store.VerifyAll(catalog);if(errors.Length!=0)throw new InvalidDataException(string.Join("; ",errors));
-        string shell=ShellPath;if(!File.Exists(shell))throw new FileNotFoundException("Нужен установленный Open-Shell.");
-        // Validate assets before restoring a working profile. Then recapture the
-        // restored baseline, so every new theme returns to the same original.
-        var preview=Classic95Profile.Build(content,root,theme.Xp?XpAppearance.ReadPhysical():ClassicAppearance.Read(),target:target);
-        if(theme.Xp)XpRuntime.Check(content);
-        string? iconPack=theme.Xp?XpThemePack.Read(content,XpThemePack.PrivateAssets).IconPackDirectory:null;
-        var modulePlan=new ProfilePlanner(store,catalog).Build(theme.ShellProfile,autostart:true,hostExecutable:host.Executable,resumeLauncher:ProfilePlanner.FindController(),privateIconPack:iconPack);
-        if(modulePlan.Blockers.Count!=0)throw new InvalidOperationException(string.Join("; ",modulePlan.Blockers));
+        var (preview, modulePlan, xp) = Prepare(theme);
         var current=desktopTransactions.History(false).FirstOrDefault(r=>r.Status!="RolledBack");
         if(current is {Status:"Applied"} && ClassicThemes.FromReceipt(current.ProfileId)==target
             && IsUnchanged(desktopTransactions,new DesktopBackend(root,preserveStyleMetrics:true))
@@ -91,7 +133,7 @@ public sealed class Classic95Setup
             var existing=JsonFile.Read<Receipt>(current.FilePath);existing.FilePath=current.FilePath;return existing;
         }
         if(HasRecoveryWork)await RestoreCoreAsync(progress);
-        var plan=Classic95Profile.Build(content,root,theme.Xp?XpAppearance.ReadPhysical():ClassicAppearance.Read(),target:target);
+        var plan=Classic95Profile.Build(content,root,theme.Xp?XpAppearance.ReadPhysical():ClassicAppearance.Read(),target:target,xpPack:xp);
         var transition = new ClassicTransition(target, "Applying", IsMenuRunning(), host.IsRunning());
         RecordTransition(transition);
         Receipt? desktopReceipt = null;
@@ -237,7 +279,7 @@ public sealed class Classic95Setup
         var appearance=ClassicAppearance.Parse(File.ReadAllText(SafePath.Under(root,"classic-appearance.json")));
         if(ActiveTarget=="windows-xp")
         {
-            XpRuntime.Check(content);_=XpThemePack.Read(content,XpThemePack.PrivateAssets);await switchSession(true);EnsureThemedSession();
+            XpRuntime.Check(content);_=XpThemePack.ReadDefault(content);await switchSession(true);EnsureThemedSession();
             if(!IsUnchanged(shellTransactions,new WindowsBackend(Path.Combine(Data,"Host")),"windowsxp"))throw new IOException("Модули XP изменены после применения; изменения сохранены.");
             var backendDesktop=new DesktopBackend(root,preserveStyleMetrics:true);
             foreach(var entry in receipt.Entries.Where(e=>e.Change.Kind is ChangeKind.File or ChangeKind.VisualStyle))

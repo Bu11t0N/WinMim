@@ -86,6 +86,9 @@ Test("selection of all targets remains side-effect free", () =>
     }
     Throws(()=>AppearanceCatalog.Select("seven")); // executable profiles cannot enter this selection API
     Throws(()=>AppearanceCatalog.Select("../windows-7"));
+    Assert(AppearanceCatalog.Select("windows-7").Target.Mode == AppearanceMode.Seven);
+    Assert(AppearanceCatalog.Select("windows-xp").Target.Mode == AppearanceMode.Classic);
+    Assert(!AppearanceCatalog.Select("windows-vista").Target.Available);
 });
 
 Test("all classic and XP targets build distinct real plans", () =>

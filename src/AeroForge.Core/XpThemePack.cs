@@ -26,6 +26,19 @@ public sealed record XpPackFile(string Name, string Sha256);
 public sealed class XpThemePack
 {
     public const string PrivateAssets = @"C:\AeroForgeLab\PrivateAssets\WindowsXP";
+    public static string UserAssets => Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "WinMim", "Packs", "WindowsXP");
+
+    public static XpThemePack ReadDefault(string content)
+    {
+        string directory = UserAssets;
+        if (!Directory.Exists(directory) && Environment.MachineName == "AEROFORGE-LAB" && Directory.Exists(PrivateAssets))
+            directory = PrivateAssets;
+        if (!Directory.Exists(directory))
+            throw new DirectoryNotFoundException("Нужен личный пакет Luna Blue. Откройте «Пакет XP» для инструкции.");
+        return Read(content, directory);
+    }
+
     public XpPackManifest Manifest { get; }
     private readonly Dictionary<string,byte[]> files;
     private readonly string directory;
@@ -129,6 +142,6 @@ public static class XpRuntime
             string path=Path.Combine(system,pin.Key);
             if(File.Exists(path)&&Hashing.Bytes(File.ReadAllBytes(path))==pin.Value)return;
         }
-        throw new InvalidOperationException("Для Luna нужен закреплённый SecureUxTheme 4.0.0 и перезагрузка гостя.");
+        throw new InvalidOperationException("Для Luna нужен закреплённый SecureUxTheme 4.0.0 и перезагрузка Windows.");
     }
 }

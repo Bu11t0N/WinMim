@@ -24,6 +24,8 @@ public sealed class MachineSeven
         var info=WindowsBackend.Inspect();
         if(!info.KnownBase || elevated&&!info.IsAdministrator)throw new InvalidOperationException("Нужен повышенный токен тестовой Windows 10 x64.");
     }
+    public bool HasRecoveryWork => transactions.History(false).Any(receipt => receipt.Status != "RolledBack");
+
     public Receipt Apply(){EnsureLab(true);return transactions.Apply(Plan(),allowProfileUpdate:true);}
     public Receipt Restore()
     {
@@ -60,7 +62,7 @@ public sealed class MachineSeven
     private async Task ElevatedAsync(string operation)
     {
         EnsureLab(false);
-        string cli=new[]{Path.Combine(AppContext.BaseDirectory,"AeroForge.Cli.exe"),Path.Combine(AppContext.BaseDirectory,"cli","AeroForge.Cli.exe")}.FirstOrDefault(File.Exists)
+        string cli=DesktopController.FindHelper()
             ??throw new FileNotFoundException("CLI WinMim не найден рядом с приложением.");
         var start=new ProcessStartInfo(cli){UseShellExecute=true,Verb="runas",WindowStyle=ProcessWindowStyle.Hidden};
         start.ArgumentList.Add(operation);start.ArgumentList.Add("--accept-experimental");

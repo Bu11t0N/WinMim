@@ -10,6 +10,12 @@ try
     string root = Get("--root", Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "AeroForge", "Host"));
     string state = Get("--state", Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "AeroForge", "State"));
     string command = args.FirstOrDefault() ?? "help";
+    if (command == "classic-check")
+    {
+        var checks = new Classic95Setup(content).Check(Get("--target", "windows-95"));
+        Console.WriteLine(JsonSerializer.Serialize(checks, JsonFile.Options));
+        return checks.All(check => check.Ready) ? 0 : 2;
+    }
     if(command is "classic-apply" or "classic-restore" or "classic-inspect")
     {
         if(command=="classic-inspect"){Console.WriteLine(JsonSerializer.Serialize(new{active=Classic95Setup.ActiveTarget,targets=ClassicThemes.All},JsonFile.Options));return 0;}
@@ -76,7 +82,7 @@ try
     { Console.WriteLine(JsonSerializer.Serialize(WindowsBackend.Inspect(), JsonFile.Options)); return 0; }
     if (command == "help")
     {
-        Console.WriteLine($"WinMim CLI {typeof(Catalog).Assembly.GetName().Version!.ToString(3)}\nCommands: seven-check, seven-apply, diagnose, verify, plan, stage, history, rollback\nOptions: --content DIR --root DIR --state DIR --profile seven|vista|basic|classic\n" +
+        Console.WriteLine($"WinMim CLI {typeof(Catalog).Assembly.GetName().Version!.ToString(3)}\nCommands: seven-check, seven-apply, seven-restore, diagnose, verify, plan, stage, history, rollback\nOptions: --content DIR --root DIR --state DIR --profile seven|vista|basic|classic\n" +
             "stage requires --accept-experimental. It prepares files; it does not start the shell host.\nrollback requires --receipt ABSOLUTE_PATH. --modules id,id overrides the profile selection.\n" +
             "Desktop lab: desktop-inspect, desktop-plan, desktop-history, desktop-apply, desktop-restore, desktop-refresh\n" +
             "Shell: shell-status (reads the engine's actual Loaded/Loading/Unloaded metadata)\nTaskbar: taskbar-get, taskbar-set --accept-experimental --preferences FILE\nMachine lab: machine-seven-inspect, machine-seven-apply, machine-seven-restore (apply/restore require elevation and --accept-experimental)\n" +
@@ -87,7 +93,7 @@ try
         Console.WriteLine("Private lab components: private-extras-inspect, private-extras-install / private-extras-remove --ids games,gadgets,media-center --accept-experimental (elevated)");
         return 0;
     }
-    if(command is "seven-check" or "seven-apply")
+    if(command is "seven-check" or "seven-apply" or "seven-restore")
     {
         var setup=new SevenSetup(content,root,state,args.Contains("--assets")?Get("--assets"):null,args.Contains("--button")?Get("--button"):null);
         if(command=="seven-check")
@@ -95,7 +101,12 @@ try
             var checks=setup.Check();Console.WriteLine(JsonSerializer.Serialize(checks,JsonFile.Options));
             return checks.All(c=>c.Ready)?0:2;
         }
-        if(!args.Contains("--accept-experimental"))throw new InvalidOperationException("seven-apply requires --accept-experimental");
+        if(!args.Contains("--accept-experimental"))throw new InvalidOperationException(command+" requires --accept-experimental");
+        if (command == "seven-restore")
+        {
+            await setup.RestoreAsync(new Progress<string>(Console.Error.WriteLine));
+            return 0;
+        }
         var applied=await setup.ApplyAsync(!args.Contains("--no-restart-explorer"),new Progress<string>(Console.Error.WriteLine));
         Console.WriteLine(JsonSerializer.Serialize(applied,JsonFile.Options));return 0;
     }

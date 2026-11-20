@@ -19,7 +19,7 @@ public static class Classic95Profile
     public static Plan Build(string content,string root,ClassicAppearanceState original,string? privateIcons=null,string target="windows-95",XpThemePack? xpPack=null)
     {
         var theme=ClassicThemes.Get(target);
-        var xp=theme.Xp?xpPack??XpThemePack.Read(content,XpThemePack.PrivateAssets):null;
+        var xp=theme.Xp?xpPack??XpThemePack.ReadDefault(content):null;
         var desired=ClassicAppearance.Desired(original,target);
         var plan=new Plan{ProfileId=target=="windows-95"?"desktop-windows95":"desktop-"+target,ProfileName=theme.Name+" — экспериментальный профиль",Exclusive=true};
         if(xp!=null)

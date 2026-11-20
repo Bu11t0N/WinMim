@@ -9,7 +9,7 @@
       <RegistrySearch Root="HKLM" Key="SOFTWARE\Microsoft\Windows NT\CurrentVersion"
                       Name="CurrentMajorVersionNumber" Type="raw" Bitness="always64" />
     </Property>
-    <Launch Condition="Installed OR (VersionNT64 AND WINMIMWINDOWSMAJOR)"
+    <Launch Condition="Installed OR (Msix64 AND WINMIMWINDOWSMAJOR)"
             Message="WinMim requires 64-bit Windows 10 or later." />
     <Property Id="ARPURLINFOABOUT" Value="https://github.com/Bu11t0N/WinMim" />
     <StandardDirectory Id="ProgramFiles64Folder">
@@ -22,8 +22,8 @@
                     WorkingDirectory="INSTALLFOLDER" />
           <Shortcut Id="WinMimFilesShortcut" Name="WinMim Files" Target="[INSTALLFOLDER]WinMim.exe"
                     Arguments="--retro-files" WorkingDirectory="INSTALLFOLDER" />
-          <Shortcut Id="WinMimRecoverShortcut" Name="WinMim Restore Classic Desktop" Target="[INSTALLFOLDER]WinMim.exe"
-                    Arguments="--restore-classic" WorkingDirectory="INSTALLFOLDER" />
+          <Shortcut Id="WinMimRecoverShortcut" Name="WinMim Restore Desktop" Target="[INSTALLFOLDER]WinMim.exe"
+                    Arguments="--restore-theme" WorkingDirectory="INSTALLFOLDER" />
           <RemoveFolder Id="RemoveWinMimMenu" On="uninstall" />
           <RegistryValue Root="HKLM" Key="Software\WinMim" Name="PreviewInstalled"
                          Type="integer" Value="1" KeyPath="yes" />

@@ -40,7 +40,7 @@ python tools/adapt_xp_menu_skin.py --source <installed-XP-Luna.skin> --output <p
 python tools/import_xp_assets.py --luna <extracted-Luna-dir> --shell32 <XP-shell32.dll> --user32 <XP-user32.dll> --notepad <XP-notepad.exe> --media <XP-WAV-dir> --resources <private-resources-dir> --menu-skin <private-XP.skin> --output <new-private-pack-dir>
 ```
 
-Импорт принимает только закреплённые исходные хеши и проверяет все 69 файлов до создания выходного каталога. Для другого законно полученного набора нужен отдельный проверенный манифест. Разместите результат в private lab asset directory, указанном `XpThemePack.PrivateAssets`. Не добавляйте его в Git или публичный архив.
+Импорт принимает только закреплённые исходные хеши и проверяет все 69 файлов до создания выходного каталога. Для другого законно полученного набора нужен отдельный проверенный манифест. Поместите содержимое результата в `%LOCALAPPDATA%\WinMim\Packs\WindowsXP` под той же учётной записью, из которой запускаете WinMim. Выберите Windows XP и нажмите «Проверить требования». В ранее подготовленной лабораторной ВМ WinMim также проверяет прежний путь при отсутствии пользовательской папки. Используйте ресурсы, на которые у вас есть права. Не добавляйте личный пакет в Git, публичный архив или MSI.
 
 ## Источники и условия
 
