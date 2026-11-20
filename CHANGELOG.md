@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.5 Preview
+
+- Put Windows 7 alongside Classic and XP on the Appearances tab. Choosing a row shows its requirements. Apply and Restore are available from the same screen.
+- Move advanced tabs behind the Advanced button. Show Windows 7 tools and components in the context of that theme.
+- Check the x64 .NET 10 Desktop Runtime during setup. The XP profile still requires a separately prepared personal resource pack.
+- Add the standalone WinMim Restore Desktop command. Theme application remains limited to the prepared Windows 10 LTSC lab.
+
 ## 0.1.4 Preview
 
 - Preserve the native Explorer address, search and navigation bands when using the XP Luna profile. Keep the Up command available.

@@ -10,7 +10,7 @@ WinMim is an experimental Windows customization toolkit that aims to recreate th
 
 ## Project status
 
-**Developer preview, version 0.1.4.** The x64 MSI includes the desktop controller, WinMim Files and the standalone classic theme recovery shortcut.
+**Developer preview, version 0.1.5.** The x64 MSI includes the desktop controller, WinMim Files and the standalone desktop recovery shortcut.
 
 Tested on **Windows 10 IoT Enterprise LTSC 2021, x64, build 19044**. Applying the classic and XP desktop profiles requires a prepared lab VM.
 

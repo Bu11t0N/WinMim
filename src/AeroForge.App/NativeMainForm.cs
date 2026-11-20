@@ -10,6 +10,7 @@ namespace AeroForge.App;
 // Windows renders the controls using the active system visual style.
 public sealed class NativeMainForm : F.Form
 {
+    private static string ProductTitle => $"WinMim {typeof(NativeMainForm).Assembly.GetName().Version!.ToString(3)} Preview";
     private readonly ContentStore store = new(MainWindow.FindContent());
     private readonly Catalog catalog;
     private readonly ShellHost host;
@@ -49,7 +50,7 @@ public sealed class NativeMainForm : F.Form
 
     public NativeMainForm()
     {
-        Text="WinMim — Windows Mimicry";Icon=D.Icon.ExtractAssociatedIcon(Environment.ProcessPath!)??D.SystemIcons.Application;AutoScaleMode=F.AutoScaleMode.Font;
+        Text=ProductTitle;Icon=D.Icon.ExtractAssociatedIcon(Environment.ProcessPath!)??D.SystemIcons.Application;AutoScaleMode=F.AutoScaleMode.Font;
         Font=D.SystemFonts.MessageBoxFont;StartPosition=F.FormStartPosition.CenterScreen;
         Size=new(960,720);MinimumSize=new(720,540);
         var area=F.Screen.PrimaryScreen!.WorkingArea;Size=new(Math.Min(Width,area.Width),Math.Min(Height,area.Height));
@@ -340,7 +341,7 @@ public sealed class NativeMainForm : F.Form
     private void AboutPage()
     {
         var page=Page("О программе");var body=Flow(true);
-        body.Controls.Add(Label("WinMim — Windows Mimicry"));body.Controls.Add(Label("Цель: воспроизвести вид и поведение выбранной версии Windows, включая оболочку и системные диалоги. Это долгосрочная цель; полное соответствие пока не достигнуто."));
+        body.Controls.Add(Label(ProductTitle));body.Controls.Add(Label("Цель: воспроизвести вид и поведение выбранной версии Windows, включая оболочку и системные диалоги. Это долгосрочная цель; полное соответствие пока не достигнуто."));
         body.Controls.Add(Label("Собственный код — GPL-3.0. Сторонние компоненты сохраняют лицензии и авторство. Личные пакеты тем и ресурсов распространяются отдельно."));
         body.Controls.Add(Label("Интерфейс использует стандартные элементы Windows и текущие системные цвета и шрифт. Собственная тема интерфейса отсутствует."));
         body.Controls.Add(Label(WindowsBackend.Inspect().Summary));

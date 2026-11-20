@@ -1,7 +1,7 @@
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
      xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui"
      xmlns:netfx="http://wixtoolset.org/schemas/v4/wxs/netfx">
-  <Package Name="WinMim Preview" Manufacturer="WinMim contributors"
+  <Package Name="WinMim $(var.Version) Preview" Manufacturer="WinMim contributors"
            Version="$(var.Version)" UpgradeCode="{FB77EEDA-1925-4838-8EEF-A3E609BD779E}"
            Scope="perMachine">
     <MajorUpgrade DowngradeErrorMessage="A newer version of WinMim Preview is already installed." />
