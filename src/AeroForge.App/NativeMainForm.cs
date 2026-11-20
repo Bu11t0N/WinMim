@@ -97,7 +97,8 @@ public sealed class NativeMainForm : F.Form
     private void TargetPage()
     {
         var page = Page("Оформления");
-        var layout = new F.TableLayoutPanel { ColumnCount = 1, Dock = F.DockStyle.Fill };
+        var layout = new F.TableLayoutPanel { ColumnCount = 1, RowCount = 4, Dock = F.DockStyle.Fill };
+        layout.ColumnStyles.Add(new(F.SizeType.Percent, 100));
         layout.RowStyles.Add(new(F.SizeType.Percent, 100));
         layout.RowStyles.Add(new(F.SizeType.Absolute, 112));
         layout.RowStyles.Add(new(F.SizeType.AutoSize));
