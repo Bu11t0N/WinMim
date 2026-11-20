@@ -2,7 +2,7 @@
 // @id              winmim-classic-frames
 // @name            WinMim: classic window frames
 // @description     Use native non-client frames in the Classic95 lab session.
-// @version         0.3.0
+// @version         0.3.1
 // @author          WinMim contributors
 // @license         GPL-3.0
 // @include         *
@@ -32,11 +32,27 @@ static std::atomic_bool unloading{false};
 static decltype(&DwmIsCompositionEnabled) compositionOriginal;
 static decltype(&IsCompositionActive) themeCompositionOriginal;
 static decltype(&DwmExtendFrameIntoClientArea) extendOriginal;
+static decltype(&SetWindowTheme) setWindowThemeOriginal;
 struct MarginState {DWORD process;MARGINS requested;};
 static SRWLOCK marginLock=SRWLOCK_INIT;
 static std::unordered_map<HWND,MarginState> margins;
+static bool WindowClassIs(HWND window, LPCWSTR expected) {
+    WCHAR name[64];
+    return GetClassNameW(window,name,ARRAYSIZE(name))&&_wcsicmp(name,expected)==0;
+}
 static bool ExplorerWindow(HWND window) {
-    WCHAR name[64];return GetClassNameW(window,name,ARRAYSIZE(name))&&wcscmp(name,L"CabinetWClass")==0;
+    return WindowClassIs(window,L"CabinetWClass");
+}
+static HRESULT WINAPI SetNavigationTheme(HWND window,LPCWSTR subApp,LPCWSTR subIds) {
+    // The Luna port collapses the themed navigation rebar to zero height.
+    // Only the rebar directly under Explorer's frame loses its theme class.
+    // Its child bands, the menu rebar and every navigation command stay native.
+    if(!unloading && subApp && *subApp && !subIds && WindowClassIs(window,L"ReBarWindow32")) {
+        HWND parent=GetParent(window);
+        if(WindowClassIs(parent,L"WorkerW") && ExplorerWindow(GetParent(parent)))
+            return setWindowThemeOriginal(window,L"",L"");
+    }
+    return setWindowThemeOriginal(window,subApp,subIds);
 }
 static HRESULT WINAPI Composition(BOOL* enabled) {
     if(!unloading&&enabled){*enabled=FALSE;return S_OK;}
@@ -139,7 +155,8 @@ BOOL Wh_ModInit() {
         // view to Explorer's process; DWM itself and other apps stay composed.
         if(!Wh_SetFunctionHook((void*)DwmIsCompositionEnabled,(void*)Composition,(void**)&compositionOriginal)
             ||!Wh_SetFunctionHook((void*)IsCompositionActive,(void*)ThemeComposition,(void**)&themeCompositionOriginal)
-            ||!Wh_SetFunctionHook((void*)DwmExtendFrameIntoClientArea,(void*)Extend,(void**)&extendOriginal))return FALSE;
+            ||!Wh_SetFunctionHook((void*)DwmExtendFrameIntoClientArea,(void*)Extend,(void**)&extendOriginal)
+            ||!Wh_SetFunctionHook((void*)SetWindowTheme,(void*)SetNavigationTheme,(void**)&setWindowThemeOriginal))return FALSE;
     }
     // XP needs UxTheme for both controls and basic non-client painting. Do not
     // change process theme flags or SetWindowTheme in this mode.

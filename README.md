@@ -10,15 +10,15 @@ WinMim is an experimental Windows customization toolkit that aims to recreate th
 
 ## Project status
 
-**Developer preview, version 0.1.3.** WinMim does not yet match Revert8Plus feature for feature, and does not provide an indistinguishable recreation of any Windows release.
+**Developer preview, version 0.1.4.** The x64 MSI includes the desktop controller, WinMim Files and the standalone classic theme recovery shortcut.
 
-Tested on **Windows 10 IoT Enterprise LTSC 2021, x64, build 19044**. Full desktop conversion is an experimental developer feature; general-purpose installation is not available yet.
+Tested on **Windows 10 IoT Enterprise LTSC 2021, x64, build 19044**. Applying the classic and XP desktop profiles requires a prepared lab VM.
 
 | Target appearance | Current implementation |
 | --- | --- |
 | Windows 95 | Experimental native classic rendering, palette and metrics, Open-Shell menu, desktop icons and Explorer/taskbar modules. Apply/restore and controlled resume/restore after reboot tested; normal startup still requires elevation. |
 | Windows NT 4.0, 98, 98 SE, Me, 2000 | Working initial profiles: native classic frames, per-profile palette/fonts, classic Start menu, RetroBar taskbar and Quick Launch where appropriate. Icons are currently shared; full historical fidelity is pending. |
-| Windows XP | Working initial profile: blue XP taskbar and Open-Shell Luna menu, Tahoma and XP-like colors. Window frames remain classic; resources are not yet a complete XP set. |
+| Windows XP | Experimental Luna Blue profile with themed frames and controls, a blue RetroBar taskbar, Open-Shell Start menu, native Explorer and WinMim Files. Visual resources come from a separately prepared private pack. |
 | Windows 7 | Experimental desktop coordinator, Explorer behavior, taskbar properties, icons and optional components. Some required visual resources are external and are not in this repository. |
 | Windows Vista | Module preset; complete desktop conversion is pending. |
 | Windows 8, 8.1, 10, 11 | Catalog entries and future targets. Selecting them does not apply a theme. |
@@ -80,7 +80,7 @@ python -m pip install -r requirements-dev.txt
 
 The first build downloads the pinned official Windhawk offline package, verifies its SHA-256, extracts its compiler/runtime using 7-Zip, and compiles the module sources. The installer is not executed. Generated runtime files, native DLLs, build output and caches are excluded from Git.
 
-It also prepares the pinned RetroBar runtime for the classic/XP profiles. To prepare just that component, run `python tools/fetch_classic_runtime.py`. It is bundled in the portable archive, with its notices and source reference.
+It also prepares the pinned RetroBar runtime for the classic/XP profiles. To prepare just that component, run `python tools/fetch_classic_runtime.py`. The Preview MSI includes the runtime and its source and notices.
 
 For later C# changes, after native preparation:
 

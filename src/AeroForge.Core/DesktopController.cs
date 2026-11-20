@@ -100,7 +100,7 @@ public sealed class DesktopController
                 if(process.SessionId==session && string.Equals(WindowsProcessInfo.ImagePath(process.Id),executable,StringComparison.OrdinalIgnoreCase))
                 {
                     process.Kill();
-                    if(!process.WaitForExit(2000))throw new IOException("Explorer ещё завершается; выгрузка модулей отложена.");
+                    if(!process.WaitForExit(8000))throw new IOException("Explorer ещё завершается; выгрузка модулей отложена.");
                 }
             }
             catch(InvalidOperationException)when(process.HasExited){}

@@ -129,7 +129,7 @@ public sealed class ShellHost(string hostRoot, Catalog catalog)
         new WindowsBackend(root).CleanupRetiredModules();
     }
     public Task StopDesktopAsync()=>WithDesktopStoppedAsync(StopAsync);
-    public async Task WithDesktopStoppedAsync(Func<Task> action)
+    public async Task WithDesktopStoppedAsync(Func<Task> action, Func<Task>? afterTransition = null)
     {
         // Some upstream Explorer modules leave a window subclass behind when
         // unloaded (notably Aero Tray's Customize link). End the owned lab
@@ -142,23 +142,34 @@ public sealed class ShellHost(string hostRoot, Catalog catalog)
         Task monitor = Task.CompletedTask;
         try
         {
-            DesktopController.StopExplorer();
-            monitor = Task.Run(async () =>
+            try
             {
-                while (true)
+                DesktopController.StopExplorer();
+                monitor = Task.Run(async () =>
                 {
-                    await Task.Delay(100, finished.Token);
-                    DesktopController.StopExplorer();
-                }
-            });
-            await action();
+                    while (true)
+                    {
+                        await Task.Delay(100, finished.Token);
+                        finished.Token.ThrowIfCancellationRequested();
+                        DesktopController.StopExplorer();
+                    }
+                });
+                await action();
+            }
+            finally
+            {
+                finished.Cancel();
+                try { await monitor; }
+                catch (OperationCanceledException) when (finished.IsCancellationRequested) { }
+            }
+
+            // The engine can attach to a newly started shell. Finish stopping
+            // transient Explorer processes before allowing that to happen.
+            if (afterTransition != null) await afterTransition();
         }
         finally
         {
-            finished.Cancel();
-            try { await monitor; }
-            catch (OperationCanceledException) when (finished.IsCancellationRequested) { }
-            finally { await DesktopController.EnsureExplorerStartedAsync(); }
+            await DesktopController.EnsureExplorerStartedAsync();
         }
     }
     private sealed class ActiveProfile

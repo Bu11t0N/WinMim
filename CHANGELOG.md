@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.4 Preview
+
+- Preserve the native Explorer address, search and navigation bands when using the XP Luna profile. Keep the Up command available.
+- Complete the Explorer stop phase before restarting the profile engine, and give slow Explorer processes more time to exit during apply or restore.
+- Keep the x64 MSI, WinMim Files and the standalone classic recovery shortcut. Theme activation remains limited to the prepared Windows 10 LTSC lab.
+
 ## 0.1.3 Preview — 2026-11-19
 
 - Added the Windows x64 MSI and Start menu shortcuts.

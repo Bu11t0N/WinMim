@@ -125,6 +125,9 @@ Test("XP shell plan keeps visual styles and usable navigation without classic fr
     var xp=new ProfilePlanner(store,catalog).Build(ClassicThemes.Get("windows-xp").ShellProfile);
     Assert(xp.ProfileId=="windowsxp"&&xp.Blockers.Count==0,string.Join(";",xp.Blockers));
     foreach(string incompatible in new[]{"classic-theme-explorer-lite","classic-theme-transparency-fix","classic-uwp-fix","classic-taskbar-buttons-lite","disable-navigation-bar","remove-command-bar"})Assert(!xp.Modules.Contains(incompatible));
+    var aerexplorer=catalog.Modules.Single(m=>m.Id=="aerexplorer");
+    var xpSettings=catalog.Profiles.Single(p=>p.Id=="windowsxp");
+    Assert(ProfilePlanner.Ini(aerexplorer,true,xpSettings).Contains("\r\nnoup=0\r\n"),"XP preserves Explorer's Up command");
     var frame=catalog.Modules.Single(m=>m.Id=="winmim-classic-frames");
     Assert(ProfilePlanner.Ini(frame,true,catalog.Profiles.Single(p=>p.Id=="windowsxp")).Contains("basicThemed=1"));
     Assert(ProfilePlanner.Ini(frame,true,catalog.Profiles.Single(p=>p.Id=="windows95")).Contains("basicThemed=0"));

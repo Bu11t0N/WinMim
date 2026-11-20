@@ -111,7 +111,11 @@ public sealed class Classic95Setup
             // after all desktop settings have reached their committed state.
             desktopReceipt=desktopTransactions.Apply(plan,progress,token,allowProfileUpdate:true);
             if(target!="windows-95")panelTransactions.Apply(RetroBarSettingsBackend.Plan(theme,Path.Combine(root,"QuickLaunch")),progress,token);
-            progress?.Report("Перезапуск оболочки "+theme.Name);host.Start();
+            }, () =>
+            {
+                progress?.Report("Перезапуск оболочки "+theme.Name);
+                host.Start();
+                return Task.CompletedTask;
             });
             if(theme.Xp)await host.WaitForExplorerAsync(TimeSpan.FromSeconds(45),token);
             StartMenu();if(target!="windows-95")await RetroBarHost.StartAsync(root);
@@ -196,7 +200,8 @@ public sealed class Classic95Setup
             await AttemptAsync("Доступ к визуальным стилям", () => switchSession(true));
             ClassicAppearance.NotifyThemeChanged();
             if (transition.Target == "windows-xp") XpDesktopResources.RefreshCursors();
-
+        }, async () =>
+        {
             if (errors.Count == 0 && transition.RestartEngine && File.Exists(SafePath.Under(Path.Combine(Data, "Host"), "active-profile.json")))
             {
                 await AttemptAsync("Запуск предыдущего движка", () =>

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "version": "0.1.3",
+  "version": "0.1.4",
   "sourceCommit": "3f11069419fad9103a56cf78b28d293fee6c20cf",
   "modules": [
     {
@@ -1421,11 +1421,11 @@
       "description": "Штатные классические или тематизированные basic-рамки в пользовательском сеансе стенда.",
       "category": "Оформление",
       "author": "WinMim contributors",
-      "version": "0.3.0",
+      "version": "0.3.1",
       "license": "GPL-3.0",
       "sourceUrl": "src/WinMim.Native/winmim-classic-frames.wh.cpp",
       "sourcePath": "src/WinMim.Native/winmim-classic-frames.wh.cpp",
-      "sourceSha256": "c5ac722c800f0c45a6f9d3124d6d380123f64454cb5ac0096455420b733e557c",
+      "sourceSha256": "a8ee1421aa26e18b95f08bc9edf083c93a4607333e9cf09d90d6b74a04bb814d",
       "includes": [
         "*"
       ],
@@ -1448,14 +1448,14 @@
       "status": "built",
       "binaries": [
         {
-          "path": "modules/32/aeroforge-winmim-classic-frames_0.3.0-c5ac722c80.dll",
-          "target": "Data/Engine/Mods/32/aeroforge-winmim-classic-frames_0.3.0-c5ac722c80.dll",
-          "sha256": "74d8827270affda70de79d0d1aa7d6b32eca025857c50a909f6687cb6cf4a379"
+          "path": "modules/32/aeroforge-winmim-classic-frames_0.3.1-a8ee1421aa.dll",
+          "target": "Data/Engine/Mods/32/aeroforge-winmim-classic-frames_0.3.1-a8ee1421aa.dll",
+          "sha256": "b2ff64235241a5919307e64fa468b6f7d49c254523d3b536913e64048bbf3df0"
         },
         {
-          "path": "modules/64/aeroforge-winmim-classic-frames_0.3.0-c5ac722c80.dll",
-          "target": "Data/Engine/Mods/64/aeroforge-winmim-classic-frames_0.3.0-c5ac722c80.dll",
-          "sha256": "1b097ba79648ab0f3565bb2a424dcfa598a9cc41bb2574a185ec095a417bc5fc"
+          "path": "modules/64/aeroforge-winmim-classic-frames_0.3.1-a8ee1421aa.dll",
+          "target": "Data/Engine/Mods/64/aeroforge-winmim-classic-frames_0.3.1-a8ee1421aa.dll",
+          "sha256": "02c9be94297cf94b97fb63feafc99e58b9b3f00d39a5b50f65d7b5302377d9d6"
         }
       ],
       "compilerOptions": "-ldwmapi -luxtheme"
@@ -1664,7 +1664,8 @@
           "detailspane": "0",
           "navbarglass": "0",
           "nocomposition": "1",
-          "aerotravel": "0"
+          "aerotravel": "0",
+          "noup": "0"
         }
       }
     }
