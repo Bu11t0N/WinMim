@@ -1,5 +1,6 @@
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
-     xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
+     xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui"
+     xmlns:netfx="http://wixtoolset.org/schemas/v4/wxs/netfx">
   <Package Name="WinMim Preview" Manufacturer="WinMim contributors"
            Version="$(var.Version)" UpgradeCode="{FB77EEDA-1925-4838-8EEF-A3E609BD779E}"
            Scope="perMachine">
@@ -11,6 +12,10 @@
     </Property>
     <Launch Condition="Installed OR (Msix64 AND WINMIMWINDOWSMAJOR)"
             Message="WinMim requires 64-bit Windows 10 or later." />
+    <netfx:DotNetCompatibilityCheck Property="WINMIMDESKTOPRUNTIME" Platform="x64"
+                                    RuntimeType="desktop" Version="10.0.0" RollForward="latestPatch" />
+    <Launch Condition='Installed OR WINMIMDESKTOPRUNTIME = "0"'
+            Message="Install the x64 .NET 10 Desktop Runtime before installing WinMim." />
     <Property Id="ARPURLINFOABOUT" Value="https://github.com/Bu11t0N/WinMim" />
     <StandardDirectory Id="ProgramFiles64Folder">
       <Directory Id="INSTALLFOLDER" Name="WinMim" />

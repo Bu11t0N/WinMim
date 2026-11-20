@@ -37,10 +37,13 @@ jobs:
             if ($LASTEXITCODE -ne 0) { throw 'WiX installation failed' }
             & $wix extension add WixToolset.UI.wixext/6.0.2
             if ($LASTEXITCODE -ne 0) { throw 'WiX UI extension installation failed' }
+            & $wix extension add WixToolset.Netfx.wixext/6.0.2
+            if ($LASTEXITCODE -ne 0) { throw 'WiX NetFx extension installation failed' }
           }
           finally { Pop-Location }
           $ui = Join-Path $wixRoot '.wix/extensions/WixToolset.UI.wixext/6.0.2/wixext6/WixToolset.UI.wixext.dll'
-          ./tools/build-installer.ps1 -Wix $wix -UiExtension $ui
+          $netfx = Join-Path $wixRoot '.wix/extensions/WixToolset.Netfx.wixext/6.0.2/wixext6/WixToolset.Netfx.wixext.dll'
+          ./tools/build-installer.ps1 -Wix $wix -UiExtension $ui -NetFxExtension $netfx
       - name: Upload WinMim Preview MSI
         uses: actions/upload-artifact@v4
         with:

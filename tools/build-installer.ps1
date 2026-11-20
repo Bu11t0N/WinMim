@@ -3,7 +3,8 @@ param(
     [string]$Wix = 'wix',
     [string]$UiExtension = 'WixToolset.UI.wixext',
     [string]$Output,
-    [ValidatePattern('^\d+\.\d+\.\d+$')][string]$Version
+    [ValidatePattern('^\d+\.\d+\.\d+$')][string]$Version,
+    [string]$NetFxExtension = 'WixToolset.Netfx.wixext'
 )
 
 $ErrorActionPreference = 'Stop'
@@ -81,7 +82,7 @@ try {
     Set-Content -LiteralPath $licenseRtf -Value $rtf -Encoding ascii
     New-Item -ItemType Directory -Path (Split-Path -Parent $Output) -Force | Out-Null
 
-    & $Wix build installer/WinMim.wxs -arch x64 -ext $UiExtension -d "Version=$Version" -d "Payload=$payload" -d "LicenseRtf=$licenseRtf" -pdbtype none -out $Output
+    & $Wix build installer/WinMim.wxs -arch x64 -ext $UiExtension -ext $NetFxExtension -d "Version=$Version" -d "Payload=$payload" -d "LicenseRtf=$licenseRtf" -pdbtype none -out $Output
     if ($LASTEXITCODE -ne 0) { throw 'WiX MSI build failed' }
     Get-FileHash -LiteralPath $Output -Algorithm SHA256
 }

@@ -113,7 +113,7 @@ The x64 MSI installs WinMim under Program Files and adds **WinMim Preview** and 
 
 Use the restore button on the Appearances tab. If the main window is unavailable, use **WinMim Restore Desktop** from Start, or run `"C:\Program Files\WinMim\WinMim.exe" --restore-theme` from Task Manager → File → Run new task as the same ordinary user. The recovery command uses the saved journals and can be retried. The legacy `--restore-classic` argument remains available for XP and Classic. Return to the previous theme before uninstalling, while the recovery executable is still available. An external edit that conflicts with a journal remains on disk and is reported for review.
 
-After preparing the native components with `tools/build.ps1 -PrepareNative`, run `tools/build-installer.ps1 -Wix <path-to-wix.exe> -UiExtension <path-to-WixToolset.UI.wixext.dll>` with WiX 6.0.2 and its matching UI extension. The Validate workflow builds and uploads the MSI as the `WinMim-Preview-x64` artifact.
+After preparing the native components with `tools/build.ps1 -PrepareNative`, run `tools/build-installer.ps1 -Wix <path-to-wix.exe> -UiExtension <path-to-WixToolset.UI.wixext.dll> -NetFxExtension <path-to-WixToolset.Netfx.wixext.dll>` with WiX 6.0.2 and its matching extensions. The MSI checks for the x64 .NET 10 Desktop Runtime before a new installation. The Validate workflow builds and uploads the MSI as the `WinMim-Preview-x64` artifact.
 
 
 Validation after native preparation:
