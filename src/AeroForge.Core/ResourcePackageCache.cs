@@ -16,17 +16,14 @@ public sealed class ResourcePackageCache(string cacheDirectory, string preparedD
     {
         string digest = Validate(package);
         if (Contains(cache, prepared) || Contains(prepared, cache))
-            throw new InvalidOperationException("Кеш и подготовленные данные должны находиться в отдельных каталогах.");
+            throw new InvalidOperationException(UiText.Get("ResourcePackageCache.TheCacheAndPreparedFilesMustBe"));
         string destination = SafePath.Under(prepared, digest);
         string archive = SafePath.Under(cache, digest + ".zip");
         token.ThrowIfCancellationRequested();
-        if (Directory.Exists(destination))
-            throw new IOException("Такой пакет уже подготовлен. Используйте сохранённую копию.");
-
         if (localArchive == null && !File.Exists(archive))
         {
             if (!TryReleaseSource(package.Source, out var source))
-                throw new FileNotFoundException("Кеш пуст. Укажите локальный файл этого пакета.");
+                throw new FileNotFoundException(UiText.Get("ResourcePackageCache.TheCacheIsEmptySelectTheLocal"));
             await new PackageCache(cache, transport).DownloadAsync(new Dependency
             {
                 Name = package.Id, Version = package.Version, DownloadUrl = source.AbsoluteUri,
@@ -45,15 +42,15 @@ public sealed class ResourcePackageCache(string cacheDirectory, string preparedD
             if (localArchive != null)
             {
                 using var source = PackageCache.OpenVerified(Path.GetFullPath(localArchive), digest);
-                if (source.Length > Limit) throw new InvalidDataException("Архив превышает 64 МиБ.");
+                if (source.Length > Limit) throw new InvalidDataException(UiText.Get("ResourcePackageCache.TheArchiveExceeds64MiB"));
                 await using var copy = new FileStream(incoming, FileMode.CreateNew, FileAccess.Write, FileShare.None);
                 await source.CopyToAsync(copy, token);
             }
             using (var source = PackageCache.OpenVerified(localArchive == null ? archive : incoming, digest))
             {
-                if (source.Length > Limit) throw new InvalidDataException("Архив превышает 64 МиБ.");
+                if (source.Length > Limit) throw new InvalidDataException(UiText.Get("ResourcePackageCache.TheArchiveExceeds64MiB"));
                 using var zip = new ZipArchive(source, ZipArchiveMode.Read);
-                if (zip.Entries.Count is < 1 or > 256) throw new InvalidDataException("Неожиданное число файлов в архиве.");
+                if (zip.Entries.Count is < 1 or > 256) throw new InvalidDataException(UiText.Get("ResourcePackageCache.UnexpectedNumberOfFilesInTheArchive"));
                 var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
                 long total = 0;
                 foreach (var entry in zip.Entries)
@@ -69,7 +66,7 @@ public sealed class ResourcePackageCache(string cacheDirectory, string preparedD
                         ((entry.ExternalAttributes >> 16) & 0xF000) == 0xA000 ||
                         Path.GetExtension(name).ToLowerInvariant() is not (".txt" or ".json" or ".png" or ".jpg" or ".bmp" or ".ico" or ".wav") ||
                         entry.Length < 0 || entry.Length > Limit - total)
-                        throw new InvalidDataException("Архив содержит неподдерживаемый, повторный или слишком большой файл.");
+                        throw new InvalidDataException(UiText.Get("ResourcePackageCache.TheArchiveContainsAnUnsupportedDuplicateOr"));
                     string parent = Path.GetDirectoryName(name)!;
                     for (string? folder = parent; folder != pending; folder = Path.GetDirectoryName(folder))
                         directories.Add(folder!);
@@ -83,20 +80,29 @@ public sealed class ResourcePackageCache(string cacheDirectory, string preparedD
                     while ((count = await reader.ReadAsync(buffer, token)) > 0)
                     {
                         length += count;
-                        if (length > entry.Length) throw new InvalidDataException("Размер файла не совпадает с записью ZIP.");
+                        if (length > entry.Length) throw new InvalidDataException(UiText.Get("ResourcePackageCache.TheActualFileSizeDoesNotMatch"));
                         await writer.WriteAsync(buffer.AsMemory(0, count), token);
                     }
-                    if (length != entry.Length) throw new InvalidDataException("Неполный файл в ZIP.");
+                    if (length != entry.Length) throw new InvalidDataException(UiText.Get("ResourcePackageCache.IncompleteFileInTheZIPArchive"));
                     total += length;
                 }
-                if (written.Count == 0) throw new InvalidDataException("Архив не содержит поддерживаемых файлов.");
+                if (written.Count == 0) throw new InvalidDataException(UiText.Get("ResourcePackageCache.TheArchiveContainsNoSupportedFiles"));
             }
             token.ThrowIfCancellationRequested();
             string metadata = SafePath.Under(pending, MetadataName);
             written.Add(metadata);
             JsonFile.Write(metadata, package);
             if (localArchive != null) File.Move(incoming, archive, overwrite: true);
-            Directory.Move(pending, destination);
+            if (!Directory.Exists(destination)) Directory.Move(pending, destination);
+            else
+            {
+                foreach (string path in written.Where(path => path != metadata))
+                {
+                    string installed = SafePath.Under(destination, Path.GetRelativePath(pending, path));
+                    if (!File.Exists(installed) || Hashing.File(path) != Hashing.File(installed))
+                        throw new IOException(UiText.Get("ResourcePackageCache.PreparedFilesChanged"));
+                }
+            }
             return destination;
         }
         finally
@@ -115,7 +121,7 @@ public sealed class ResourcePackageCache(string cacheDirectory, string preparedD
     public void ClearCachedArchive(ResourcePackage package)
     {
         // Clearing the cache leaves prepared assets and recovery state intact, even for withdrawn sources.
-        if (!ValidHash(package.Sha256)) throw new InvalidDataException("Отсутствует проверенный SHA-256.");
+        if (!ValidHash(package.Sha256)) throw new InvalidDataException(UiText.Get("ResourcePackageCache.AVerifiedSHA256IsRequired"));
         if (Directory.Exists(cache)) File.Delete(SafePath.Under(cache, package.Sha256.ToLowerInvariant() + ".zip"));
     }
 
@@ -126,7 +132,7 @@ public sealed class ResourcePackageCache(string cacheDirectory, string preparedD
         if (!package.Approved || string.IsNullOrWhiteSpace(package.Id) || string.IsNullOrWhiteSpace(package.Version) ||
             string.IsNullOrWhiteSpace(package.Source) || !ValidHash(package.Sha256) ||
             (!package.Source.StartsWith("local:", StringComparison.Ordinal) && !TryReleaseSource(package.Source, out _)))
-            throw new InvalidDataException("Источник или версия пакета не утверждены.");
+            throw new InvalidDataException(UiText.Get("ResourcePackageCache.ThePackageSourceOrVersionIsNot"));
         return package.Sha256.ToLowerInvariant();
     }
 

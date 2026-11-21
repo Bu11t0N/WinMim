@@ -52,7 +52,7 @@ public sealed class SevenSetup
         using var operation = await ClassicOperationLock.AcquireAsync(Classic95Setup.Data);
         if (!HasRecoveryWork) return;
         if (Classic95Setup.HasRecoveryWork)
-            throw new InvalidOperationException("Сначала восстановите XP или классическое оформление.");
+            throw new InvalidOperationException(UiText.Get("SevenSetup.RestoreXPOrClassicFirst"));
 
         // Preserve the per-user journals if the system settings still need restoration.
         var machine = new MachineSeven();
@@ -64,21 +64,21 @@ public sealed class SevenSetup
             transactions.RollbackOwned(progress, Owns);
         });
         if (desktop.HasRecoveryWork && desktop.Restore(progress).Status != "RolledBack")
-            throw new IOException("Возврат оформления Windows 7 требует проверки журнала.");
+            throw new IOException(UiText.Get("SevenSetup.Windows7RecoveryNeedsAJournalReview"));
     }
 
     public SetupCheck[] Check()
     {
         var result=new List<SetupCheck>();
-        if(Classic95Setup.HasRecoveryWork)result.Add(new("Классическое оформление",false,"Сначала верните предыдущее оформление."));
-        try { DesktopController.EnsureLab(); result.Add(new("Windows",true,"Тестовая Windows 10 x64, обычный пользователь")); }
+        if(Classic95Setup.HasRecoveryWork)result.Add(new(UiText.Get("SevenSetup.ClassicAppearance"),false,UiText.Get("SevenSetup.RestoreThePreviousAppearanceFirst")));
+        try { DesktopController.EnsureLab(); result.Add(new("Windows",true,UiText.Get("SevenSetup.Windows10X64LabStandardUser"))); }
         catch(InvalidOperationException error){result.Add(new("Windows",false,error.Message));}
-        result.Add(new("Помощник WinMim", DesktopController.FindHelper() != null, "При отсутствии восстановите установку из MSI."));
+        result.Add(new(UiText.Get("SevenSetup.WinMimHelper"), DesktopController.FindHelper() != null, UiText.Get("SevenSetup.IfMissingRepairTheMSIInstallation")));
         var errors=store.VerifyAll(catalog);
-        result.Add(new("Модули Seven",errors.Length==0,errors.Length==0?"Контрольные суммы совпадают":string.Join("; ",errors)));
+        result.Add(new(UiText.Get("SevenSetup.SevenModules"),errors.Length==0,errors.Length==0?UiText.Get("SevenSetup.ChecksumsMatch"):string.Join("; ",errors)));
         void CheckDependency(string name, Func<bool> ready)
         {
-            try { result.Add(new(name, ready(), "Используйте «Подготовить тему».")); }
+            try { result.Add(new(name, ready(), UiText.Get("SevenSetup.UsePrepareTheme"))); }
             catch (Exception error) when (error is IOException or InvalidOperationException)
             { result.Add(new(name, false, error.Message)); }
         }
@@ -86,20 +86,20 @@ public sealed class SevenSetup
         CheckDependency("SecureUxTheme", () => ThemePreparation.SecureUxReady(store.Root));
         bool glass=false;
         foreach(var process in Process.GetProcessesByName("OpenGlassHost")){using(process)glass=true;}
-        result.Add(new("OpenGlass",glass,glass?"Процесс компонента работает":"Компонент не запущен. Тихая установка этой версии не подтверждена."));
-        result.Add(new("Тема Windows 7", File.Exists(Style) && File.Exists(Wallpaper) && Button != null,
-            "Нужны совместимый визуальный стиль, обои и кнопка меню «Пуск» из разрешённого источника. Этот стендовый профиль ожидает ресурсы Aero10."));
+        result.Add(new("OpenGlass",glass,glass?UiText.Get("SevenSetup.TheComponentIsRunning"):UiText.Get("SevenSetup.TheComponentIsStoppedSilentInstallationOf")));
+        result.Add(new(UiText.Get("SevenSetup.Windows7Theme"), File.Exists(Style) && File.Exists(Wallpaper) && Button != null,
+            UiText.Get("SevenSetup.ACompatibleStyleWallpaperAndStartButton")));
         Plan plan;
         try{plan=new ProfilePlanner(store,catalog).Build("seven",privateIconPack:IconPack,privateDisplayProvider:displayProvider);}
-        catch(Exception error){result.Add(new("Пакет значков",false,error.Message));return result.ToArray();}
-        result.Add(new("Значки Windows 7",true,IconPack==null?"Личный пакет не подключён; сохранятся стандартные значки":"Внешний пакет проверен по SHA-256"));
-        result.Add(new("Профиль Seven",plan.Blockers.Count==0,string.Join("; ",plan.Blockers)));
+        catch(Exception error){result.Add(new(UiText.Get("SevenSetup.IconPack"),false,error.Message));return result.ToArray();}
+        result.Add(new(UiText.Get("SevenSetup.Windows7Icons"),true,IconPack==null?UiText.Get("SevenSetup.NoPersonalPackIsConfiguredDefaultIcons"):UiText.Get("SevenSetup.TheExternalPackPassedSHA256Verification")));
+        result.Add(new(UiText.Get("SevenSetup.SevenProfile"),plan.Blockers.Count==0,string.Join("; ",plan.Blockers)));
         bool foreign=false;
         foreach(var process in Process.GetProcessesByName("windhawk"))
             using(process)if(!string.Equals(WindowsProcessInfo.ImagePath(process.Id),host.Executable,StringComparison.OrdinalIgnoreCase))foreign=true;
-        result.Add(new("Движок",!foreign,foreign?"Сначала остановите другой Windhawk":"Конфликтующих экземпляров нет"));
-        try{result.Add(new("Системные настройки",true,MachineSeven.IsConfigured()?"Классическая громкость и центр уведомлений настроены":"При применении потребуется запрос прав администратора для громкости и центра уведомлений"));}
-        catch(Exception error){result.Add(new("Системные настройки",false,error.Message));}
+        result.Add(new(UiText.Get("SevenSetup.Engine"),!foreign,foreign?UiText.Get("SevenSetup.StopTheOtherWindhawkInstanceFirst"):UiText.Get("SevenSetup.NoConflictingInstances")));
+        try{result.Add(new(UiText.Get("SevenSetup.SystemSettings"),true,MachineSeven.IsConfigured()?UiText.Get("SevenSetup.ClassicVolumeAndActionCenterSettingsAre"):UiText.Get("SevenSetup.WindowsMayAskForAdministratorApprovalTo")));}
+        catch(Exception error){result.Add(new(UiText.Get("SevenSetup.SystemSettings"),false,error.Message));}
         return result.ToArray();
     }
 
@@ -113,21 +113,21 @@ public sealed class SevenSetup
         Receipt? shellReceipt=null; Receipt? desktopReceipt=null;
         bool machineChanged=false;
         var previousDesktopIds=desktop.History(false).Select(r=>r.Id).ToHashSet();
-        progress?.Report("1/6 · Остановка движка");
+        progress?.Report(UiText.Get("SevenSetup.16StoppingTheEngine"));
         await host.StopAsync();
         try
         {
-            progress?.Report("2/6 · Подготовка модулей Seven");
+            progress?.Report(UiText.Get("SevenSetup.26PreparingSevenModules"));
             shellReceipt=transactions.Apply(new ProfilePlanner(store,catalog).Build("seven",autostart:true,hostExecutable:host.Executable,privateIconPack:IconPack,privateDisplayProvider:displayProvider,resumeLauncher:ProfilePlanner.FindController()),progress,cancellationToken);
-            progress?.Report("3/6 · Применение темы, меню «Пуск» и панели задач");
+            progress?.Report(UiText.Get("SevenSetup.36ApplyingTheThemeStartMenu"));
             desktopReceipt=desktop.Apply(Style,Wallpaper,Button,progress,cancellationToken,privateIconPack:IconPack);
             cancellationToken.ThrowIfCancellationRequested();
             // Resource hooks must already be active when Explorer builds its image lists.
-            progress?.Report("4/6 · Запуск модулей"); host.Start();
+            progress?.Report(UiText.Get("SevenSetup.46StartingModules")); host.Start();
             await host.WaitForExplorerAsync(TimeSpan.FromSeconds(45),cancellationToken);
-            progress?.Report("5/6 · Системные настройки Seven");
+            progress?.Report(UiText.Get("SevenSetup.56SevenSystemSettings"));
             machineChanged=await new MachineSeven().EnsureConfiguredAsync();
-            if(restartExplorer){progress?.Report("6/6 · Обновление Проводника");await DesktopController.RestartExplorerAsync();await host.WaitForExplorerAsync(TimeSpan.FromSeconds(45),cancellationToken);}
+            if(restartExplorer){progress?.Report(UiText.Get("SevenSetup.66RefreshingExplorer"));await DesktopController.RestartExplorerAsync();await host.WaitForExplorerAsync(TimeSpan.FromSeconds(45),cancellationToken);}
             DesktopIconOverrides.Refresh();
             cancellationToken.ThrowIfCancellationRequested();
             return new(shellReceipt.FilePath,desktopReceipt.FilePath);
@@ -135,15 +135,15 @@ public sealed class SevenSetup
         catch(Exception original)
         {
             var recoveryErrors=new List<Exception>();
-            try{await host.StopAsync();}catch(Exception error){throw new AggregateException("Движок не остановлен; файлы сохранены для восстановления.",original,error);}
+            try{await host.StopAsync();}catch(Exception error){throw new AggregateException(UiText.Get("SevenSetup.TheEngineDidNotStopFilesWere"),original,error);}
             if(machineChanged)
                 try{await new MachineSeven().RestoreElevatedAsync();}catch(Exception error){recoveryErrors.Add(error);}
             if(desktopReceipt!=null&&!previousDesktopIds.Contains(desktopReceipt.Id))
-                try{var restored=desktop.RollbackUpdate(desktopReceipt.FilePath,progress);if(restored.Status!="RolledBack")throw new IOException("Возврат оформления содержит конфликты");}catch(Exception error){recoveryErrors.Add(error);}
+                try{var restored=desktop.RollbackUpdate(desktopReceipt.FilePath,progress);if(restored.Status!="RolledBack")throw new IOException(UiText.Get("SevenSetup.AppearanceRecoveryHasConflicts"));}catch(Exception error){recoveryErrors.Add(error);}
             if(shellReceipt!=null)
-                try{var restored=transactions.Rollback(shellReceipt.FilePath,progress);if(restored.Status!="RolledBack")throw new IOException("Возврат модулей содержит конфликты");}catch(Exception error){recoveryErrors.Add(error);}
+                try{var restored=transactions.Rollback(shellReceipt.FilePath,progress);if(restored.Status!="RolledBack")throw new IOException(UiText.Get("SevenSetup.ModuleRecoveryHasConflicts"));}catch(Exception error){recoveryErrors.Add(error);}
             if(wasRunning&&recoveryErrors.Count==0)try{host.Start();}catch(Exception error){recoveryErrors.Add(error);}
-            if(recoveryErrors.Count!=0)throw new AggregateException("Применение не завершено; проверьте журналы восстановления.",new[]{original}.Concat(recoveryErrors));
+            if(recoveryErrors.Count!=0)throw new AggregateException(UiText.Get("SevenSetup.ApplyDidNotFinishReviewTheRecovery"),new[]{original}.Concat(recoveryErrors));
             throw;
         }
     }

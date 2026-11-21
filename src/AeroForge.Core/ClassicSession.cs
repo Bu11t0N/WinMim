@@ -51,13 +51,13 @@ public sealed class ClassicSession
     private void Guard(bool elevated)
     {
         if(Environment.MachineName!="AEROFORGE-LAB" || WindowsBackend.Inspect() is not {Build:19044,Architecture:"X64"} info || elevated&&!info.IsAdministrator || session!=ActiveSession || session<1)
-            throw new InvalidOperationException("Classic переключается только в активном сеансе тестовой Windows 10 LTSC 2021.");
+            throw new InvalidOperationException(UiText.Get("ClassicSession.ClassicRenderingCanBeToggledInThe"));
     }
     public ValueState Inspect(){Guard(false);return backend.Read(backend.Change);}
     public static string LockReadAccess(string original)
     {
         var descriptor=new RawSecurityDescriptor(original);
-        var old=descriptor.DiscretionaryAcl??throw new InvalidDataException("Нет исходного DACL темы.");
+        var old=descriptor.DiscretionaryAcl??throw new InvalidDataException(UiText.Get("ClassicSession.TheOriginalThemeDACLIsMissing"));
         var acl=new RawAcl(old.Revision,old.Count+1);
         acl.InsertAce(0,new CommonAce(AceFlags.None,AceQualifier.AccessDenied,4,new SecurityIdentifier(WellKnownSidType.InteractiveSid,null),false,null));
         for(int i=0;i<old.Count;i++)acl.InsertAce(i+1,old[i]);
@@ -76,10 +76,10 @@ public sealed class ClassicSession
         if(existing!=null)
         {
             if(existing.Status=="Applied" && backend.Read(backend.Change).Fingerprint==existing.Entries.Single().ExpectedAfter)return existing;
-            throw new IOException("Сначала восстановите незавершённое переключение Classic.");
+            throw new IOException(UiText.Get("ClassicSession.RecoverTheInterruptedClassicTransitionFirst"));
         }
         string desired=LockReadAccess(backend.Read(backend.Change).Value!);
-        return transactions.Apply(new Plan{ProfileId="classic-session",ProfileName="Классическая отрисовка",Exclusive=true,Changes=[new(){Kind=ChangeKind.ThemeSection,Target=backend.Change.Target,ValueKind="ThemeSection",Value=desired,Description="Включить классическую отрисовку в текущем сеансе"}]});
+        return transactions.Apply(new Plan{ProfileId="classic-session",ProfileName=UiText.Get("ClassicSession.ClassicRendering"),Exclusive=true,Changes=[new(){Kind=ChangeKind.ThemeSection,Target=backend.Change.Target,ValueKind="ThemeSection",Value=desired,Description=UiText.Get("ClassicSession.EnableClassicRenderingInThisSession")}]});
     }
     public Receipt? Restore()
     {
@@ -92,18 +92,18 @@ public sealed class ClassicSession
         var active=transactions.History().FirstOrDefault(r=>r.Status!="RolledBack");
         if(restore&&active==null)return;
         if(!restore&&active?.Status=="Applied"&&backend.Read(backend.Change).Fingerprint==active.Entries.Single().ExpectedAfter)return;
-        string cli=DesktopController.FindHelper()??throw new FileNotFoundException("CLI не найден");
+        string cli=DesktopController.FindHelper()??throw new FileNotFoundException(UiText.Get("ClassicSession.TheCLIIsMissing"));
         var start=new ProcessStartInfo(cli){UseShellExecute=true,Verb="runas",WindowStyle=ProcessWindowStyle.Hidden};
         foreach(var argument in new[]{restore?"classic-session-restore":"classic-session-apply","--session",session.ToString(),"--accept-experimental"})start.ArgumentList.Add(argument);
-        using var child=Process.Start(start)??throw new IOException("Помощник Classic не запущен");await child.WaitForExitAsync();
-        if(child.ExitCode!=0)throw new IOException("Не удалось переключить классическую отрисовку.");
+        using var child=Process.Start(start)??throw new IOException(UiText.Get("ClassicSession.TheClassicHelperDidNotStart"));await child.WaitForExitAsync();
+        if(child.ExitCode!=0)throw new IOException(UiText.Get("ClassicSession.CouldNotSwitchClassicRendering"));
     }
     private sealed class SectionBackend(int session):IChangeBackend
     {
         public Change Change=>new(){Kind=ChangeKind.ThemeSection,Target="Windows.ThemeSection."+session};
         public void Validate(Change change)
         {
-            if(change.Kind!=ChangeKind.ThemeSection||change.Target!=Change.Target)throw new InvalidDataException("Неожиданный объект темы");
+            if(change.Kind!=ChangeKind.ThemeSection||change.Target!=Change.Target)throw new InvalidDataException(UiText.Get("ClassicSession.UnexpectedThemeObject"));
             if(change.Value!=null)_=new RawSecurityDescriptor(change.Value);
         }
         public ValueState Read(Change change)
@@ -116,7 +116,7 @@ public sealed class ClassicSession
         }
         public void Write(Change change,ValueState state)
         {
-            Validate(change);if(!state.Exists||state.Kind!="ThemeSection")throw new InvalidDataException("Нет резервной копии DACL темы");
+            Validate(change);if(!state.Exists||state.Kind!="ThemeSection")throw new InvalidDataException(UiText.Get("ClassicSession.TheBackupOfTheThemeDACLIs"));
             var descriptor=new RawSecurityDescriptor(state.Value!);var bytes=new byte[descriptor.BinaryLength];descriptor.GetBinaryForm(bytes,0);
             using var section=Open(session,0x40000);
             if(!SetKernelObjectSecurity(section,4,bytes))throw new Win32Exception(Marshal.GetLastWin32Error());

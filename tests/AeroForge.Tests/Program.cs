@@ -15,8 +15,10 @@ string NewState() => Path.Combine(scratch, Guid.NewGuid().ToString("N"));
 (string Directory,XpThemePack Pack) XpFixture()
 {
     string directory=NewState();Directory.CreateDirectory(directory);
-    string content=Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,"../../../../../content"));
-    byte[] icon=File.ReadAllBytes(Path.Combine(content,"classic95/mycomputer_1_G3M_icon.ico"));
+    // An original single-pixel magenta icon is sufficient for this resource-only fixture.
+    byte[] icon = Convert.FromHexString(
+        "00000100010001010000010020003000000016000000" +
+        "28000000010000000200000001002000000000000400000000000000000000000000000000000000FF00FFFF00000000");
     byte[] pe=new byte[128];pe[0]=77;pe[1]=90;pe[60]=64;pe[64]=80;pe[65]=69;
     File.WriteAllBytes(Path.Combine(directory,"test.msstyles"),pe);File.WriteAllBytes(Path.Combine(directory,"test.ico"),icon);
     var manifest=new XpPackManifest{Source="unit-test fixture, not a visual style",License="test only",Style="test.msstyles",
@@ -24,6 +26,49 @@ string NewState() => Path.Combine(scratch, Guid.NewGuid().ToString("N"));
         Icons=new[]{"computer","documents","network","recycle-empty","recycle-full","programs","settings","search","help","run","shutdown","printers","start"}.ToDictionary(r=>r,_=>"test.ico")};
     return(directory,XpThemePack.Read(manifest,directory));
 }
+
+Test("application language defaults to Russian and persists both choices", () =>
+{
+    string preference = Path.Combine(NewState(), "language.json");
+    try
+    {
+        UiText.LoadLanguage(preference);
+        Assert(UiText.Language == "ru" && UiText.Get("NativeMainForm.Appearances") == "Оформления");
+        UiText.SaveLanguage("en", preference);
+        Assert(UiText.Language == "ru");
+        UiText.LoadLanguage(preference);
+        Assert(UiText.Language == "en" && UiText.Get("NativeMainForm.Appearances") == "Appearances");
+        Assert(UiText.Get("Language.Tab") == "Settings");
+        UiText.SaveLanguage("ru", preference);
+        UiText.LoadLanguage(preference);
+        Assert(UiText.Language == "ru" && UiText.Get("Language.Tab") == "Настройки");
+        File.WriteAllText(preference, "{");
+        UiText.LoadLanguage(preference);
+        Assert(UiText.Language == "ru");
+    }
+    finally
+    {
+        UiText.LoadLanguage(NewState());
+    }
+});
+
+Test("synthetic XP resources restore previous staged state without their source", () =>
+{
+    var fixture = XpFixture();
+    var changes = fixture.Pack.Stage().ToArray();
+    var stagedIcon = changes.Single(change => change.Target == "XP/test.ico");
+    var backend = new MemoryBackend();
+    var prior = ValueState.Desired(FileChange(stagedIcon.Target, "prior staged asset"));
+    backend.Write(stagedIcon, prior);
+    var journal = new TransactionManager(backend, NewState());
+    var receipt = journal.Apply(PlanOf(changes));
+    File.Delete(Path.Combine(fixture.Directory, "test.ico"));
+    File.Delete(Path.Combine(fixture.Directory, "test.msstyles"));
+    Assert(backend.Read(stagedIcon).Fingerprint != prior.Fingerprint);
+    Assert(journal.Rollback(receipt.FilePath).Status == "RolledBack");
+    Assert(backend.Read(stagedIcon).Fingerprint == prior.Fingerprint);
+    Assert(!backend.Read(changes.Single(change => change.Target == "XP/test.msstyles")).Exists);
+});
 
 Test("Classic colors and assets build a native profile without critical process modules", () =>
 {
@@ -89,6 +134,7 @@ Test("synthetic resource package prepares offline, rejects revocation and surviv
     string prepared = first.PrepareAsync(package, archive).GetAwaiter().GetResult();
     Assert(Hashing.File(archive) == package.Sha256);
     File.Delete(archive);
+    Assert(first.PrepareAsync(package).GetAwaiter().GetResult() == prepared);
     var second = new ResourcePackageCache(cached, Path.Combine(root, "offline"));
     var revoked = package with { Approved = false };
     Throws(() => second.PrepareAsync(revoked).GetAwaiter().GetResult());

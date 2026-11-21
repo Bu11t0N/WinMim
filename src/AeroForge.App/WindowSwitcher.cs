@@ -1,3 +1,4 @@
+using AeroForge.Core;
 ﻿using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -18,19 +19,19 @@ public sealed class WindowSwitcher : Window
     private readonly TextBlock _state;
     public WindowSwitcher()
     {
-        Title = "AeroForge · Переключатель окон"; Width = 540; Height = 320; WindowStartupLocation = WindowStartupLocation.CenterScreen;
+        Title = UiText.Get("WindowSwitcher.AeroForgeWindowSwitcher"); Width = 540; Height = 320; WindowStartupLocation = WindowStartupLocation.CenterScreen;
         
         _callback = Hook;
         var panel = new StackPanel { Margin = new Thickness(28) }; Content = panel;
-        panel.Children.Add(new TextBlock { Text = "Классический Alt+Tab", FontSize = 26, FontWeight = FontWeights.SemiBold });
-        panel.Children.Add(new TextBlock { Text = "Tab — следующее окно, Shift+Tab — предыдущее. Отпустите Alt для выбора. Escape отменяет переключение.", TextWrapping = TextWrapping.Wrap, LineHeight = 23, Margin = new Thickness(0, 17, 0, 20) });
-        var enable = new CheckBox { Content = "Использовать переключатель AeroForge", FontSize = 15 };
-        panel.Children.Add(enable); _state = new TextBlock { Text = "Отключён. Сочетания клавиш Windows работают как обычно.", TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 20, 0, 0), Foreground = SystemColors.GrayTextBrush }; panel.Children.Add(_state);
+        panel.Children.Add(new TextBlock { Text = UiText.Get("WindowSwitcher.ClassicAltTab"), FontSize = 26, FontWeight = FontWeights.SemiBold });
+        panel.Children.Add(new TextBlock { Text = UiText.Get("WindowSwitcher.TabSelectsTheNextWindowAndShift"), TextWrapping = TextWrapping.Wrap, LineHeight = 23, Margin = new Thickness(0, 17, 0, 20) });
+        var enable = new CheckBox { Content = UiText.Get("WindowSwitcher.UseTheAeroForgeWindowSwitcher"), FontSize = 15 };
+        panel.Children.Add(enable); _state = new TextBlock { Text = UiText.Get("WindowSwitcher.OffWindowsKeyboardShortcutsWorkAsUsual"), TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 20, 0, 0), Foreground = SystemColors.GrayTextBrush }; panel.Children.Add(_state);
         enable.Checked += (_, _) =>
         {
             _hook = SetWindowsHookEx(13, _callback, GetModuleHandle(null), 0);
-            if (_hook == IntPtr.Zero) { enable.IsChecked = false; MessageBox.Show("Не удалось подключить клавиатурный обработчик: " + Marshal.GetLastWin32Error()); }
-            else _state.Text = "Включён до закрытия этого окна. Обработчик использует только Alt+Tab и Escape; клавиши не сохраняются.";
+            if (_hook == IntPtr.Zero) { enable.IsChecked = false; MessageBox.Show(UiText.Get("WindowSwitcher.CouldNotStartTheKeyboardHandler") + Marshal.GetLastWin32Error()); }
+            else _state.Text = UiText.Get("WindowSwitcher.ActiveUntilThisWindowClosesItHandles");
         };
         enable.Unchecked += (_, _) => Disable(); Closed += (_, _) => Disable();
     }
@@ -38,7 +39,7 @@ public sealed class WindowSwitcher : Window
     {
         if (_hook != IntPtr.Zero) { UnhookWindowsHookEx(_hook); _hook = IntPtr.Zero; }
         _overlay?.Close(); _overlay = null;
-        _state.Text = "Отключён. Сочетания клавиш Windows работают как обычно.";
+        _state.Text = UiText.Get("WindowSwitcher.OffWindowsKeyboardShortcutsWorkAsUsual");
     }
     private IntPtr Hook(int code, IntPtr message, IntPtr pointer)
     {

@@ -70,7 +70,7 @@ public sealed class TransactionManager(IChangeBackend backend, string journalRoo
         Directory.CreateDirectory(JournalRoot);
         var lockPath = SafePath.Under(JournalRoot, "transaction.lock");
         try { return new FileStream(lockPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None); }
-        catch (IOException ex) { throw new InvalidOperationException("Другой процесс выполняет изменение. Дождитесь его завершения.", ex); }
+        catch (IOException ex) { throw new InvalidOperationException(UiText.Get("Transactions.AnotherProcessIsMakingAChangeWait"), ex); }
     }
     public IReadOnlyList<Receipt> History(bool includeEntries=true)
     {
@@ -100,7 +100,7 @@ public sealed class TransactionManager(IChangeBackend backend, string journalRoo
         using var transactionLock = Lock();
         var history = History(false);
         if (history.Any(r => r.Status is not ("Applied" or "RolledBack")))
-            throw new InvalidOperationException("Есть незавершённая операция. Сначала восстановите её в разделе «Восстановление».");
+            throw new InvalidOperationException(UiText.Get("Transactions.AnOperationIsIncompleteOpenRecoveryTo"));
         if (plan.Exclusive && history.FirstOrDefault(r => r.Status == "Applied") is { } active)
         {
             active=ReadReceipt(active.FilePath);
@@ -115,7 +115,7 @@ public sealed class TransactionManager(IChangeBackend backend, string journalRoo
                 .SelectMany(r=>ReadReceipt(r.FilePath).Entries).GroupBy(entry=>entry.Change.Identity).Select(group=>group.First());
             if (!allowProfileUpdate || active.ProfileId != plan.ProfileId
                 || owned.Any(entry => !plan.AdoptUserPreferences.Contains(entry.Change.Identity) && backend.Read(entry.Change).Fingerprint != entry.ExpectedAfter))
-                throw new InvalidOperationException("Оформление уже применено или изменено после применения. Сначала верните его настройки; чужие изменения будут сохранены.");
+                throw new InvalidOperationException(UiText.Get("Transactions.TheAppearanceIsActiveOrHasChanged"));
             // Append an update layer; never replace the original undo snapshot.
         }
         var receipt = new Receipt { ProfileId = plan.ProfileId, ProfileName = plan.ProfileName, Status = "Applying" };
@@ -150,7 +150,7 @@ public sealed class TransactionManager(IChangeBackend backend, string journalRoo
         {
             receipt.Error = ex.Message;
             RollbackInternal(receipt, progress);
-            throw new ApplyException("Применение прервано; состояние отката: " + receipt.Status, receipt, ex);
+            throw new ApplyException(UiText.Get("Transactions.ApplyWasInterruptedRollbackStatus") + receipt.Status, receipt, ex);
         }
     }
     // Stop at another owner's latest layer. Older entries can depend on it.
@@ -163,14 +163,14 @@ public sealed class TransactionManager(IChangeBackend backend, string journalRoo
         {
             int lastOwned = Array.FindLastIndex(active, receipt => owns(receipt));
             if (lastOwned >= 0 && active.Take(lastOwned + 1).Any(receipt => !owns(receipt)))
-                throw new IOException("Более поздняя операция блокирует возврат. Сначала восстановите её журнал.");
+                throw new IOException(UiText.Get("Transactions.AMoreRecentOperationBlocksRecoveryRestore"));
         }
         foreach (var receipt in active)
         {
             if (owns is not null && !owns(receipt)) return;
             var result = RestoreReceipt(ReadReceipt(receipt.FilePath), progress, preserveUserChanges);
             if (result.Status != "RolledBack")
-                throw new IOException("Журнал требует повторного восстановления: " + receipt.ProfileName + " (" + receipt.Id + "). "
+                throw new IOException(UiText.Get("Transactions.TheJournalNeedsAnotherRecoveryAttempt") + receipt.ProfileName + " (" + receipt.Id + "). "
                     + string.Join(" ", result.Entries.Where(entry => entry.Error is not null).Select(entry => entry.Error)));
         }
     }
@@ -185,7 +185,7 @@ public sealed class TransactionManager(IChangeBackend backend, string journalRoo
         var receipt = ReadReceipt(history.Single(r => r.FilePath.Equals(safe, StringComparison.OrdinalIgnoreCase)).FilePath);
         if (receipt.Status == "RolledBack") return receipt;
         var latest = history.FirstOrDefault(r => r.Status != "RolledBack");
-        if (latest?.Id != receipt.Id) throw new InvalidOperationException("Сначала откатите более позднюю операцию.");
+        if (latest?.Id != receipt.Id) throw new InvalidOperationException(UiText.Get("Transactions.RollBackTheNewerOperationFirst"));
         return RestoreReceipt(receipt, progress, preserveUserChanges);
     }
 
@@ -202,7 +202,7 @@ public sealed class TransactionManager(IChangeBackend backend, string journalRoo
             if (entry.State is "RolledBack" or "Preserved") continue;
             try
             {
-                progress?.Report("Восстановление: " + entry.Change.Description);
+                progress?.Report(UiText.Get("Transactions.Restoring") + entry.Change.Description);
                 string current = backend.Read(entry.Change).Fingerprint;
                 if (current != entry.Before.Fingerprint)
                 {
@@ -210,11 +210,11 @@ public sealed class TransactionManager(IChangeBackend backend, string journalRoo
                     {
                         if(preserveUserChanges?.Contains(entry.Change.Identity)==true)
                         {entry.State="Preserved";entry.Error=null;Save(receipt);continue;}
-                        throw new IOException("Значение изменено другой программой. Оно сохранено: " + entry.Change.Target);
+                        throw new IOException(UiText.Get("Transactions.AnotherProgramChangedThisValueTheChange") + entry.Change.Target);
                     }
                     backend.Write(entry.Change, entry.Before);
                     if (backend.Read(entry.Change).Fingerprint != entry.Before.Fingerprint)
-                        throw new IOException("Проверка восстановления не пройдена: " + entry.Change.Target);
+                        throw new IOException(UiText.Get("Transactions.RecoveryVerificationFailed") + entry.Change.Target);
                 }
                 entry.State = "RolledBack"; entry.Error = null;
             }

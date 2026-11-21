@@ -19,10 +19,10 @@ public sealed class ThemePreparation(string content)
 
     public static string[] Components(AppearanceTarget theme) => theme.Mode switch
     {
-        AppearanceMode.Seven => ["Open-Shell 4.4.198", "SecureUxTheme 4.0.0", "OpenGlass и ресурсы Seven — требуется подтверждённый способ подготовки"],
-        AppearanceMode.Classic when theme.Id == "windows-xp" => ["Open-Shell 4.4.198", "SecureUxTheme 4.0.0", "Личный пакет Luna Blue — подключается пользователем при наличии прав"],
+        AppearanceMode.Seven => ["Open-Shell 4.4.198", "SecureUxTheme 4.0.0", UiText.Get("ThemePreparation.OpenGlassAndSevenResourcesAnApprovedPreparation")],
+        AppearanceMode.Classic when theme.Id == "windows-xp" => ["Open-Shell 4.4.198", "SecureUxTheme 4.0.0", UiText.Get("ThemePreparation.PersonalLunaBluePackSupplyAPack")],
         AppearanceMode.Classic when theme.Id == "windows-95" => ["Open-Shell 4.4.198"],
-        AppearanceMode.Classic => ["Open-Shell 4.4.198", "RetroBar — входит в WinMim"],
+        AppearanceMode.Classic => ["Open-Shell 4.4.198", UiText.Get("ThemePreparation.RetroBarIncludedWithWinMim")],
         _ => []
     };
 
@@ -33,7 +33,7 @@ public sealed class ThemePreparation(string content)
             DesktopController.EnsureLab();
             if (RuntimeInformation.OSArchitecture != Architecture.X64 || !Environment.Is64BitProcess ||
                 ClassicSession.ActiveSession != Process.GetCurrentProcess().SessionId)
-                return "Нужен обычный локальный сеанс Windows x64.";
+                return UiText.Get("ThemePreparation.AStandardLocalWindowsX64SessionIs");
             return "";
         }
         catch (InvalidOperationException error) { return error.Message; }
@@ -42,12 +42,12 @@ public sealed class ThemePreparation(string content)
     public async Task PrepareAsync(string target, IProgress<string>? progress = null, CancellationToken cancellationToken = default)
     {
         var theme = AppearanceCatalog.Select(target).Target;
-        if (!theme.Available) throw new InvalidOperationException("Подготовка для этой темы пока недоступна.");
+        if (!theme.Available) throw new InvalidOperationException(UiText.Get("ThemePreparation.PreparationIsCurrentlyUnavailableForThisTheme"));
         string disabled = DisabledReason();
         if (disabled.Length != 0) throw new InvalidOperationException(disabled);
         using var operation = await ClassicOperationLock.AcquireAsync(Classic95Setup.Data, cancellationToken);
         if (Classic95Setup.HasRecoveryWork || new DesktopController().HasRecoveryWork)
-            throw new InvalidOperationException("Перед установкой зависимостей верните прежнее оформление.");
+            throw new InvalidOperationException(UiText.Get("ThemePreparation.RestoreThePreviousAppearanceBeforeInstallingDependencies"));
 
         await PrepareDependencyAsync("open-shell", OpenShellReady, progress, cancellationToken);
         if (theme.Mode == AppearanceMode.Seven || theme.Id == "windows-xp")
@@ -60,7 +60,7 @@ public sealed class ThemePreparation(string content)
         if (!File.Exists(OpenShellExecutable)) return false;
         var version = FileVersionInfo.GetVersionInfo(OpenShellExecutable);
         if ((version.FileMajorPart, version.FileMinorPart, version.FileBuildPart) != (4, 4, 198))
-            throw new InvalidOperationException("Установлена другая версия Open-Shell. WinMim оставит её и настройки без изменений. Для этой сборки проверяется 4.4.198.");
+            throw new InvalidOperationException(UiText.Get("ThemePreparation.ADifferentOpenShellVersionIsInstalled"));
         return true;
     }
 
@@ -74,23 +74,23 @@ public sealed class ThemePreparation(string content)
     private async Task PrepareDependencyAsync(string id, Func<bool> isReady, IProgress<string>? progress, CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
-        progress?.Report($"Проверяется {id}…");
+        progress?.Report(UiText.Format("ThemePreparation.Checking0", id));
         if (isReady())
         {
-            progress?.Report($"{id}: совместимая версия уже установлена.");
+            progress?.Report(UiText.Format("ThemePreparation.0ACompatibleVersionIsAlreadyInstalled", id));
             return;
         }
         bool shell = id == "open-shell";
         if (!shell && new[] { "SecureUxTheme.dll", "SecureUxTheme4.dll" }.Any(name => File.Exists(Path.Combine(SystemDirectory, name))))
-            throw new InvalidOperationException("Обнаружен другой SecureUxTheme. Автоматическая миграция не подтверждена. Установленный компонент сохранён.");
+            throw new InvalidOperationException(UiText.Get("ThemePreparation.AnotherSecureUxThemeVersionIsInstalledAutomaticMigration"));
         if (shell && OpenShellRegistered())
-            throw new InvalidOperationException("Обнаружена другая или неполная установка Open-Shell. Автоматическое обновление не выполняется.");
+            throw new InvalidOperationException(UiText.Get("ThemePreparation.AnExistingOrIncompleteOpenShellInstallation"));
 
         var package = ReadApprovedDependency(id);
         string downloaded;
         try { downloaded = await new PackageCache(Cache).DownloadAsync(package, progress, token); }
-        catch (HttpRequestException error) { throw new IOException($"{package.Name}: нет доступа к официальному источнику. Повторите при доступной сети. Проверенный кеш работает без сети.", error); }
-        catch (TaskCanceledException error) when (!token.IsCancellationRequested) { throw new IOException($"{package.Name}: истекло время загрузки. Можно повторить подготовку.", error); }
+        catch (HttpRequestException error) { throw new IOException(UiText.Format("ThemePreparation.0TheOfficialSourceIsUnavailableRetry", package.Name), error); }
+        catch (TaskCanceledException error) when (!token.IsCancellationRequested) { throw new IOException(UiText.Format("ThemePreparation.0TheDownloadTimedOutYouCan", package.Name), error); }
         token.ThrowIfCancellationRequested();
 
         Directory.CreateDirectory(State);
@@ -107,9 +107,9 @@ public sealed class ThemePreparation(string content)
                 using var source = PackageCache.OpenVerified(downloaded, package.Sha256);
                 var extract = new ProcessStartInfo(downloaded) { WorkingDirectory = staging, UseShellExecute = false, CreateNoWindow = true };
                 extract.ArgumentList.Add("extract64");
-                using var extractor = Process.Start(extract) ?? throw new IOException("Не удалось распаковать MSI Open-Shell.");
+                using var extractor = Process.Start(extract) ?? throw new IOException(UiText.Get("ThemePreparation.CouldNotExtractTheOpenShellMSI"));
                 await extractor.WaitForExitAsync();
-                if (extractor.ExitCode != 0) throw new IOException("Open-Shell не смог распаковать x64 MSI.");
+                if (extractor.ExitCode != 0) throw new IOException(UiText.Get("ThemePreparation.OpenShellFailedToExtractTheX64"));
                 msi = SafePath.Under(staging, OpenShellMsi);
                 msiHash = OpenShellMsiHash;
             }
@@ -117,7 +117,7 @@ public sealed class ThemePreparation(string content)
             using var verified = PackageCache.OpenVerified(msi, msiHash);
             token.ThrowIfCancellationRequested();
             if (shell) CheckOpenShellStartup();
-            progress?.Report($"{package.Name}: Windows может запросить права администратора. После запуска установщика дождитесь его завершения.");
+            progress?.Report(UiText.Format("ThemePreparation.0WindowsMayAskForAdministratorApproval", package.Name));
             var start = new ProcessStartInfo(Path.Combine(SystemDirectory, "msiexec.exe"))
             { Verb = "runas", UseShellExecute = true, WorkingDirectory = SystemDirectory };
             foreach (string argument in new[] { "/i", msi, "/quiet", "/norestart" }) start.ArgumentList.Add(argument);
@@ -127,9 +127,9 @@ public sealed class ThemePreparation(string content)
                 start.ArgumentList.Add("NOSTART=1");
             }
             Process installer;
-            try { installer = Process.Start(start) ?? throw new IOException("Windows Installer не запустился."); }
+            try { installer = Process.Start(start) ?? throw new IOException(UiText.Get("ThemePreparation.WindowsInstallerDidNotStart")); }
             catch (Win32Exception error) when (error.NativeErrorCode == 1223)
-            { throw new OperationCanceledException("Подтверждение UAC отменено. Проверенный пакет сохранён для повтора.", error); }
+            { throw new OperationCanceledException(UiText.Get("ThemePreparation.UACApprovalWasCanceledTheVerifiedPackage"), error); }
             using (installer)
             {
                 await installer.WaitForExitAsync();
@@ -137,14 +137,14 @@ public sealed class ThemePreparation(string content)
                 {
                     JsonFile.Write(RestartMarker(id), boot);
                     if (shell) SetOpenShellStartupDefault();
-                    throw new InvalidOperationException($"{package.Name}: для завершения требуется перезагрузка. Перезагрузите Windows в удобное время и проверьте требования.");
+                    throw new InvalidOperationException(UiText.Format("ThemePreparation.0ARestartIsRequiredToFinish", package.Name));
                 }
-                if (installer.ExitCode == 1602) throw new OperationCanceledException("Установка отменена. Проверенный пакет сохранён для повтора.");
-                if (installer.ExitCode != 0) throw new IOException($"{package.Name}: Windows Installer завершился с кодом {installer.ExitCode}. Можно повторить подготовку.");
+                if (installer.ExitCode == 1602) throw new OperationCanceledException(UiText.Get("ThemePreparation.InstallationWasCanceledTheVerifiedPackageIs"));
+                if (installer.ExitCode != 0) throw new IOException(UiText.Format("ThemePreparation.0WindowsInstallerExitedWithCode1", package.Name, installer.ExitCode));
             }
-            if (!isReady()) throw new IOException($"{package.Name}: после установки ожидаемый компонент не обнаружен.");
+            if (!isReady()) throw new IOException(UiText.Format("ThemePreparation.0TheExpectedComponentWasNotFound", package.Name));
             if (shell) SetOpenShellStartupDefault();
-            progress?.Report($"{package.Name}: установленная версия проверена.");
+            progress?.Report(UiText.Format("ThemePreparation.0InstalledVersionVerified", package.Name));
             token.ThrowIfCancellationRequested();
         }
         finally
@@ -161,9 +161,9 @@ public sealed class ThemePreparation(string content)
     private Dependency ReadApprovedDependency(string id)
     {
         // The installed lock and the runtime catalog must agree. Only approved adapters can install a package.
-        string root = Path.GetDirectoryName(content) ?? throw new InvalidDataException("Отсутствует корень WinMim.");
+        string root = Path.GetDirectoryName(content) ?? throw new InvalidDataException(UiText.Get("ThemePreparation.WinMimSInstallationFolderIsMissing"));
         var pinned = JsonFile.Read<DependencyLock>(SafePath.Under(root, "third-party.lock.json")).OptionalDependencies
-            .SingleOrDefault(item => item.Id == id) ?? throw new InvalidDataException("Поставщик не утверждён в lock-файле.");
+            .SingleOrDefault(item => item.Id == id) ?? throw new InvalidDataException(UiText.Get("ThemePreparation.TheVendorIsNotApprovedInThe"));
         var catalog = new ContentStore(content).Load().Dependencies.Single(item => item.Id == id);
         string repo = id == "open-shell" ? "Open-Shell/Open-Shell-Menu" : "namazso/SecureUxTheme";
         string version = id == "open-shell" ? "4.4.198" : "4.0.0";
@@ -173,7 +173,7 @@ public sealed class ThemePreparation(string content)
         if (pinned.SourceUrl != $"https://github.com/{repo}" || pinned.Version != version || pinned.FileName != name ||
             pinned.DownloadUrl != $"{pinned.SourceUrl}/releases/download/v{version}/{name}" || catalog.Version != version ||
             catalog.DownloadUrl != pinned.DownloadUrl || catalog.Sha256 != pinned.Sha256 || pinned.Sha256 != hash || catalog.FileName != name)
-            throw new InvalidDataException("Метаданные пакета не совпадают с утверждённым каналом.");
+            throw new InvalidDataException(UiText.Get("ThemePreparation.PackageMetadataDoesNotMatchTheApproved"));
         return pinned;
     }
 
@@ -201,7 +201,7 @@ public sealed class ThemePreparation(string content)
         using var settings = Registry.CurrentUser.OpenSubKey(OpenShellSettings);
         var existing = settings?.GetValue("AutoStart");
         if (existing is not null and not 0)
-            throw new InvalidOperationException("Найдено пользовательское значение автозапуска Open-Shell. WinMim сохраняет его; автоматическая установка остановлена.");
+            throw new InvalidOperationException(UiText.Get("ThemePreparation.AUserDefinedOpenShellStartupSetting"));
     }
 
     private static void SetOpenShellStartupDefault()
@@ -215,7 +215,7 @@ public sealed class ThemePreparation(string content)
     {
         string path = RestartMarker(id);
         if (File.Exists(path) && JsonFile.Read<Guid>(path) == BootIdentifier())
-            throw new InvalidOperationException($"{id}: перезагрузите Windows, затем повторите проверку требований.");
+            throw new InvalidOperationException(UiText.Format("ThemePreparation.0RestartWindowsThenCheckTheRequirements", id));
     }
 
     // The boot identity persists across process restarts and changes after a full reboot.
@@ -223,7 +223,7 @@ public sealed class ThemePreparation(string content)
     {
         byte[] info = new byte[32];
         if (NtQuerySystemInformation(90, info, info.Length, out _) != 0)
-            throw new IOException("Невозможно определить, была ли Windows перезагружена.");
+            throw new IOException(UiText.Get("ThemePreparation.CouldNotDetermineWhetherWindowsWasRestarted"));
         return new Guid(info.AsSpan(0, 16));
     }
 

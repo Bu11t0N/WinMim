@@ -11,6 +11,7 @@ public partial class App : Application
     protected override async void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
+        UiText.LoadLanguage();
         System.Windows.Forms.Application.EnableVisualStyles();
         System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
         DispatcherUnhandledException += (_, error) => { MessageBox.Show(error.Exception.Message, "WinMim", MessageBoxButton.OK, MessageBoxImage.Error); error.Handled = true; };
@@ -29,15 +30,15 @@ public partial class App : Application
                         if (e.Args[0] == "--restore-theme")
                             await new SevenSetup(content).RestoreAsync();
                     });
-                    MessageBox.Show("Восстановление завершено.",
-                        "Восстановление WinMim", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show(UiText.Get("App.xaml.RecoveryCompleted"),
+                        UiText.Get("App.xaml.WinMimRecovery"), MessageBoxButton.OK, MessageBoxImage.Information);
                     Shutdown();
                 }
                 catch (Exception error)
                 {
                     MessageBox.Show(error is AggregateException failures
                         ? string.Join(Environment.NewLine, failures.Flatten().InnerExceptions.Select(failure => failure.Message))
-                        : error.Message, "Восстановление WinMim", MessageBoxButton.OK, MessageBoxImage.Error);
+                        : error.Message, UiText.Get("App.xaml.WinMimRecovery"), MessageBoxButton.OK, MessageBoxImage.Error);
                     Shutdown(1);
                 }
                 return;

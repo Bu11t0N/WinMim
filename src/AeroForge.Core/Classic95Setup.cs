@@ -57,7 +57,7 @@ public sealed class Classic95Setup
     public static void Guard()
     {
         DesktopController.EnsureLab();
-        if(WindowsBackend.Inspect().Build!=19044)throw new InvalidOperationException("Классические профили пока испытываются только на LTSC 2021 build 19044.");
+        if(WindowsBackend.Inspect().Build!=19044)throw new InvalidOperationException(UiText.Get("Classic95Setup.ClassicProfilesAreBeingTestedOnWindows"));
     }
     public SetupCheck[] Check(string target)
     {
@@ -65,19 +65,19 @@ public sealed class Classic95Setup
         var results = new List<SetupCheck>();
         void Verify(string name, Action check)
         {
-            try { check(); results.Add(new(name, true, "Готово")); }
+            try { check(); results.Add(new(name, true, UiText.Get("Classic95Setup.Ready"))); }
             catch (Exception error) { results.Add(new(name, false, error.Message)); }
         }
 
         Verify("Windows", Guard);
         if (results[0].Ready)
-            Verify("Требования оформления", () => Prepare(theme));
+            Verify(UiText.Get("Classic95Setup.AppearanceRequirements"), () => Prepare(theme));
         else
         {
             Verify("Open-Shell", RequireOpenShell);
             if (theme.Xp)
             {
-                Verify("Пакет Luna Blue", () => XpThemePack.ReadDefault(content));
+                Verify(UiText.Get("Classic95Setup.LunaBluePack"), () => XpThemePack.ReadDefault(content));
                 Verify("SecureUxTheme", () => XpRuntime.Check(content));
             }
         }
@@ -87,21 +87,21 @@ public sealed class Classic95Setup
     private static void RequireOpenShell()
     {
         if (!ThemePreparation.OpenShellReady())
-            throw new FileNotFoundException("Для установки Open-Shell нажмите «Подготовить тему».");
+            throw new FileNotFoundException(UiText.Get("Classic95Setup.ClickPrepareThemeToInstallOpenShell"));
     }
 
     private (Plan Desktop, Plan Modules, XpThemePack? Xp) Prepare(ClassicTheme theme)
     {
         if (ReadTransition() is { Phase: not "Applied" })
-            throw new InvalidOperationException("Предыдущая операция прервана. Сначала запустите восстановление оформления.");
+            throw new InvalidOperationException(UiText.Get("Classic95Setup.ThePreviousOperationWasInterruptedRestoreThe"));
         if (store is null || catalog is null)
-            throw new InvalidOperationException("Каталог WinMim нужен для применения оформления.");
+            throw new InvalidOperationException(UiText.Get("Classic95Setup.TheWinMimCatalogIsRequiredToApply"));
         if (new DesktopController().HasRecoveryWork)
-            throw new InvalidOperationException("Сначала верните прежнее оформление Windows 7.");
+            throw new InvalidOperationException(UiText.Get("Classic95Setup.RestoreThePreviousAppearanceBeforeApplyingWindows"));
         if (ClassicSession.ActiveSession < 1 || Process.GetCurrentProcess().SessionId != ClassicSession.ActiveSession)
-            throw new InvalidOperationException("Войдите в активный локальный сеанс Windows.");
+            throw new InvalidOperationException(UiText.Get("Classic95Setup.SignInToTheActiveLocalWindows"));
         if (!File.Exists(DesktopController.FindHelper()))
-            throw new FileNotFoundException("Отсутствует помощник WinMim. Восстановите установку из MSI.");
+            throw new FileNotFoundException(UiText.Get("Classic95Setup.TheWinMimHelperIsMissingRepairThe"));
         RetroBarHost.EnsureNoForeignInstance(root);
         var errors=store.VerifyAll(catalog);if(errors.Length!=0)throw new InvalidDataException(string.Join("; ",errors));
         RequireOpenShell();
@@ -139,14 +139,14 @@ public sealed class Classic95Setup
         Receipt? desktopReceipt = null;
         try
         {
-            progress?.Report("Остановка предыдущего оформления");
+            progress?.Report(UiText.Get("Classic95Setup.StoppingThePreviousAppearance"));
             await StopMenuAsync();
             await host.WithDesktopStoppedAsync(async()=>
             {
             await host.StopAsync();
-            progress?.Report(theme.Xp?"Возврат доступа к визуальным стилям Luna":"Включение штатной классической отрисовки");await switchSession(theme.Xp);
+            progress?.Report(theme.Xp?UiText.Get("Classic95Setup.RestoringAccessToLunaVisualStyles"):UiText.Get("Classic95Setup.EnablingNativeClassicRendering"));await switchSession(theme.Xp);
             if(theme.Xp)EnsureThemedSession();
-            token.ThrowIfCancellationRequested();progress?.Report("Подготовка классического Проводника и панели задач");
+            token.ThrowIfCancellationRequested();progress?.Report(UiText.Get("Classic95Setup.PreparingClassicExplorerAndTheTaskbar"));
             shellTransactions.Apply(modulePlan,progress,token);
             // No Explorer may consume intermediate theme/cache state during
             // apply or an immediate transaction rollback. Start its host only
@@ -155,7 +155,7 @@ public sealed class Classic95Setup
             if(target!="windows-95")panelTransactions.Apply(RetroBarSettingsBackend.Plan(theme,Path.Combine(root,"QuickLaunch")),progress,token);
             }, () =>
             {
-                progress?.Report("Перезапуск оболочки "+theme.Name);
+                progress?.Report(UiText.Get("Classic95Setup.RestartingTheShellFor")+theme.Name);
                 host.Start();
                 return Task.CompletedTask;
             });
@@ -171,7 +171,7 @@ public sealed class Classic95Setup
             try { await RestoreCoreAsync(progress); }
             catch (Exception recovery)
             {
-                throw new AggregateException("Применение прервано. Возврат можно продолжить из раздела «Восстановление».", original, recovery);
+                throw new AggregateException(UiText.Get("Classic95Setup.ApplyWasInterruptedYouCanResumeRestoration"), original, recovery);
             }
             throw;
         }
@@ -221,45 +221,45 @@ public sealed class Classic95Setup
 
         // Stop owned UI independently. Even if it cannot stop, try to restore the
         // other domains. Do not touch module files while their engine may be live.
-        await AttemptAsync("Панель задач", () => RetroBarHost.StopAsync(root));
-        await AttemptAsync("Меню «Пуск»", StopMenuAsync);
-        await AttemptAsync("Оболочка", () => host.WithDesktopStoppedAsync(async () =>
+        await AttemptAsync(UiText.Get("Classic95Setup.Taskbar"), () => RetroBarHost.StopAsync(root));
+        await AttemptAsync(UiText.Get("Classic95Setup.StartMenu"), StopMenuAsync);
+        await AttemptAsync(UiText.Get("Classic95Setup.Shell"), () => host.WithDesktopStoppedAsync(async () =>
         {
             var preserve = RetroBarSettingsBackend.Fields
                 .Select(key => new Change { Kind = ChangeKind.File, Target = key }.Identity).ToHashSet();
-            await AttemptAsync("Настройки панели", () => UndoAsync(panelTransactions, preserve: preserve));
+            await AttemptAsync(UiText.Get("Classic95Setup.TaskbarSettings"), () => UndoAsync(panelTransactions, preserve: preserve));
 
             bool engineStopped = false;
-            await AttemptAsync("Остановка движка", async () =>
+            await AttemptAsync(UiText.Get("Classic95Setup.StoppingTheEngine"), async () =>
             {
                 await host.StopAsync();
                 engineStopped = true;
             });
-            await AttemptAsync("Настройки рабочего стола", () => UndoAsync(desktopTransactions));
+            await AttemptAsync(UiText.Get("Classic95Setup.DesktopSettings"), () => UndoAsync(desktopTransactions));
             if (engineStopped)
-                await AttemptAsync("Модули", () => UndoAsync(shellTransactions, receipt => receipt.ProfileId is "windows95" or "windowsxp"));
+                await AttemptAsync(UiText.Get("Classic95Setup.Modules"), () => UndoAsync(shellTransactions, receipt => receipt.ProfileId is "windows95" or "windowsxp"));
 
-            await AttemptAsync("Доступ к визуальным стилям", () => switchSession(true));
+            await AttemptAsync(UiText.Get("Classic95Setup.AccessToVisualStyles"), () => switchSession(true));
             ClassicAppearance.NotifyThemeChanged();
             if (transition.Target == "windows-xp") XpDesktopResources.RefreshCursors();
         }, async () =>
         {
             if (errors.Count == 0 && transition.RestartEngine && File.Exists(SafePath.Under(Path.Combine(Data, "Host"), "active-profile.json")))
             {
-                await AttemptAsync("Запуск предыдущего движка", () =>
+                await AttemptAsync(UiText.Get("Classic95Setup.StartingThePreviousEngine"), () =>
                 {
                     if (catalog is null)
-                        throw new FileNotFoundException("Оболочка Windows восстановлена. Для запуска прежних модулей нужен каталог WinMim.");
+                        throw new FileNotFoundException(UiText.Get("Classic95Setup.TheWindowsShellWasRestoredTheWinMim"));
                     host.Start();
                     return Task.CompletedTask;
                 });
             }
         }));
         if (transition.RestartMenu)
-            await AttemptAsync("Запуск меню «Пуск»", () => { StartMenu(); return Task.CompletedTask; });
+            await AttemptAsync(UiText.Get("Classic95Setup.StartingTheStartMenu"), () => { StartMenu(); return Task.CompletedTask; });
         DesktopIconOverrides.Refresh();
         if (errors.Count != 0)
-            throw new AggregateException("Возврат не завершён. Повторный запуск продолжит восстановление.", errors);
+            throw new AggregateException(UiText.Get("Classic95Setup.RecoveryIsIncompleteRunItAgainTo"), errors);
         File.Delete(OperationPath);
     }
     public async Task<bool> ResumeAsync()
@@ -275,15 +275,15 @@ public sealed class Classic95Setup
         if (!IsActive) return false;
         var receipt=desktopTransactions.History().First(r=>r.Status=="Applied");
         var saved=receipt.Entries.Single(e=>e.Change.Kind==ChangeKind.File&&e.Change.Target=="classic-appearance.json");
-        var backend=new WindowsBackend(root);if(backend.Read(saved.Change).Fingerprint!=saved.ExpectedAfter)throw new IOException("Сохранённая палитра Classic изменена.");
+        var backend=new WindowsBackend(root);if(backend.Read(saved.Change).Fingerprint!=saved.ExpectedAfter)throw new IOException(UiText.Get("Classic95Setup.TheSavedClassicPaletteWasChanged"));
         var appearance=ClassicAppearance.Parse(File.ReadAllText(SafePath.Under(root,"classic-appearance.json")));
         if(ActiveTarget=="windows-xp")
         {
             XpRuntime.Check(content);_=XpThemePack.ReadDefault(content);await switchSession(true);EnsureThemedSession();
-            if(!IsUnchanged(shellTransactions,new WindowsBackend(Path.Combine(Data,"Host")),"windowsxp"))throw new IOException("Модули XP изменены после применения; изменения сохранены.");
+            if(!IsUnchanged(shellTransactions,new WindowsBackend(Path.Combine(Data,"Host")),"windowsxp"))throw new IOException(UiText.Get("Classic95Setup.XPModulesChangedAfterApplyTheChanges"));
             var backendDesktop=new DesktopBackend(root,preserveStyleMetrics:true);
             foreach(var entry in receipt.Entries.Where(e=>e.Change.Kind is ChangeKind.File or ChangeKind.VisualStyle))
-                if(backendDesktop.Read(entry.Change).Fingerprint!=entry.ExpectedAfter)throw new IOException("Ресурс или стиль XP изменён после применения: "+entry.Change.Target);
+                if(backendDesktop.Read(entry.Change).Fingerprint!=entry.ExpectedAfter)throw new IOException(UiText.Get("Classic95Setup.XPResourceOrStyleChangedAfterApply")+entry.Change.Target);
             // The style is retained by Windows. Do not overwrite later user
             // appearance edits or rewrite unchanged metrics on every logon.
         }
@@ -299,7 +299,7 @@ public sealed class Classic95Setup
     private static void EnsureThemedSession()
     {
         if(new ClassicSession(ClassicSession.ActiveSession).Inspect().Value!.Contains("(D;;LC;;;IU)",StringComparison.Ordinal))
-            throw new IOException("Доступ к ThemeSection всё ещё ограничен. Восстановите журнал Classic; чужой ACL не изменён.");
+            throw new IOException(UiText.Get("Classic95Setup.ThemeSectionAccessIsStillRestrictedRestoreThe"));
     }
     private static string ShellPath=>Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles),"Open-Shell","StartMenu.exe");
     private static bool IsMenuRunning()

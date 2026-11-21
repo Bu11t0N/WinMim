@@ -3,6 +3,7 @@ using System.Text.Json;
 
 try
 {
+    UiText.LoadLanguage();
     string Get(string flag, string fallback = "") => Array.IndexOf(args, flag) is var i && i >= 0 && i + 1 < args.Length ? args[i + 1] : fallback;
     string defaultContent = Path.Combine(AppContext.BaseDirectory, "content");
     if (!Directory.Exists(defaultContent)) defaultContent = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "content"));
@@ -10,6 +11,26 @@ try
     string root = Get("--root", Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "AeroForge", "Host"));
     string state = Get("--state", Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "AeroForge", "State"));
     string command = args.FirstOrDefault() ?? "help";
+    if (command is "prepare-resource" or "clear-resource-cache")
+    {
+        string manifest = Get("--package");
+        if (string.IsNullOrWhiteSpace(manifest))
+            throw new ArgumentException("Specify the versioned package descriptor with --package FILE.");
+        var package = JsonFile.Read<ResourcePackage>(manifest);
+        string userRoot = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "AeroForge", "Preparation");
+        var packages = new ResourcePackageCache(Path.Combine(userRoot, "ResourceCache"), Path.Combine(userRoot, "PreparedResources"));
+        if (command == "clear-resource-cache")
+        {
+            packages.ClearCachedArchive(package);
+        }
+        else
+        {
+            using var cancel = new CancellationTokenSource();
+            Console.CancelKeyPress += (_, e) => { e.Cancel = true; cancel.Cancel(); };
+            Console.WriteLine(await packages.PrepareAsync(package, args.Contains("--archive") ? Get("--archive") : null, cancel.Token));
+        }
+        return 0;
+    }
     if (command == "prepare-theme")
     {
         if (!args.Contains("--accept-experimental"))
@@ -100,6 +121,9 @@ try
             "desktop-apply requires --accept-experimental. Options: --desktop-root DIR --desktop-state DIR --assets DIR --style FILE --wallpaper FILE --button FILE.\n" +
             "desktop-refresh closes Explorer folder windows. Desktop changes are restricted to AEROFORGE-LAB.");
         Console.WriteLine("Sound lab: sounds-apply / sounds-restore --accept-experimental; sounds-history");
+        Console.WriteLine("Preparation: prepare-theme --target ID --accept-experimental");
+        Console.WriteLine("Authorized resource ZIPs: prepare-resource --package FILE [--archive FILE]; clear-resource-cache --package FILE");
+        Console.WriteLine("Descriptor fields: id, version, source (local:LABEL or the approved GitHub release ZIP URL), sha256, approved.");
         Console.WriteLine("Private lab components: private-extras-inspect, private-extras-install / private-extras-remove --ids games,gadgets,media-center --accept-experimental (elevated)");
         return 0;
     }

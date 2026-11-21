@@ -17,7 +17,7 @@ public sealed class PackageCache(string directory, HttpMessageHandler? transport
         cancellationToken.ThrowIfCancellationRequested();
         if (File.Exists(path) && Hashing.File(path).Equals(dependency.Sha256, StringComparison.OrdinalIgnoreCase))
         {
-            progress?.Report($"{dependency.Name}: проверенный пакет найден в кеше.");
+            progress?.Report(UiText.Format("PackageCache.0VerifiedPackageFoundInTheCache", dependency.Name));
             return path;
         }
         string temp = path + "." + Guid.NewGuid().ToString("N") + ".download";
@@ -40,12 +40,12 @@ public sealed class PackageCache(string directory, HttpMessageHandler? transport
                 {
                     done += read; if (done > limit) throw new IOException("Package exceeds 512 MiB");
                     hash.AppendData(buffer, 0, read); await dst.WriteAsync(buffer.AsMemory(0, read), cancellationToken);
-                    progress?.Report($"{dependency.Name}: {done / 1048576d:F1} МБ");
+                    progress?.Report(UiText.Format("PackageCache.01F1MB", dependency.Name, done / 1048576d));
                 }
                 dst.Flush(true);
             }
             string actual = Convert.ToHexStringLower(hash.GetHashAndReset());
-            if (!actual.Equals(dependency.Sha256, StringComparison.OrdinalIgnoreCase)) throw new InvalidDataException($"{dependency.Name}: SHA-256 не совпадает. Пакет не сохранён. Повторите загрузку из утверждённого источника.");
+            if (!actual.Equals(dependency.Sha256, StringComparison.OrdinalIgnoreCase)) throw new InvalidDataException(UiText.Format("PackageCache.0SHA256MismatchThePackageWas", dependency.Name));
             cancellationToken.ThrowIfCancellationRequested();
             File.Move(temp, path, true); return path;
         }
@@ -59,7 +59,7 @@ public sealed class PackageCache(string directory, HttpMessageHandler? transport
         try
         {
             if (!Convert.ToHexString(SHA256.HashData(file)).Equals(hash, StringComparison.OrdinalIgnoreCase))
-                throw new InvalidDataException("Пакет изменён. SHA-256 не совпадает.");
+                throw new InvalidDataException(UiText.Get("PackageCache.ThePackageWasChangedSHA256Mismatch"));
             file.Position = 0;
             return file;
         }
@@ -72,12 +72,12 @@ public sealed class PackageCache(string directory, HttpMessageHandler? transport
         {
             if (uri.Scheme != "https" || !uri.IsDefaultPort || uri.UserInfo.Length != 0 ||
                 uri.Host is not ("github.com" or "release-assets.githubusercontent.com" or "objects.githubusercontent.com"))
-                throw new IOException("Официальный источник перенаправил запрос на неподтверждённый сервер.");
+                throw new IOException(UiText.Get("PackageCache.TheOfficialSourceRedirectedToAnUnapproved"));
             var response = await client.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead, token);
             if ((int)response.StatusCode is not (301 or 302 or 303 or 307 or 308)) return response;
             using (response)
-                uri = new Uri(uri, response.Headers.Location ?? throw new IOException("Отсутствует адрес перенаправления."));
+                uri = new Uri(uri, response.Headers.Location ?? throw new IOException(UiText.Get("PackageCache.TheRedirectAddressIsMissing")));
         }
-        throw new IOException("Слишком много перенаправлений при загрузке компонента.");
+        throw new IOException(UiText.Get("PackageCache.TooManyRedirectsWhileDownloadingTheComponent"));
     }
 }

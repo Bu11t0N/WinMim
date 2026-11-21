@@ -1,3 +1,4 @@
+using AeroForge.Core;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
@@ -15,11 +16,11 @@ internal sealed class RetroFileBrowser : Form
     private static readonly Color SidebarColor = Color.FromArgb(224, 238, 234);
     private readonly ListView files = new();
     private readonly TextBox address = new();
-    private readonly TextBox query = new() { PlaceholderText = "Имя файла или папки" };
+    private readonly TextBox query = new() { PlaceholderText = UiText.Get("RetroFileBrowser.FileOrFolderName") };
     private readonly ToolStripStatusLabel status = new();
-    private readonly ToolStripButton back = new("Назад");
-    private readonly ToolStripButton forward = new("Вперёд");
-    private readonly ToolStripButton up = new("На уровень выше");
+    private readonly ToolStripButton back = new(UiText.Get("RetroFileBrowser.Back"));
+    private readonly ToolStripButton forward = new(UiText.Get("RetroFileBrowser.Forward"));
+    private readonly ToolStripButton up = new(UiText.Get("RetroFileBrowser.Up"));
     private readonly List<string?> history = [];
     private int historyIndex = -1;
     private string? folder;
@@ -28,8 +29,8 @@ internal sealed class RetroFileBrowser : Form
 
     public RetroFileBrowser(string? initialFolder)
     {
-        Text = "Файлы · WinMim";
-        AccessibleName = "Файловый менеджер WinMim";
+        Text = UiText.Get("RetroFileBrowser.FilesWinMim");
+        AccessibleName = UiText.Get("RetroFileBrowser.WinMimFiles");
         AutoScaleMode = AutoScaleMode.Dpi;
         StartPosition = FormStartPosition.CenterScreen;
         Size = new Size(920, 600);
@@ -39,50 +40,50 @@ internal sealed class RetroFileBrowser : Form
         files.View = View.Details;
         files.FullRowSelect = true;
         files.HideSelection = false;
-        files.AccessibleName = "Список файлов";
-        files.Columns.Add("Имя", 240);
-        files.Columns.Add("Тип", 100);
-        files.Columns.Add("Размер", 90, HorizontalAlignment.Right);
-        files.Columns.Add("Изменён", 125);
+        files.AccessibleName = UiText.Get("RetroFileBrowser.FileList");
+        files.Columns.Add(UiText.Get("RetroFileBrowser.Name"), 240);
+        files.Columns.Add(UiText.Get("RetroFileBrowser.Type"), 100);
+        files.Columns.Add(UiText.Get("RetroFileBrowser.Size"), 90, HorizontalAlignment.Right);
+        files.Columns.Add(UiText.Get("RetroFileBrowser.Modified"), 125);
         files.ItemActivate += (_, _) => OpenSelection();
         files.SelectedIndexChanged += (_, _) =>
         {
             if (files.SelectedItems.Count != 0)
-                status.Text = $"Выбрано {files.SelectedItems.Count} из {files.Items.Count}";
+                status.Text = UiText.Format("RetroFileBrowser.Selected0Of1", files.SelectedItems.Count, files.Items.Count);
             else
-                status.Text = $"Объектов: {files.Items.Count}";
+                status.Text = UiText.Format("RetroFileBrowser.Items0", files.Items.Count);
         };
         var context = new ContextMenuStrip();
-        Add(context.Items, "Открыть", OpenSelection);
-        Add(context.Items, "Вырезать", () => Copy(move: true));
-        Add(context.Items, "Копировать", () => Copy());
-        Add(context.Items, "Вставить", Paste);
-        Add(context.Items, "Переименовать", Rename);
-        Add(context.Items, "Удалить в корзину", DeleteSelection);
-        Add(context.Items, "Свойства", ShowProperties);
+        Add(context.Items, UiText.Get("RetroFileBrowser.Open"), OpenSelection);
+        Add(context.Items, UiText.Get("RetroFileBrowser.Cut"), () => Copy(move: true));
+        Add(context.Items, UiText.Get("RetroFileBrowser.Copy"), () => Copy());
+        Add(context.Items, UiText.Get("RetroFileBrowser.Paste"), Paste);
+        Add(context.Items, UiText.Get("RetroFileBrowser.Rename"), Rename);
+        Add(context.Items, UiText.Get("RetroFileBrowser.MoveToRecycleBin"), DeleteSelection);
+        Add(context.Items, UiText.Get("RetroFileBrowser.Properties"), ShowProperties);
         files.ContextMenuStrip = context;
 
         var toolbar = new ToolStrip { GripStyle = ToolStripGripStyle.Hidden, Dock = DockStyle.Fill };
         toolbar.Items.AddRange([back, forward, up]);
-        var edit = new ToolStripDropDownButton("Правка");
-        Add(edit.DropDownItems, "Вырезать", () => Copy(move: true));
-        Add(edit.DropDownItems, "Копировать", () => Copy());
-        Add(edit.DropDownItems, "Вставить", Paste);
-        Add(edit.DropDownItems, "Переименовать", Rename);
-        Add(edit.DropDownItems, "Удалить в корзину", DeleteSelection);
+        var edit = new ToolStripDropDownButton(UiText.Get("RetroFileBrowser.Edit"));
+        Add(edit.DropDownItems, UiText.Get("RetroFileBrowser.Cut"), () => Copy(move: true));
+        Add(edit.DropDownItems, UiText.Get("RetroFileBrowser.Copy"), () => Copy());
+        Add(edit.DropDownItems, UiText.Get("RetroFileBrowser.Paste"), Paste);
+        Add(edit.DropDownItems, UiText.Get("RetroFileBrowser.Rename"), Rename);
+        Add(edit.DropDownItems, UiText.Get("RetroFileBrowser.MoveToRecycleBin"), DeleteSelection);
         toolbar.Items.Add(edit);
-        var view = new ToolStripDropDownButton("Вид");
-        Add(view.DropDownItems, "Таблица", () => files.View = View.Details);
-        Add(view.DropDownItems, "Список", () => files.View = View.List);
+        var view = new ToolStripDropDownButton(UiText.Get("RetroFileBrowser.View"));
+        Add(view.DropDownItems, UiText.Get("RetroFileBrowser.Details"), () => files.View = View.Details);
+        Add(view.DropDownItems, UiText.Get("RetroFileBrowser.List"), () => files.View = View.List);
         toolbar.Items.Add(view);
-        Add(toolbar.Items, "Обновить", () => _ = Navigate(folder, record: false));
-        Add(toolbar.Items, "Открыть в Проводнике Windows", OpenSystemFolder);
+        Add(toolbar.Items, UiText.Get("RetroFileBrowser.Refresh"), () => _ = Navigate(folder, record: false));
+        Add(toolbar.Items, UiText.Get("RetroFileBrowser.OpenInWindowsExplorer"), OpenSystemFolder);
         back.Click += (_, _) => _ = VisitHistory(-1);
         forward.Click += (_, _) => _ = VisitHistory(1);
         up.Click += (_, _) => _ = Navigate(folder is null ? null : Directory.GetParent(folder)?.FullName);
 
         address.Dock = DockStyle.Fill;
-        address.AccessibleName = "Адрес папки";
+        address.AccessibleName = UiText.Get("RetroFileBrowser.FolderAddress");
         address.KeyDown += (_, e) =>
         {
             if (e.KeyCode != Keys.Enter) return;
@@ -93,35 +94,35 @@ internal sealed class RetroFileBrowser : Form
         location.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
         location.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
         location.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
-        location.Controls.Add(new Label { Text = "Адрес", AutoSize = true, Anchor = AnchorStyles.Left });
+        location.Controls.Add(new Label { Text = UiText.Get("RetroFileBrowser.Address"), AutoSize = true, Anchor = AnchorStyles.Left });
         location.Controls.Add(address);
-        location.Controls.Add(Button("Перейти", GoToAddress));
+        location.Controls.Add(Button(UiText.Get("RetroFileBrowser.Go"), GoToAddress));
 
         var sidebar = new FlowLayoutPanel
         {
             Dock = DockStyle.Fill, FlowDirection = FlowDirection.TopDown, WrapContents = false,
             AutoScroll = true, Padding = new Padding(12), BackColor = SidebarColor
         };
-        sidebar.Controls.Add(new Label { Text = "Места", AutoSize = true });
-        sidebar.Controls.Add(Button("Диски", () => _ = Navigate(null)));
-        AddPlace(sidebar, "Документы", Environment.SpecialFolder.MyDocuments);
-        AddPlace(sidebar, "Рабочий стол", Environment.SpecialFolder.DesktopDirectory);
-        AddPlace(sidebar, "Изображения", Environment.SpecialFolder.MyPictures);
-        sidebar.Controls.Add(new Label { Text = "Действия", AutoSize = true, Margin = new Padding(3, 14, 3, 3) });
-        sidebar.Controls.Add(Button("Создать папку", NewFolder));
-        sidebar.Controls.Add(Button("Выход из поиска", () => _ = Navigate(folder, record: false)));
+        sidebar.Controls.Add(new Label { Text = UiText.Get("RetroFileBrowser.Places"), AutoSize = true });
+        sidebar.Controls.Add(Button(UiText.Get("RetroFileBrowser.Drives"), () => _ = Navigate(null)));
+        AddPlace(sidebar, UiText.Get("RetroFileBrowser.Documents"), Environment.SpecialFolder.MyDocuments);
+        AddPlace(sidebar, UiText.Get("RetroFileBrowser.Desktop"), Environment.SpecialFolder.DesktopDirectory);
+        AddPlace(sidebar, UiText.Get("RetroFileBrowser.Pictures"), Environment.SpecialFolder.MyPictures);
+        sidebar.Controls.Add(new Label { Text = UiText.Get("RetroFileBrowser.Actions"), AutoSize = true, Margin = new Padding(3, 14, 3, 3) });
+        sidebar.Controls.Add(Button(UiText.Get("RetroFileBrowser.NewFolder"), NewFolder));
+        sidebar.Controls.Add(Button(UiText.Get("RetroFileBrowser.ExitSearch"), () => _ = Navigate(folder, record: false)));
         query.Width = 148;
-        query.AccessibleName = "Поиск по имени";
+        query.AccessibleName = UiText.Get("RetroFileBrowser.SearchByName");
         query.KeyDown += (_, e) =>
         {
             if (e.KeyCode != Keys.Enter) return;
             e.SuppressKeyPress = true;
             _ = Search();
         };
-        sidebar.Controls.Add(new Label { Text = "Поиск в папке", AutoSize = true, Margin = new Padding(3, 14, 3, 3) });
+        sidebar.Controls.Add(new Label { Text = UiText.Get("RetroFileBrowser.SearchInFolder"), AutoSize = true, Margin = new Padding(3, 14, 3, 3) });
         sidebar.Controls.Add(query);
-        sidebar.Controls.Add(Button("Найти", () => _ = Search()));
-        sidebar.Controls.Add(Button("Остановить поиск", () => listing?.Cancel()));
+        sidebar.Controls.Add(Button(UiText.Get("RetroFileBrowser.Find"), () => _ = Search()));
+        sidebar.Controls.Add(Button(UiText.Get("RetroFileBrowser.StopSearch"), () => listing?.Cancel()));
 
         var content = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 2 };
         content.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 180));
@@ -194,7 +195,7 @@ internal sealed class RetroFileBrowser : Form
 
     private async Task Navigate(string? path, bool record = true, int? historyTarget = null)
     {
-        await ListAsync("Открытие папки…", token => ReadFolder(path, token), rows =>
+        await ListAsync(UiText.Get("RetroFileBrowser.OpeningFolder"), token => ReadFolder(path, token), rows =>
         {
             if (record && (historyIndex < 0 || !string.Equals(folder, path, StringComparison.OrdinalIgnoreCase)))
             {
@@ -206,7 +207,7 @@ internal sealed class RetroFileBrowser : Form
             folder = path;
             showingSearch = false;
             address.Text = path ?? "";
-            Text = $"{path ?? "Диски"} · Файлы WinMim";
+            Text = $"{path ?? UiText.Get("RetroFileBrowser.Drives")} · {UiText.Get("RetroFileBrowser.FilesWinMim")}";
             ShowRows(rows);
         });
     }
@@ -217,10 +218,10 @@ internal sealed class RetroFileBrowser : Form
         string pattern = query.Text.Trim();
         if (root is null || pattern.Length == 0)
         {
-            status.Text = "Откройте папку и введите часть имени.";
+            status.Text = UiText.Get("RetroFileBrowser.OpenAFolderAndEnterPartOf");
             return;
         }
-        await ListAsync("Поиск…", token =>
+        await ListAsync(UiText.Get("RetroFileBrowser.Searching"), token =>
         {
             var options = new EnumerationOptions
             {
@@ -240,7 +241,7 @@ internal sealed class RetroFileBrowser : Form
         {
             showingSearch = true;
             ShowRows(rows.Take(SearchLimit));
-            status.Text = rows.Length > SearchLimit ? $"Показаны первые {SearchLimit} совпадений" : $"Совпадений: {rows.Length}";
+            status.Text = rows.Length > SearchLimit ? UiText.Format("RetroFileBrowser.ShowingTheFirst0Matches", SearchLimit) : UiText.Format("RetroFileBrowser.Matches0", rows.Length);
         });
     }
 
@@ -255,11 +256,11 @@ internal sealed class RetroFileBrowser : Form
         {
             var results = await Task.Run(() => read(request.Token), request.Token);
             if (!request.IsCancellationRequested && !IsDisposed) show(results);
-            else if (listing == request && !IsDisposed) status.Text = "Операция отменена";
+            else if (listing == request && !IsDisposed) status.Text = UiText.Get("RetroFileBrowser.OperationCanceled");
         }
         catch (OperationCanceledException) when (request.IsCancellationRequested)
         {
-            if (listing == request && !IsDisposed) status.Text = "Операция отменена";
+            if (listing == request && !IsDisposed) status.Text = UiText.Get("RetroFileBrowser.OperationCanceled");
         }
         catch (Exception error) when (error is IOException or UnauthorizedAccessException or ArgumentException)
         {
@@ -284,7 +285,7 @@ internal sealed class RetroFileBrowser : Form
     private static Entry[] ReadFolder(string? path, CancellationToken token)
     {
         if (path == null)
-            return DriveInfo.GetDrives().Select(drive => new Entry(drive.Name, drive.Name, true, "Диск", "", "")).ToArray();
+            return DriveInfo.GetDrives().Select(drive => new Entry(drive.Name, drive.Name, true, UiText.Get("RetroFileBrowser.Drive"), "", "")).ToArray();
         var rows = new List<Entry>();
         var options = new EnumerationOptions { AttributesToSkip = FileAttributes.Hidden | FileAttributes.System, IgnoreInaccessible = false };
         foreach (var item in new DirectoryInfo(path).EnumerateFileSystemInfos("*", options))
@@ -304,7 +305,7 @@ internal sealed class RetroFileBrowser : Form
             files.Items.AddRange(rows.Select(row => new ListViewItem([row.Name, row.Type, row.Size, row.Modified]) { Tag = row }).ToArray());
         }
         finally { files.EndUpdate(); }
-        status.Text = $"Объектов: {files.Items.Count}";
+        status.Text = UiText.Format("RetroFileBrowser.Items0", files.Items.Count);
     }
 
     private Entry[] Selected() => files.Enabled
@@ -353,10 +354,10 @@ internal sealed class RetroFileBrowser : Form
             {
                 if (string.IsNullOrEmpty(source) || !Path.IsPathFullyQualified(source)) continue;
                 string name = Path.GetFileName(Path.TrimEndingDirectorySeparator(source));
-                if (name.Length == 0) throw new IOException("Выберите файл или папку внутри диска.");
+                if (name.Length == 0) throw new IOException(UiText.Get("RetroFileBrowser.SelectAFileOrFolderOnA"));
                 string target = Path.Combine(destination, name);
                 if (string.Equals(Path.GetFullPath(source), target, StringComparison.OrdinalIgnoreCase))
-                    throw new IOException("Выберите другую папку назначения.");
+                    throw new IOException(UiText.Get("RetroFileBrowser.SelectADifferentDestinationFolder"));
                 const UIOption ui = UIOption.AllDialogs;
                 const UICancelOption cancel = UICancelOption.ThrowException;
                 if (Directory.Exists(source))
@@ -376,10 +377,10 @@ internal sealed class RetroFileBrowser : Form
         if (listing != null || folder is not string parent) return;
         Try(() =>
         {
-            string? name = AskName("Создать папку", "Новая папка");
+            string? name = AskName(UiText.Get("RetroFileBrowser.NewFolder"), UiText.Get("RetroFileBrowser.NewFolder2"));
             if (name is null) return;
             string target = Path.Combine(parent, name);
-            if (Directory.Exists(target) || File.Exists(target)) throw new IOException("Это имя уже используется.");
+            if (Directory.Exists(target) || File.Exists(target)) throw new IOException(UiText.Get("RetroFileBrowser.ThisNameIsAlreadyInUse"));
             Directory.CreateDirectory(target);
             RefreshResults();
         });
@@ -392,7 +393,7 @@ internal sealed class RetroFileBrowser : Form
         var entry = selected[0];
         Try(() =>
         {
-            string? name = AskName("Переименовать", Path.GetFileName(entry.Path));
+            string? name = AskName(UiText.Get("RetroFileBrowser.Rename"), Path.GetFileName(entry.Path));
             if (name is null) return;
             if (entry.Directory) FileSystem.RenameDirectory(entry.Path, name);
             else FileSystem.RenameFile(entry.Path, name);
@@ -404,7 +405,7 @@ internal sealed class RetroFileBrowser : Form
     {
         var selected = Selected();
         if (selected.Length == 0 || folder is null) return;
-        if (MessageBox.Show(this, $"Переместить в корзину выбранные объекты ({selected.Length})?", Text,
+        if (MessageBox.Show(this, UiText.Format("RetroFileBrowser.MoveTheSelectedItems0ToThe", selected.Length), Text,
             MessageBoxButtons.OKCancel, MessageBoxIcon.Question) != DialogResult.OK) return;
         Try(() =>
         {
@@ -422,7 +423,7 @@ internal sealed class RetroFileBrowser : Form
         Try(() =>
         {
             if (!SHObjectProperties(Handle, 2, selected[0].Path, null))
-                throw new IOException("Не удалось открыть свойства объекта.");
+                throw new IOException(UiText.Get("RetroFileBrowser.CouldNotOpenTheItemSProperties"));
         });
     }
 
@@ -440,10 +441,10 @@ internal sealed class RetroFileBrowser : Form
             StartPosition = FormStartPosition.CenterParent, MinimizeBox = false, MaximizeBox = false,
             AutoScaleMode = AutoScaleMode.Dpi, ClientSize = new Size(360, 85)
         };
-        var name = new TextBox { Text = initial, Dock = DockStyle.Top, AccessibleName = "Имя" };
+        var name = new TextBox { Text = initial, Dock = DockStyle.Top, AccessibleName = UiText.Get("RetroFileBrowser.Name") };
         var actions = new FlowLayoutPanel { Dock = DockStyle.Bottom, FlowDirection = FlowDirection.RightToLeft, AutoSize = true };
-        var ok = new Button { Text = "ОК", DialogResult = DialogResult.OK };
-        var cancel = new Button { Text = "Отмена", DialogResult = DialogResult.Cancel };
+        var ok = new Button { Text = UiText.Get("RetroFileBrowser.OK"), DialogResult = DialogResult.OK };
+        var cancel = new Button { Text = UiText.Get("RetroFileBrowser.Cancel"), DialogResult = DialogResult.Cancel };
         actions.Controls.AddRange([cancel, ok]);
         dialog.Controls.AddRange([actions, name]);
         dialog.AcceptButton = ok;
@@ -453,7 +454,7 @@ internal sealed class RetroFileBrowser : Form
         if (dialog.ShowDialog(this) != DialogResult.OK) return null;
         string value = name.Text.Trim();
         if (value.Length == 0 || value is "." or ".." || value.EndsWith('.') || value.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
-            throw new IOException("Недопустимое имя файла или папки.");
+            throw new IOException(UiText.Get("RetroFileBrowser.InvalidFileOrFolderName"));
         return value;
     }
 
@@ -467,11 +468,11 @@ internal sealed class RetroFileBrowser : Form
     private void Try(Action action)
     {
         try { action(); }
-        catch (OperationCanceledException) { status.Text = "Операция отменена"; }
+        catch (OperationCanceledException) { status.Text = UiText.Get("RetroFileBrowser.OperationCanceled"); }
         catch (Exception error) when (error is IOException or UnauthorizedAccessException or ArgumentException
             or ExternalException or NotSupportedException)
         {
-            MessageBox.Show(this, error.Message, "Файлы WinMim", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            MessageBox.Show(this, error.Message, UiText.Get("RetroFileBrowser.WinMimFiles2"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
     }
 
@@ -484,8 +485,8 @@ internal sealed class RetroFileBrowser : Form
         public static Entry From(FileSystemInfo item, string displayName)
         {
             var file = item as FileInfo;
-            var type = file is null ? "Папка" : file.Extension.Length > 1 ? file.Extension[1..].ToUpperInvariant() : "Файл";
-            string size = file is null ? "" : file.Length.ToString("N0", CultureInfo.CurrentCulture) + " Б";
+            var type = file is null ? UiText.Get("RetroFileBrowser.Folder") : file.Extension.Length > 1 ? file.Extension[1..].ToUpperInvariant() : UiText.Get("RetroFileBrowser.File");
+            string size = file is null ? "" : file.Length.ToString("N0", CultureInfo.CurrentCulture) + UiText.Get("RetroFileBrowser.B");
             return new Entry(item.FullName, displayName, file is null, type, size, item.LastWriteTime.ToString("g"));
         }
     }

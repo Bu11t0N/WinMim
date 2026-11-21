@@ -14,15 +14,15 @@ public sealed class MachineSeven
     public const string Volume=@"HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\MTCUVC";
     public const string ShellExplorer=@"HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer";
     private readonly TransactionManager transactions=new(new Backend(),Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),"WinMim","MachineState"));
-    public static Plan Plan()=>new(){ProfileId="machine-seven",ProfileName="Системные настройки Seven",Exclusive=true,Changes=
-    [new(){Kind=ChangeKind.Registry,Target=Explorer,ValueName="DisableNotificationCenter",ValueKind="DWord",Value="1",Description="Отключить центр уведомлений Windows 10"},
-     new(){Kind=ChangeKind.Registry,Target=Volume,ValueName="EnableMtcUvc",ValueKind="DWord",Value="0",Description="Классический регулятор громкости"},
-     new(){Kind=ChangeKind.Registry,Target=ShellExplorer,ValueName="HubMode",ValueKind="DWord",Value="1",Description="Скрыть Быстрый доступ при восстановленном Избранном"}]};
+    public static Plan Plan()=>new(){ProfileId="machine-seven",ProfileName=UiText.Get("MachineSeven.SevenSystemSettings"),Exclusive=true,Changes=
+    [new(){Kind=ChangeKind.Registry,Target=Explorer,ValueName="DisableNotificationCenter",ValueKind="DWord",Value="1",Description=UiText.Get("MachineSeven.DisableTheWindows10ActionCenter")},
+     new(){Kind=ChangeKind.Registry,Target=Volume,ValueName="EnableMtcUvc",ValueKind="DWord",Value="0",Description=UiText.Get("MachineSeven.ClassicVolumeControl")},
+     new(){Kind=ChangeKind.Registry,Target=ShellExplorer,ValueName="HubMode",ValueKind="DWord",Value="1",Description=UiText.Get("MachineSeven.HideQuickAccessWhenFavoritesIsRestored")}]};
     private static void EnsureLab(bool elevated)
     {
-        if(Environment.MachineName!="AEROFORGE-LAB")throw new InvalidOperationException("Системный адаптер пока проверяется только в AEROFORGE-LAB.");
+        if(Environment.MachineName!="AEROFORGE-LAB")throw new InvalidOperationException(UiText.Get("MachineSeven.TheSystemAdapterIsBeingTestedIn"));
         var info=WindowsBackend.Inspect();
-        if(!info.KnownBase || elevated&&!info.IsAdministrator)throw new InvalidOperationException("Нужен повышенный токен тестовой Windows 10 x64.");
+        if(!info.KnownBase || elevated&&!info.IsAdministrator)throw new InvalidOperationException(UiText.Get("MachineSeven.AnElevatedTokenInTheWindows10"));
     }
     public bool HasRecoveryWork => transactions.History(false).Any(receipt => receipt.Status != "RolledBack");
 
@@ -36,7 +36,7 @@ public sealed class MachineSeven
             result=transactions.Rollback(active.FilePath);
             if(result.Status!="RolledBack")return result;
         }
-        return result??throw new InvalidOperationException("Нет системных настроек WinMim для возврата.");
+        return result??throw new InvalidOperationException(UiText.Get("MachineSeven.ThereAreNoWinMimSystemSettingsTo"));
     }
     public static Dictionary<string,ValueState> Inspect()
     {
@@ -52,10 +52,10 @@ public sealed class MachineSeven
     {
         EnsureLab(false);
         if(transactions.History(false).Any(r=>r.Status is not ("Applied" or "RolledBack")))
-            throw new InvalidOperationException("Есть незавершённая системная операция WinMim. Сначала верните её настройки.");
+            throw new InvalidOperationException(UiText.Get("MachineSeven.AWinMimSystemOperationIsIncompleteRestore"));
         if(IsConfigured())return false;
         await ElevatedAsync("machine-seven-apply");
-        if(!IsConfigured())throw new IOException("Системные настройки Seven не прошли проверку.");
+        if(!IsConfigured())throw new IOException(UiText.Get("MachineSeven.SevenSystemSettingsFailedVerification"));
         return true;
     }
     public async Task RestoreElevatedAsync()=>await ElevatedAsync("machine-seven-restore");
@@ -63,12 +63,12 @@ public sealed class MachineSeven
     {
         EnsureLab(false);
         string cli=DesktopController.FindHelper()
-            ??throw new FileNotFoundException("CLI WinMim не найден рядом с приложением.");
+            ??throw new FileNotFoundException(UiText.Get("MachineSeven.TheWinMimCLIIsMissingFromThe"));
         var start=new ProcessStartInfo(cli){UseShellExecute=true,Verb="runas",WindowStyle=ProcessWindowStyle.Hidden};
         start.ArgumentList.Add(operation);start.ArgumentList.Add("--accept-experimental");
-        using var child=Process.Start(start)??throw new IOException("Не удалось запустить системный адаптер.");
+        using var child=Process.Start(start)??throw new IOException(UiText.Get("MachineSeven.CouldNotStartTheSystemAdapter"));
         await child.WaitForExitAsync().WaitAsync(TimeSpan.FromMinutes(2));
-        if(child.ExitCode!=0)throw new IOException(transactions.History(false).FirstOrDefault()?.Error??"Системный адаптер завершился с кодом "+child.ExitCode);
+        if(child.ExitCode!=0)throw new IOException(transactions.History(false).FirstOrDefault()?.Error??UiText.Get("MachineSeven.TheSystemAdapterExitedWithCode")+child.ExitCode);
     }
     private sealed class Backend:IChangeBackend
     {
@@ -77,7 +77,7 @@ public sealed class MachineSeven
             bool allowed=c.Kind==ChangeKind.Registry && (c.Target.Equals(Explorer,StringComparison.OrdinalIgnoreCase)&&c.ValueName=="DisableNotificationCenter"
                 || c.Target.Equals(Volume,StringComparison.OrdinalIgnoreCase)&&c.ValueName=="EnableMtcUvc"
                 || c.Target.Equals(ShellExplorer,StringComparison.OrdinalIgnoreCase)&&c.ValueName=="HubMode");
-            if(!allowed)throw new InvalidDataException("Системная настройка вне списка WinMim.");
+            if(!allowed)throw new InvalidDataException(UiText.Get("MachineSeven.SystemSettingOutsideWinMimSAllowedList"));
         }
         public ValueState Read(Change c)
         {

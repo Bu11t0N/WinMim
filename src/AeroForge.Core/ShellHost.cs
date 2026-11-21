@@ -50,7 +50,7 @@ public sealed class ShellHost(string hostRoot, Catalog catalog)
             if(processId!=0 && pending.Length==0){await Task.Delay(250,cancellationToken);return;}
             await Task.Delay(250,cancellationToken);
         }while(DateTime.UtcNow<deadline);
-        throw new TimeoutException("Проводник ещё не готов; не завершена загрузка модулей: "+string.Join(", ",pending));
+        throw new TimeoutException(UiText.Get("ShellHost.ExplorerIsNotReadyTheseModulesAre")+string.Join(", ",pending));
     }
     private bool ManagedSession(int id)
     {
@@ -75,22 +75,22 @@ public sealed class ShellHost(string hostRoot, Catalog catalog)
         return false;
     }
     public void EnsureStopped()
-    { if (IsRunning()) throw new InvalidOperationException("Сначала остановите профиль. Загруженные модули должны освободить файлы."); }
+    { if (IsRunning()) throw new InvalidOperationException(UiText.Get("ShellHost.StopTheProfileFirstSoItsModules")); }
     public void Start()
     {
         var info = WindowsBackend.Inspect();
-        if (!info.KnownBase) throw new InvalidOperationException("Эта сборка рассчитана на Windows 10 x64 19041–19045. Для других версий сначала нужны испытания.");
-        if (info.IsAdministrator) throw new InvalidOperationException("Запустите AeroForge без прав администратора: этот движок настроен для пользовательской сессии.");
+        if (!info.KnownBase) throw new InvalidOperationException(UiText.Get("ShellHost.ThisBuildIsIntendedForWindows10"));
+        if (info.IsAdministrator) throw new InvalidOperationException(UiText.Get("ShellHost.RunAeroForgeWithoutAdministratorRightsTheEngine"));
         if (IsRunning()) return;
         new WindowsBackend(root).CleanupRetiredModules();
         if (Process.GetProcessesByName("windhawk").Length > 0)
-            throw new InvalidOperationException("Уже запущен другой Windhawk. Остановите его вручную перед запуском профиля AeroForge.");
+            throw new InvalidOperationException(UiText.Get("ShellHost.AnotherWindhawkInstanceIsRunningStopIt"));
         var profile = JsonFile.Read<ActiveProfile>(SafePath.Under(root, "active-profile.json"));
         foreach (var file in catalog.RuntimeFiles.Concat(catalog.Modules.Where(m => profile.Modules.Contains(m.Id)).SelectMany(m => m.Binaries)))
         {
             string path = SafePath.Under(root, file.Target);
             if (!File.Exists(path) || !Hashing.File(path).Equals(file.Sha256, StringComparison.OrdinalIgnoreCase))
-                throw new InvalidDataException("Файл движка изменён или отсутствует: " + file.Target);
+                throw new InvalidDataException(UiText.Get("ShellHost.EngineFileChangedOrMissing") + file.Target);
         }
         if(profile.Modules.Contains("win7-display-control-panel-restorer"))
         {
@@ -99,7 +99,7 @@ public sealed class ShellHost(string hostRoot, Catalog catalog)
             if(File.Exists(cache))ExternalDisplayProvider.Read(cache);
             else
             {
-                if(string.IsNullOrEmpty(profile.DisplayProvider))throw new FileNotFoundException("Сначала примените профиль с внешним Display provider.");
+                if(string.IsNullOrEmpty(profile.DisplayProvider))throw new FileNotFoundException(UiText.Get("ShellHost.ApplyAProfileWithAnExternalDisplay"));
                 var resource=new Change{Kind=ChangeKind.File,Target=ExternalDisplayProvider.Target,Content=ExternalDisplayProvider.Read(profile.DisplayProvider)};
                 new WindowsBackend(root).Write(resource,ValueState.Desired(resource));
             }
@@ -125,7 +125,7 @@ public sealed class ShellHost(string hostRoot, Catalog catalog)
         using var p = Process.Start(start);
         if (p != null) await p.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(15));
         for (int i = 0; i < 60 && IsRunning(); i++) await Task.Delay(250);
-        if (IsRunning()) throw new IOException("Движок ещё работает. Завершите его через значок Windhawk и повторите операцию.");
+        if (IsRunning()) throw new IOException(UiText.Get("ShellHost.TheEngineIsStillRunningExitFrom"));
         new WindowsBackend(root).CleanupRetiredModules();
     }
     public Task StopDesktopAsync()=>WithDesktopStoppedAsync(StopAsync);

@@ -19,11 +19,11 @@ public sealed class DesktopController
     {
         var info=WindowsBackend.Inspect();
         if (!info.KnownBase)
-            throw new InvalidOperationException($"Для стенда требуется Windows 10 x64 (сборки 19041–19045). Обнаружено {info.Architecture}, {info.Build}.{info.Revision}.");
+            throw new InvalidOperationException(UiText.Format("DesktopController.TheLabRequiresWindows10X64Build", info.Architecture, info.Build, info.Revision));
         if (info.IsAdministrator)
-            throw new InvalidOperationException("Запустите WinMim из обычного сеанса без повышения прав.");
+            throw new InvalidOperationException(UiText.Get("DesktopController.RunWinMimInAStandardSessionWithout"));
         if (Environment.MachineName!="AEROFORGE-LAB")
-            throw new InvalidOperationException("Применение и возврат доступны в подготовленной лабораторной ВМ. На обычном ПК эти операции ещё не прошли проверку.");
+            throw new InvalidOperationException(UiText.Get("DesktopController.ApplyAndRestoreRequireAPreparedLab"));
     }
     public static string? FindHelper() => new[]
     {
@@ -51,9 +51,9 @@ public sealed class DesktopController
     {
         EnsureLab();preferences.Validate();
         var latest=History(false).FirstOrDefault(r=>r.Status!="RolledBack");
-        if(latest?.ProfileId!="desktop-seven")throw new InvalidOperationException("Сначала примените оформление WinMim.");
+        if(latest?.ProfileId!="desktop-seven")throw new InvalidOperationException(UiText.Get("DesktopController.ApplyAWinMimAppearanceFirst"));
         // Same profile, new journal layer: removal still reaches the original settings.
-        var plan=new Plan{ProfileId="desktop-seven",ProfileName="Свойства панели задач",Exclusive=true,Changes=preferences.Changes().ToList()};
+        var plan=new Plan{ProfileId="desktop-seven",ProfileName=UiText.Get("DesktopController.TaskbarProperties"),Exclusive=true,Changes=preferences.Changes().ToList()};
         plan.AdoptUserPreferences=TaskbarPreferences.UserSettingIdentities.ToHashSet();
         var receipt=transactions.Apply(plan,allowProfileUpdate:true);
         DesktopBackend.NotifySettingsChanged();return receipt;
@@ -62,7 +62,7 @@ public sealed class DesktopController
     {
         EnsureLab();
         string shell=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles),"Open-Shell","StartMenu.exe");
-        if(!File.Exists(shell))throw new FileNotFoundException("Сначала установите Open-Shell.",shell);
+        if(!File.Exists(shell))throw new FileNotFoundException(UiText.Get("DesktopController.InstallOpenShellFirst"),shell);
         var plan=DesktopProfile.BuildSeven(Root,style,wallpaper,button,taskbarPreferences:TaskbarSettings(),privateIconPack:privateIconPack);
         var receipt=transactions.Apply(plan,progress,cancellationToken,allowProfileUpdate:true);
         RefreshShell(shell,progress);
@@ -71,7 +71,7 @@ public sealed class DesktopController
     public Receipt Restore(IProgress<string>? progress=null)
     {
         EnsureLab();
-        var latest=History(false).FirstOrDefault(r=>r.Status!="RolledBack") ?? throw new InvalidOperationException("Нет активного оформления для возврата.");
+        var latest=History(false).FirstOrDefault(r=>r.Status!="RolledBack") ?? throw new InvalidOperationException(UiText.Get("DesktopController.ThereIsNoActiveAppearanceToRestore"));
         var receipt=transactions.Rollback(latest.FilePath,progress,TaskbarPreferences.UserSettingIdentities);
         while(receipt.Status=="RolledBack" && History(false).FirstOrDefault(r=>r.Status!="RolledBack") is {} previous)
             receipt=transactions.Rollback(previous.FilePath,progress,TaskbarPreferences.UserSettingIdentities);
@@ -112,7 +112,7 @@ public sealed class DesktopController
                 if(process.SessionId==session && string.Equals(WindowsProcessInfo.ImagePath(process.Id),executable,StringComparison.OrdinalIgnoreCase))
                 {
                     process.Kill();
-                    if(!process.WaitForExit(8000))throw new IOException("Explorer ещё завершается; выгрузка модулей отложена.");
+                    if(!process.WaitForExit(8000))throw new IOException(UiText.Get("DesktopController.ExplorerIsStillClosingModuleUnloadHas"));
                 }
             }
             catch(InvalidOperationException)when(process.HasExited){}
@@ -128,6 +128,6 @@ public sealed class DesktopController
             DesktopIconOverrides.Refresh();
             if(File.Exists(shell))Process.Start(new ProcessStartInfo(shell,"-reloadsettings"){UseShellExecute=false,CreateNoWindow=true})?.Dispose();
         }
-        catch(Exception error){progress?.Report("Настройки записаны; обновление оболочки: "+error.Message);}
+        catch(Exception error){progress?.Report(UiText.Get("DesktopController.SettingsWereSavedShellRefresh")+error.Message);}
     }
 }
