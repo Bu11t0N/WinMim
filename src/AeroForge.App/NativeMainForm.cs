@@ -137,7 +137,22 @@ public sealed class NativeMainForm : F.Form
             + Environment.NewLine + Environment.NewLine + XpThemePack.UserAssets
             + Environment.NewLine + Environment.NewLine + UiText.Get("NativeMainForm.ThenClickCheckRequirementsWinMimVerifiesThe"),
             UiText.Get("NativeMainForm.PersonalWindowsXPPack"), F.MessageBoxButtons.OK, F.MessageBoxIcon.Information);
-        options.Controls.AddRange([restart, sevenTools, sevenComponents, retroFiles, xpHelp]);
+        var importResources = Button(UiText.Get("ResourceImport.Action"));
+        importResources.Click += async (_, _) =>
+        {
+            using var dialog = new NativeResourceImport();
+            if (dialog.ShowDialog(this) != F.DialogResult.OK) return;
+            await Run(async (token, progress) =>
+            {
+                status.Text = UiText.Get("ResourceImport.Verifying");
+                string folder = await Task.Run(() => ResourcePackageCache.ForCurrentUser()
+                    .PrepareAsync(dialog.Package!, dialog.Archive, token, progress));
+                status.Text = UiText.Get("ResourceImport.Prepared");
+                F.MessageBox.Show(this, UiText.Format("ResourceImport.PreparedIn", folder),
+                    UiText.Get("ResourceImport.Action"), F.MessageBoxButtons.OK, F.MessageBoxIcon.Information);
+            });
+        };
+        options.Controls.AddRange([restart, sevenTools, sevenComponents, retroFiles, xpHelp, importResources]);
         layout.Controls.Add(options, 0, 3);
 
         foreach (var target in AppearanceCatalog.Targets)
@@ -153,7 +168,7 @@ public sealed class NativeMainForm : F.Form
             check.Enabled = target?.Available == true;
             options.Visible = target?.Mode == AppearanceMode.Seven || target?.Id == "windows-xp";
             restart.Visible = sevenTools.Visible = sevenComponents.Visible = target?.Mode == AppearanceMode.Seven;
-            retroFiles.Visible = xpHelp.Visible = target?.Id == "windows-xp";
+            retroFiles.Visible = xpHelp.Visible = importResources.Visible = target?.Id == "windows-xp";
             targetDetail.Text = target == null ? NoSelection : UiText.Format("NativeMainForm.0CheckingRequirements", target.Name);
             string recovery = "";
             try
@@ -196,6 +211,8 @@ public sealed class NativeMainForm : F.Form
                 + Environment.NewLine + components;
             if (target.Id == "windows-xp")
                 targetDetail.AppendText(Environment.NewLine + UiText.Get("Xp.SourcePending"));
+            else if (ready && target.Mode == AppearanceMode.Classic)
+                targetDetail.AppendText(Environment.NewLine + UiText.Get("NativeMainForm.ClassicApplyApproval"));
             applyTheme.Enabled = ready;
             prepare.Enabled = !ready && preparation.Length == 0;
         }

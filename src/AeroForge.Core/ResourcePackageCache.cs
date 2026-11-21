@@ -12,7 +12,14 @@ public sealed class ResourcePackageCache(string cacheDirectory, string preparedD
     private readonly string cache = Path.GetFullPath(cacheDirectory);
     private readonly string prepared = Path.GetFullPath(preparedDirectory);
 
-    public async Task<string> PrepareAsync(ResourcePackage package, string? localArchive = null, CancellationToken token = default)
+    public static ResourcePackageCache ForCurrentUser()
+    {
+        string root = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "AeroForge", "Preparation");
+        return new(Path.Combine(root, "ResourceCache"), Path.Combine(root, "PreparedResources"));
+    }
+
+    public async Task<string> PrepareAsync(ResourcePackage package, string? localArchive = null,
+        CancellationToken token = default, IProgress<string>? progress = null)
     {
         string digest = Validate(package);
         if (Contains(cache, prepared) || Contains(prepared, cache))
@@ -28,7 +35,7 @@ public sealed class ResourcePackageCache(string cacheDirectory, string preparedD
             {
                 Name = package.Id, Version = package.Version, DownloadUrl = source.AbsoluteUri,
                 FileName = Path.GetFileName(archive), Sha256 = digest
-            }, cancellationToken: token);
+            }, progress, token);
         }
         Directory.CreateDirectory(prepared);
         Directory.CreateDirectory(cache);
@@ -125,7 +132,7 @@ public sealed class ResourcePackageCache(string cacheDirectory, string preparedD
         if (Directory.Exists(cache)) File.Delete(SafePath.Under(cache, package.Sha256.ToLowerInvariant() + ".zip"));
     }
 
-    private static bool ValidHash(string value) => value.Length == 64 && value.All(Uri.IsHexDigit);
+    private static bool ValidHash(string? value) => value is { Length: 64 } && value.All(Uri.IsHexDigit);
 
     private static string Validate(ResourcePackage package)
     {

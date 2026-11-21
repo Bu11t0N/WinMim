@@ -17,8 +17,7 @@ try
         if (string.IsNullOrWhiteSpace(manifest))
             throw new ArgumentException("Specify the versioned package descriptor with --package FILE.");
         var package = JsonFile.Read<ResourcePackage>(manifest);
-        string userRoot = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "AeroForge", "Preparation");
-        var packages = new ResourcePackageCache(Path.Combine(userRoot, "ResourceCache"), Path.Combine(userRoot, "PreparedResources"));
+        var packages = ResourcePackageCache.ForCurrentUser();
         if (command == "clear-resource-cache")
         {
             packages.ClearCachedArchive(package);
