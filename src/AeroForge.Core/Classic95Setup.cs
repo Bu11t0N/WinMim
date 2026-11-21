@@ -86,8 +86,8 @@ public sealed class Classic95Setup
 
     private static void RequireOpenShell()
     {
-        if (!File.Exists(ShellPath))
-            throw new FileNotFoundException("Установите Open-Shell через «Дополнительно → Компоненты».");
+        if (!ThemePreparation.OpenShellReady())
+            throw new FileNotFoundException("Для установки Open-Shell нажмите «Подготовить тему».");
     }
 
     private (Plan Desktop, Plan Modules, XpThemePack? Xp) Prepare(ClassicTheme theme)

@@ -47,7 +47,7 @@ try {
     foreach ($file in @('AeroForge.Cli.exe', 'AeroForge.Cli.dll', 'AeroForge.Cli.deps.json', 'AeroForge.Cli.runtimeconfig.json', 'AeroForge.Core.dll')) {
         Copy-PayloadFile (Join-Path $cli $file) "cli/$file"
     }
-    foreach ($file in @('README.md', 'LICENSE', 'THIRD-PARTY-NOTICES.md', 'sbom.cdx.json',
+    foreach ($file in @('README.md', 'LICENSE', 'THIRD-PARTY-NOTICES.md', 'sbom.cdx.json', 'third-party.lock.json',
                         'tools/Set-SevenDesktop.ps1', 'docs/XP-IMPLEMENTATION.md')) {
         Copy-PayloadFile $file $file
     }

@@ -10,7 +10,7 @@ WinMim is an experimental Windows customization toolkit that aims to recreate th
 
 ## Project status
 
-**Developer preview, version 0.1.5.** The x64 MSI includes the desktop controller, WinMim Files and the standalone desktop recovery shortcut.
+**Developer preview, version 0.1.6.** The x64 MSI includes the desktop controller, WinMim Files and the standalone desktop recovery shortcut.
 
 Tested on **Windows 10 IoT Enterprise LTSC 2021, x64, build 19044**. Applying the classic and XP desktop profiles requires a prepared lab VM.
 
@@ -43,7 +43,7 @@ Actual captures of the developer preview, taken on October 30, 2026. The applica
 
 ![Windows 7 appearance applied to Windows 10 LTSC, with WinMim and the Windows 7-style Start menu open](assets/screenshots/windows-7.png)
 
-Select Windows 7 or a Classic/XP profile on the Appearances tab to see its requirements. Use Apply to change the desktop and Return to Previous Appearance to restore it. Windows 7 tools and components appear when that row is selected. Use Advanced for module settings, diagnostics and recovery journals. See the [classic-family screenshots and implementation notes](docs/CLASSIC-FAMILY-20261030.md) for the newer profiles.
+Select Windows 7 or a Classic/XP profile on the Appearances tab to see its requirements. In the prepared lab, **Prepare Theme** checks Open-Shell 4.4.198 and, for XP or Seven, SecureUxTheme 4.0.0. WinMim downloads the pinned packages from their official GitHub releases. The user handles Windows elevation and any required reboot. OpenGlass, Seven resources and the personal XP pack still require separately approved preparation. Use Apply to change the desktop and Return to Previous Appearance to restore it. Windows 7 tools and components appear when that row is selected. Use Advanced for module settings, diagnostics and recovery journals. See the [classic-family screenshots and implementation notes](docs/CLASSIC-FAMILY-20261030.md) for the newer profiles.
 
 ## Features
 

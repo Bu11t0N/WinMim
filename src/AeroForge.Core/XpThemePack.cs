@@ -134,6 +134,12 @@ public static class XpRuntime
     // against the installed DLL, rather than accepting an arbitrary patcher.
     public static void Check(string content)
     {
+        if (!ThemePreparation.SecureUxReady(content))
+            throw new InvalidOperationException("Для Luna нужен закреплённый SecureUxTheme 4.0.0. Используйте «Подготовить тему».");
+    }
+
+    internal static void VerifyInstalled(string content)
+    {
         var pins=JsonFile.Read<Dictionary<string,string>>(SafePath.Under(content,"xp/secureux-reference.json"));
         string system=Environment.GetFolderPath(Environment.SpecialFolder.System);
         foreach(var pin in pins)

@@ -111,9 +111,11 @@ public sealed class NativeMainForm : F.Form
         layout.Controls.Add(targetDetail, 0, 1);
         var actions = Flow();
         var check = Button("П&роверить требования");
+        var prepare = Button("Под&готовить тему");
+        prepare.Enabled = false;
         advanced = Button("&Дополнительно");
         advanced.Click += (_, _) => SetAdvanced(tabs.TabCount == 1);
-        actions.Controls.AddRange([applyTheme, restoreTheme, check, advanced]);
+        actions.Controls.AddRange([applyTheme, restoreTheme, check, advanced, prepare]);
         layout.Controls.Add(actions, 0, 2);
 
         var options = Flow();
@@ -145,6 +147,7 @@ public sealed class NativeMainForm : F.Form
             int version = ++checkVersion;
             var target = SelectedTarget();
             applyTheme.Enabled = false;
+            prepare.Enabled = false;
             check.Enabled = target?.Available == true;
             options.Visible = target?.Mode == AppearanceMode.Seven || target?.Id == "windows-xp";
             restart.Visible = sevenTools.Visible = sevenComponents.Visible = target?.Mode == AppearanceMode.Seven;
@@ -184,12 +187,37 @@ public sealed class NativeMainForm : F.Form
             }
             catch (Exception error) { requirements = error.Message; }
             if (IsDisposed || version != checkVersion) return;
-            targetDetail.Text = recovery + target.Name + Environment.NewLine + (ready ? "Требования выполнены. Можно применить оформление." : requirements);
+            string preparation = ThemePreparation.DisabledReason();
+            string components = "Компоненты: " + string.Join(", ", ThemePreparation.Components(target)) + ".";
+            targetDetail.Text = recovery + target.Name + Environment.NewLine
+                + (ready ? "Требования выполнены. Можно применить оформление." : requirements)
+                + Environment.NewLine + components;
             applyTheme.Enabled = ready;
+            prepare.Enabled = !ready && preparation.Length == 0;
         }
 
         targets.SelectedIndexChanged += async (_, _) => await RefreshTargetAsync();
         check.Click += async (_, _) => await RefreshTargetAsync();
+        prepare.Click += async (_, _) =>
+        {
+            if (SelectedTarget() is not { Available: true } target) return;
+            string items = string.Join(Environment.NewLine, ThemePreparation.Components(target));
+            string licenses = "Лицензии и условия поставщиков:" + Environment.NewLine +
+                "Open-Shell (MIT) — github.com/Open-Shell/Open-Shell-Menu";
+            if (target.Mode == AppearanceMode.Seven || target.Id == "windows-xp")
+                licenses += Environment.NewLine + "SecureUxTheme (LGPL-2.1) — github.com/namazso/SecureUxTheme";
+            if (F.MessageBox.Show(this, items + Environment.NewLine + Environment.NewLine +
+                licenses + Environment.NewLine + Environment.NewLine +
+                "Нажмите «ОК», чтобы запустить подготовку. Windows может запросить права администратора. Тема будет применена только по отдельной кнопке.",
+                "Подготовить " + target.Name, F.MessageBoxButtons.OKCancel, F.MessageBoxIcon.Information) != F.DialogResult.OK)
+                return;
+            await Run(async (token, progress) =>
+            {
+                await Task.Run(() => new ThemePreparation(MainWindow.FindContent()).PrepareAsync(target.Id, progress, token));
+                status.Text = "Автоматическая подготовка завершена. Проверьте оставшиеся требования.";
+            });
+            await RefreshTargetAsync();
+        };
         applyTheme.Click += async (_, _) =>
         {
             if (SelectedTarget() is not { } target) return;
@@ -374,6 +402,7 @@ public sealed class NativeMainForm : F.Form
         tabs.Enabled=false;cancel.Enabled=cancellable;cancel.Visible=cancellable;
         var progress=new Progress<string>(text=>status.Text=text);
         try{await action(token.Token,progress);}
+        catch(OperationCanceledException error){status.Text=token.IsCancellationRequested?"Операция отменена.":error.Message;}
         catch(Exception error){Error(error);}
         finally{busy=false;operation=null;tabs.Enabled=true;cancel.Enabled=false;cancel.Visible=false;RefreshHistory();}
     }

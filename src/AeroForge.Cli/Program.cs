@@ -10,6 +10,16 @@ try
     string root = Get("--root", Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "AeroForge", "Host"));
     string state = Get("--state", Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "AeroForge", "State"));
     string command = args.FirstOrDefault() ?? "help";
+    if (command == "prepare-theme")
+    {
+        if (!args.Contains("--accept-experimental"))
+            throw new InvalidOperationException("prepare-theme requires --accept-experimental");
+        using var cancel = new CancellationTokenSource();
+        Console.CancelKeyPress += (_, e) => { e.Cancel = true; cancel.Cancel(); };
+        await new ThemePreparation(content).PrepareAsync(Get("--target", "windows-95"),
+            new Progress<string>(Console.Error.WriteLine), cancel.Token);
+        return 0;
+    }
     if (command == "classic-check")
     {
         var checks = new Classic95Setup(content).Check(Get("--target", "windows-95"));

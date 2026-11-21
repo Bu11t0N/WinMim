@@ -76,14 +76,17 @@ public sealed class SevenSetup
         result.Add(new("Помощник WinMim", DesktopController.FindHelper() != null, "При отсутствии восстановите установку из MSI."));
         var errors=store.VerifyAll(catalog);
         result.Add(new("Модули Seven",errors.Length==0,errors.Length==0?"Контрольные суммы совпадают":string.Join("; ",errors)));
-        string shell=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles),"Open-Shell","StartMenu.exe");
-        result.Add(new("Open-Shell",File.Exists(shell),"Установите Open-Shell через «Дополнительно → Компоненты»."));
-        string system=Environment.GetFolderPath(Environment.SpecialFolder.System);
-        bool ux=new[]{"SecureUxTheme4.dll","SecureUxTheme.dll"}.Any(name=>File.Exists(Path.Combine(system,name)));
-        result.Add(new("SecureUxTheme",ux,"Проверяется наличие компонента; после его установки требуется перезагрузка"));
+        void CheckDependency(string name, Func<bool> ready)
+        {
+            try { result.Add(new(name, ready(), "Используйте «Подготовить тему».")); }
+            catch (Exception error) when (error is IOException or InvalidOperationException)
+            { result.Add(new(name, false, error.Message)); }
+        }
+        CheckDependency("Open-Shell", ThemePreparation.OpenShellReady);
+        CheckDependency("SecureUxTheme", () => ThemePreparation.SecureUxReady(store.Root));
         bool glass=false;
         foreach(var process in Process.GetProcessesByName("OpenGlassHost")){using(process)glass=true;}
-        result.Add(new("OpenGlass",glass,glass?"Процесс компонента работает":"Компонент не запущен"));
+        result.Add(new("OpenGlass",glass,glass?"Процесс компонента работает":"Компонент не запущен. Тихая установка этой версии не подтверждена."));
         result.Add(new("Тема Windows 7", File.Exists(Style) && File.Exists(Wallpaper) && Button != null,
             "Нужны совместимый визуальный стиль, обои и кнопка меню «Пуск» из разрешённого источника. Этот стендовый профиль ожидает ресурсы Aero10."));
         Plan plan;

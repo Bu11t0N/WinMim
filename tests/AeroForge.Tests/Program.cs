@@ -75,6 +75,79 @@ Test("Classic session ACL keeps original grants and never runs on the developmen
     }
 });
 
+Test("synthetic resource package prepares offline, rejects revocation and survives cache cleanup", () =>
+{
+    string root = NewState();
+    Directory.CreateDirectory(root);
+    string archive = Path.Combine(root, "original.zip");
+    using (var zip = System.IO.Compression.ZipFile.Open(archive, System.IO.Compression.ZipArchiveMode.Create))
+    using (var writer = new StreamWriter(zip.CreateEntry("samples/marker.txt").Open()))
+        writer.Write("Synthetic WinMim test material");
+    var package = new ResourcePackage("sample", "1", "local:synthetic", Hashing.File(archive), true);
+    string cached = Path.Combine(root, "cache");
+    var first = new ResourcePackageCache(cached, Path.Combine(root, "prepared"));
+    string prepared = first.PrepareAsync(package, archive).GetAwaiter().GetResult();
+    Assert(Hashing.File(archive) == package.Sha256);
+    File.Delete(archive);
+    var second = new ResourcePackageCache(cached, Path.Combine(root, "offline"));
+    var revoked = package with { Approved = false };
+    Throws(() => second.PrepareAsync(revoked).GetAwaiter().GetResult());
+    using var cancelled = new CancellationTokenSource();
+    cancelled.Cancel();
+    Throws(() => second.PrepareAsync(package, token: cancelled.Token).GetAwaiter().GetResult());
+    var offline = second.PrepareAsync(package).GetAwaiter().GetResult();
+    Assert(File.ReadAllText(Path.Combine(offline, "samples", "marker.txt")) == "Synthetic WinMim test material");
+    var backend = new MemoryBackend();
+    var journal = new TransactionManager(backend, Path.Combine(root, "journal"));
+    var active = FileChange("test-resource", File.ReadAllText(Path.Combine(prepared, "samples", "marker.txt")));
+    backend.Write(active, ValueState.Desired(FileChange("test-resource", "original")));
+    var receipt = journal.Apply(PlanOf(active));
+    first.ClearCachedArchive(revoked);
+    Assert(!Directory.EnumerateFiles(cached).Any());
+    Assert(File.Exists(Path.Combine(prepared, "samples", "marker.txt")));
+    Assert(journal.Rollback(receipt.FilePath).Status == "RolledBack");
+    Assert(Encoding.UTF8.GetString(backend.Read(active).Bytes!) == "original");
+});
+
+Test("configured synthetic release source caches verified data and reuses it offline", () =>
+{
+    using var zipBytes = new MemoryStream();
+    using (var zip = new System.IO.Compression.ZipArchive(zipBytes, System.IO.Compression.ZipArchiveMode.Create, leaveOpen: true))
+    using (var writer = new StreamWriter(zip.CreateEntry("sample.txt").Open()))
+        writer.Write("Synthetic approved release");
+    byte[] bytes = zipBytes.ToArray();
+    string source = "https://github.com/synthetic/fixture/releases/download/v1/example.zip";
+    var package = new ResourcePackage("synthetic", "1", source, Hashing.Bytes(bytes), true);
+    using var transport = new SyntheticRelease(bytes);
+    string root = NewState(), cache = Path.Combine(root, "cache");
+    var first = new ResourcePackageCache(cache, Path.Combine(root, "first"), transport);
+    first.PrepareAsync(package).GetAwaiter().GetResult();
+    Assert(transport.Requests == 1);
+    transport.Offline = true;
+    var offline = new ResourcePackageCache(cache, Path.Combine(root, "offline"), transport);
+    Assert(File.ReadAllText(Path.Combine(offline.PrepareAsync(package).GetAwaiter().GetResult(), "sample.txt")) == "Synthetic approved release");
+    Throws(() => offline.PrepareAsync(package with { Approved = false }).GetAwaiter().GetResult());
+    Assert(transport.Requests == 1);
+});
+
+Test("synthetic resource package rejects traversal and a mismatched hash", () =>
+{
+    string root=NewState();
+    Directory.CreateDirectory(root);
+    string archive = Path.Combine(root, "invalid.zip");
+    using (var zip = System.IO.Compression.ZipFile.Open(archive, System.IO.Compression.ZipArchiveMode.Create))
+    using (var writer = new StreamWriter(zip.CreateEntry("../outside.txt").Open()))
+        writer.Write("synthetic");
+    string cache = Path.Combine(root, "cache"), prepared = Path.Combine(root, "prepared");
+    var service = new ResourcePackageCache(cache, prepared);
+    var package = new ResourcePackage("sample", "1", "local:synthetic", Hashing.File(archive), true);
+    Throws(() => service.PrepareAsync(package with { Sha256 = new string('0', 64) }, archive).GetAwaiter().GetResult());
+    Throws(() => service.PrepareAsync(package, archive).GetAwaiter().GetResult());
+    Assert(!File.Exists(Path.Combine(root, "outside.txt")));
+    Assert(!Directory.EnumerateFileSystemEntries(prepared).Any());
+    Assert(!Directory.EnumerateFileSystemEntries(cache).Any());
+});
+
 Test("selection of all targets remains side-effect free", () =>
 {
     string[] ids=["windows-95","windows-nt4","windows-98","windows-98se","windows-me","windows-2000","windows-xp","windows-vista","windows-7","windows-8","windows-81","windows-10","windows-11"];
@@ -747,5 +820,18 @@ sealed class MemoryBackend : IChangeBackend
         if (s.Exists) Values[Key(c)] = s; else Values.Remove(Key(c));
         OnWrite?.Invoke();
         if (c.Target == FailAfterWrite) { FailAfterWrite = null; throw new IOException("Injected failure after mutation"); }
+    }
+}
+
+sealed class SyntheticRelease(byte[] bytes) : HttpMessageHandler
+{
+    public int Requests { get; private set; }
+    public bool Offline { get; set; }
+
+    protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+    {
+        Requests++;
+        if (Offline) throw new HttpRequestException("Synthetic connection failure");
+        return Task.FromResult(new HttpResponseMessage(System.Net.HttpStatusCode.OK) { Content = new ByteArrayContent(bytes) });
     }
 }
